@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/img"
+    android:background="@drawable/bg"
     android:orientation="vertical"
     tools:context=".SignupActivity">
 
@@ -20,7 +20,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:background="@drawable/lavander_border"
+            android:background="@drawable/main_color_border"
             android:drawableLeft="@drawable/ic_baseline_email_24"
             android:drawablePadding="8dp"
             android:hint="Email"
@@ -32,7 +32,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:background="@drawable/lavander_border"
+            android:background="@drawable/main_color_border"
             android:drawableLeft="@drawable/ic_baseline_lock_24"
             android:drawablePadding="8dp"
             android:hint="Password"
@@ -45,7 +45,7 @@
             android:layout_height="60dp"
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
-            android:background="@drawable/lavander_border"
+            android:background="@drawable/main_color_border"
             android:drawableLeft="@drawable/ic_baseline_verified_24"
             android:drawablePadding="8dp"
             android:hint="Conferma Password"
@@ -70,7 +70,7 @@
             android:layout_marginTop="8dp"
             android:padding="8dp"
             android:text="Già iscritto? Accedi"
-            android:textColor="@color/lavander"
+            android:textColor="@color/black"
             android:textSize="18sp" />
     </LinearLayout>
 
