@@ -43,7 +43,7 @@
                     android:layout_height="70dp"
                     android:layout_marginTop="30dp"
                     android:layout_gravity="center"
-                    android:text="@string/signup_button_text"
+                    android:text="@string/login_button_text"
                     android:textSize="18sp"
                     app:cornerRadius="30dp" />
                 <TextView

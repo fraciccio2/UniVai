@@ -7,4 +7,6 @@
     <string name="signup_button_text">Registrati</string>
     <string name="signUpRedirect_text">Non ancora registrato? Registrati</string>
     <string name="loginRedirect_text">Già iscritto? Accedi</string>
+    <string name="mappa_text">Mappa</string>
+    <string name="settings_text">Opzioni</string>
 </resources>
