@@ -14,18 +14,22 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class SignupActivity extends AppCompatActivity {
 
     ActivitySignupBinding binding;
     HelperDataBase helperDataBase;
     FirebaseAuth mAuth;
+    DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
         helperDataBase = new HelperDataBase();
@@ -50,6 +54,9 @@ public class SignupActivity extends AppCompatActivity {
                                                 if (task.isSuccessful()) {
                                                     Toast.makeText(SignupActivity.this, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
                                                     FirebaseUser user = mAuth.getCurrentUser();
+                                                    if(user != null) {
+                                                        mDatabase.child("users").setValue(user.getUid());
+                                                    }
                                                 } else {
                                                     Toast.makeText(SignupActivity.this, "Errore nella registrazione", Toast.LENGTH_SHORT).show();
                                                 }

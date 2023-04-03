@@ -23,6 +23,7 @@
                     android:background="@drawable/main_color_border"
                     android:drawableStart="@drawable/ic_baseline_email_24"
                     android:drawablePadding="8dp"
+                    android:inputType="textEmailAddress"
                     android:hint="@string/email_text"
                     android:padding="8dp"/>
                 <EditText

@@ -1,12 +1,18 @@
 <resources>
     <string name="app_name">Car Sharing</string>
     <string name="email_text">Email</string>
+    <string name="name_text">Nome</string>
+    <string name="surname_text">Cognome</string>
+    <string name="location_text">Cognome</string>
     <string name="password_text">Password</string>
     <string name="confirm_password_text">Conferma Password</string>
     <string name="login_button_text">Accedi</string>
     <string name="signup_button_text">Registrati</string>
     <string name="signUpRedirect_text">Non ancora registrato? Registrati</string>
     <string name="loginRedirect_text">Già iscritto? Accedi</string>
-    <string name="mappa_text">Mappa</string>
+    <string name="map_text">Mappa</string>
     <string name="settings_text">Opzioni</string>
+    <string name="start_text">Inserisci qualche tua informazione</string>
+    <string name="car_checkbox_text">Inserisci qualche tua informazione</string>
+    <string name="select_uni_text">Selezioa la tua università</string>
 </resources>

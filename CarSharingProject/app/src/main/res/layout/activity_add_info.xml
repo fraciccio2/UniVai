@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    tools:context=".AddInfoActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/start_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/start_text"
+            android:textSize="22sp"
+            android:layout_marginTop="14dp"
+            android:padding="8dp"
+            android:textColor="@color/white"
+            android:gravity="center"/>
+        <EditText
+            android:id="@+id/start_name"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/main_color_border"
+            android:drawableStart="@drawable/ic_baseline_person_24"
+            android:drawablePadding="8dp"
+            android:inputType="text"
+            android:hint="@string/name_text"
+            android:padding="8dp"/>
+        <EditText
+            android:id="@+id/start_surname"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/main_color_border"
+            android:drawableStart="@drawable/ic_baseline_person_24"
+            android:drawablePadding="8dp"
+            android:inputType="text"
+            android:hint="@string/surname_text"
+            android:padding="8dp"/>
+        <!-- TODO fare con google autocomplete -->
+        <EditText
+            android:id="@+id/start_address"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/main_color_border"
+            android:drawableStart="@drawable/ic_baseline_location_on_24"
+            android:drawablePadding="8dp"
+            android:inputType="text"
+            android:hint="@string/location_text"
+            android:padding="8dp"/>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/start_select_uni"
+            android:layout_width="350dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:background="@drawable/main_color_border"
+            android:hint="@string/select_uni_text"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            <AutoCompleteTextView
+                android:id="@+id/auto_complete_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"/>
+        </com.google.android.material.textfield.TextInputLayout>
+        <CheckBox
+            android:id="@+id/start_car"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:drawablePadding="8dp"
+            android:textColor="@color/white"
+            android:text="@string/car_checkbox_text"/>
+
+    </LinearLayout>
+
+
+
+</ScrollView>
