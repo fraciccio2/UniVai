@@ -15,4 +15,5 @@
     <string name="start_text">Inserisci qualche tua informazione</string>
     <string name="car_checkbox_text">Hai la macchina?</string>
     <string name="select_uni_text">Selezioa la tua università</string>
+    <string name="start_button_text">Aggiungi dati</string>
 </resources>

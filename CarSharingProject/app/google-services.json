@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "584155001776",
+    "firebase_url": "https://car-sharing-b39c3-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "car-sharing-b39c3",
     "storage_bucket": "car-sharing-b39c3.appspot.com"
   },

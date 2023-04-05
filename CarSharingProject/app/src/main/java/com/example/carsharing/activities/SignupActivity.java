@@ -1,4 +1,4 @@
-package com.example.carsharing;
+package com.example.carsharing.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.carsharing.databinding.ActivitySignupBinding;
+import com.example.carsharing.services.HelperDataBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -29,7 +30,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
         helperDataBase = new HelperDataBase();
@@ -56,6 +57,8 @@ public class SignupActivity extends AppCompatActivity {
                                                     FirebaseUser user = mAuth.getCurrentUser();
                                                     if(user != null) {
                                                         mDatabase.setValue(user.getUid());
+                                                        Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                                        startActivity(intent);
                                                     }
                                                 } else {
                                                     Toast.makeText(SignupActivity.this, "Errore nella registrazione", Toast.LENGTH_SHORT).show();

@@ -1,4 +1,4 @@
-package com.example.carsharing;
+package com.example.carsharing.activities;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.carsharing.databinding.ActivityLoginBinding;
+import com.example.carsharing.services.HelperDataBase;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

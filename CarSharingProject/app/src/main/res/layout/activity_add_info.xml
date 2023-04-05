@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    tools:context=".AddInfoActivity">
+    tools:context=".activities.AddInfoActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -67,6 +67,8 @@
             android:layout_gravity="center"
             android:background="@drawable/main_color_border"
             android:hint="@string/select_uni_text"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_text"
@@ -83,6 +85,15 @@
             android:drawablePadding="8dp"
             android:textColor="@color/white"
             android:text="@string/car_checkbox_text"/>
+        <Button
+            android:id="@+id/start_button"
+            android:layout_width="350dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="30dp"
+            android:layout_gravity="center"
+            android:text="@string/start_button_text"
+            android:textSize="18sp"
+            app:cornerRadius="30dp" />
 
     </LinearLayout>
 
