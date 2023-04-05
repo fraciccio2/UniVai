@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -53,20 +54,26 @@ public class LoginActivity extends AppCompatActivity {
                                     if (task.isSuccessful()) {
                                         Toast.makeText(LoginActivity.this, "Login effettuata con successo", Toast.LENGTH_SHORT).show();
                                         FirebaseUser user = mAuth.getCurrentUser();
-                                        mDatabase.child("users").get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DataSnapshot> task) {
-                                                if(task.isSuccessful()){
-                                                    if(user != null && task.getResult().child("users").child(user.getUid()).getValue() != null) {
+                                        if(user != null) {
+                                            mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if(snapshot.exists() && snapshot.hasChildren()){
                                                         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                         startActivity(intent);
                                                     } else {
                                                         Intent intent = new Intent(getApplicationContext(), AddInfoActivity.class);
                                                         startActivity(intent);
                                                     }
+
                                                 }
-                                            }
-                                        });
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+                                                    Log.println(Log.ERROR ,"Errore", "");
+                                                }
+                                            });
+                                        }
                                     } else {
                                         Toast.makeText(LoginActivity.this, "Email o password errati", Toast.LENGTH_SHORT).show();
                                     }

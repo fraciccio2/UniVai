@@ -29,7 +29,7 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivitySignupBinding.inflate(getLayoutInflater());
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference("users");
         setContentView(binding.getRoot());
 
         helperDataBase = new HelperDataBase();
@@ -55,7 +55,7 @@ public class SignupActivity extends AppCompatActivity {
                                                     Toast.makeText(SignupActivity.this, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
                                                     FirebaseUser user = mAuth.getCurrentUser();
                                                     if(user != null) {
-                                                        mDatabase.child("users").setValue(user.getUid());
+                                                        mDatabase.setValue(user.getUid());
                                                     }
                                                 } else {
                                                     Toast.makeText(SignupActivity.this, "Errore nella registrazione", Toast.LENGTH_SHORT).show();

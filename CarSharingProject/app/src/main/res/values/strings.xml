@@ -13,6 +13,6 @@
     <string name="map_text">Mappa</string>
     <string name="settings_text">Opzioni</string>
     <string name="start_text">Inserisci qualche tua informazione</string>
-    <string name="car_checkbox_text">Inserisci qualche tua informazione</string>
+    <string name="car_checkbox_text">Hai la macchina?</string>
     <string name="select_uni_text">Selezioa la tua università</string>
 </resources>
