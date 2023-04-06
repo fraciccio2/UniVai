@@ -46,19 +46,14 @@
             android:inputType="text"
             android:hint="@string/surname_text"
             android:padding="8dp"/>
-        <!-- TODO fare con google autocomplete -->
-        <EditText
+        <fragment
             android:id="@+id/start_address"
             android:layout_width="350dp"
             android:layout_height="60dp"
             android:layout_marginTop="30dp"
             android:layout_gravity="center"
             android:background="@drawable/main_color_border"
-            android:drawableStart="@drawable/ic_baseline_location_on_24"
-            android:drawablePadding="8dp"
-            android:inputType="text"
-            android:hint="@string/location_text"
-            android:padding="8dp"/>
+            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/start_select_uni"
             android:layout_width="350dp"
