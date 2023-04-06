@@ -14,6 +14,7 @@ import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityAddInfoBinding;
 import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
@@ -25,6 +26,7 @@ import java.util.Arrays;
 
 public class AddInfoActivity extends AppCompatActivity {
 
+    private static final String apiKey = "AIzaSyAQEzSH8uY_Rf8YtUrY1D2a3e4PmelhSgU";
     ActivityAddInfoBinding binding;
     String[] items = {
             "Giurisprudenza", "Economia e Impresa", "Scienze Politiche e Sociali", "Scienze Umanitarie",
@@ -44,6 +46,7 @@ public class AddInfoActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        Places.initialize(getApplicationContext(), apiKey);
 
         adapterItems = new ArrayAdapter<String>(this, R.layout.list_item, items);
         binding.autoCompleteText.setAdapter(adapterItems);
@@ -58,7 +61,7 @@ public class AddInfoActivity extends AppCompatActivity {
 
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
-                    address = place.getAddress();
+                    address = place.getName();
                 }
             });
         }
