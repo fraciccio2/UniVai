@@ -26,7 +26,6 @@ import java.util.Arrays;
 
 public class AddInfoActivity extends AppCompatActivity {
 
-    private static final String apiKey = "AIzaSyAQEzSH8uY_Rf8YtUrY1D2a3e4PmelhSgU";
     ActivityAddInfoBinding binding;
     String[] items = {
             "Giurisprudenza", "Economia e Impresa", "Scienze Politiche e Sociali", "Scienze Umanitarie",
@@ -46,13 +45,15 @@ public class AddInfoActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
-        Places.initialize(getApplicationContext(), apiKey);
+        Places.initialize(getApplicationContext(), getString(R.string.api_key));
 
         adapterItems = new ArrayAdapter<String>(this, R.layout.list_item, items);
         binding.autoCompleteText.setAdapter(adapterItems);
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.start_address);
         if (autocompleteFragment != null) {
-            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME));
+            autocompleteFragment.setCountry("it");
+            autocompleteFragment.setHint(getString(R.string.search_text));
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
                 public void onError(@NonNull Status status) {
@@ -61,7 +62,7 @@ public class AddInfoActivity extends AppCompatActivity {
 
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
-                    address = place.getName();
+                    address = place.getAddress();
                 }
             });
         }

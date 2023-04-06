@@ -15,7 +15,7 @@
         android:theme="@style/Theme.CarSharing">
         <activity
             android:name=".activities.AddInfoActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".activities.LoginActivity"
             android:exported="true">
