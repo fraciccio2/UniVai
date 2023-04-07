@@ -1,5 +1,7 @@
 package com.example.carsharing.models;
 
+import java.util.HashMap;
+
 public class UserModel {
 
     private String name;
@@ -13,6 +15,14 @@ public class UserModel {
         this.surname = surname;
         this.address = address;
         this.university = university;
+        this.hasCar = hasCar;
+    }
+
+    public UserModel(HashMap<String, String> map, Boolean hasCar){
+        this.name = map.get("name");
+        this.surname = map.get("surname");
+        this.address = map.get("address");
+        this.university = map.get("university");
         this.hasCar = hasCar;
     }
 

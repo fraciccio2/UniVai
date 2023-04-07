@@ -21,6 +21,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,6 +32,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.util.HashMap;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -66,8 +69,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if(snapshot.exists()){
-                        UserModel logUser = (UserModel) snapshot.getValue();
-                        if(logUser != null && !logUser.getHasCar()) {
+                        UserModel logUser = new UserModel((HashMap<String, String>)snapshot.getValue(), ((HashMap<String, Boolean>)snapshot.getValue()).get("hasCar"));
+                        if(!logUser.getHasCar()) {
                             helperNavigationBar.hiddenFloatingButton(binding.floatingButton);
                         }
                     }
@@ -106,6 +109,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                         LatLng mapItaly = new LatLng(location.getLatitude(), location.getLongitude());
                         gMap.addMarker(new MarkerOptions().position(mapItaly));
                         gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
+                        gMap.setMinZoomPreference(5);
+                        gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199,6.7499), new LatLng(47.1153, 18.4802)));
                     }
                 }
             });
@@ -116,6 +121,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                     Log.e("Error", "exception", e);
                 }
             });
+        } else {
+            LatLng mapItaly = new LatLng(41.2925, 12.5736);
+            gMap.addMarker(new MarkerOptions().position(mapItaly));
+            gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
+            gMap.setMinZoomPreference(5);
+            gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199,6.7499), new LatLng(47.1153, 18.4802)));
         }
     }
 }
