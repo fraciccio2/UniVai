@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Car Sharing</string>
     <string name="api_key">AIzaSyAQEzSH8uY_Rf8YtUrY1D2a3e4PmelhSgU</string>
+    <string name="date_pattern">dd/MM/yyyy HH:mm</string>
     <string name="email_text">Email</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
@@ -18,4 +19,10 @@
     <string name="select_uni_text">Seleziona il tuo dipartimento</string>
     <string name="start_button_text">Aggiungi dati</string>
     <string name="search_text">Cerca indirizzo</string>
+    <string name="new_request_title_text">Crea una nuova richiesta</string>
+    <string name="new_request_address_text">Inserisci l\'indirizzo di partenza</string>
+    <string name="new_request_check_text">Stesso indirizzo di casa</string>
+    <string name="new_request_time_text">Inserisci data e ora</string>
+    <string name="new_request_note_text">Inserisci delle note</string>
+    <string name="new_request_button_text">Crea richiesta</string>
 </resources>
