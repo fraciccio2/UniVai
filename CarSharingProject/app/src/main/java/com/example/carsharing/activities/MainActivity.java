@@ -180,6 +180,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (snapshot.exists()) {
                     logUser = snapshot.getValue(UserModel.class);
                     hiddenFloatingButton();
+                    loadMap();
                     getRequest();
                 }
             }
