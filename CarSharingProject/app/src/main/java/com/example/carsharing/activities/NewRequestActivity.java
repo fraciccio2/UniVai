@@ -16,7 +16,9 @@ import android.widget.Toast;
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityNewRequestBinding;
 import com.example.carsharing.models.AddressModel;
+import com.example.carsharing.models.LatLonModel;
 import com.example.carsharing.models.RequestModel;
+import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -24,8 +26,11 @@ import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -42,6 +47,7 @@ public class NewRequestActivity extends AppCompatActivity {
     String date;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    UserModel logUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +56,10 @@ public class NewRequestActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null) {
+            getLoggedUser(user);
+        }
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
 
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.new_request_address);
@@ -65,10 +75,23 @@ public class NewRequestActivity extends AppCompatActivity {
 
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
-                    address = new AddressModel(place.getAddress(), place.getLatLng());
+                    address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
                 }
             });
         }
+
+        binding.newRequestAddressCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(binding.newRequestAddressCheck.isChecked()){
+                    autocompleteFragment.setHint(logUser.getAddress().getLocation());
+                    address = logUser.getAddress();
+                } else {
+                    autocompleteFragment.setHint(getString(R.string.new_request_address_text));
+                    address = null;
+                }
+            }
+        });
 
         binding.newRequestTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,16 +130,15 @@ public class NewRequestActivity extends AppCompatActivity {
         binding.newRequestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveNewRequest();
+                saveNewRequest(user);
             }
         });
     }
 
-    private void saveNewRequest() {
+    private void saveNewRequest(FirebaseUser user) {
         String note = binding.newRequestNote.getText().toString();
-        if(address.getLocation() != null && date != null) {
+        if(address != null && date != null) {
             RequestModel request = new RequestModel(address, date, note, true);
-            FirebaseUser user = mAuth.getCurrentUser();
             if(user != null) {
                 mDatabase.child("requests").child(user.getUid()).setValue(request);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -125,5 +147,21 @@ public class NewRequestActivity extends AppCompatActivity {
         } else {
             Toast.makeText(this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void getLoggedUser(FirebaseUser user) {
+        mDatabase.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    logUser = snapshot.getValue(UserModel.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Error", "exception", error.toException());
+            }
+        });
     }
 }

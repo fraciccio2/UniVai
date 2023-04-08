@@ -14,14 +14,15 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityMainBinding;
+import com.example.carsharing.models.RequestModel;
 import com.example.carsharing.models.UserModel;
-import com.example.carsharing.services.HelperNavigationBar;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -35,17 +36,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
-    private static final int PERMISSIONS_REQUEST_LOCATION = 123;
+    private static final int PERMISSIONS_REQUEST_LOCATION = 100;
     ActivityMainBinding binding;
     GoogleMap gMap;
     FusedLocationProviderClient providerClient;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
-    HelperNavigationBar helperNavigationBar;
+    LatLng userLatLng;
+    double radius = 1000;
+    List<RequestModel> requestList = new ArrayList<>();
+    UserModel logUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +60,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        FirebaseUser user = mAuth.getCurrentUser();
         binding.bottomNavigationView.setBackground(null);
+        if(user != null) {
+            getLoggedUser(user);
+        }
         providerClient = LocationServices.getFusedLocationProviderClient(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
@@ -68,36 +77,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
-        }
-
-        FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
-            mDatabase.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        UserModel logUser = new UserModel((HashMap<String, String>)snapshot.getValue(), ((HashMap<String, Boolean>)snapshot.getValue()).get("hasCar"));
-                        if(!logUser.getHasCar()) {
-                            helperNavigationBar.hiddenFloatingButton(binding.floatingButton);
-                        }
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("Error", "exception", error.toException());
-                }
-            });
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
         }
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         gMap = googleMap;
-        this.loadMap();
     }
 
     @Override
@@ -111,16 +98,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void loadMap() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             providerClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        LatLng mapItaly = new LatLng(location.getLatitude(), location.getLongitude());
-                        gMap.addMarker(new MarkerOptions().position(mapItaly));
-                        gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
-                        gMap.setMinZoomPreference(5);
-                        gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199,6.7499), new LatLng(47.1153, 18.4802)));
+                        setMap(location.getLatitude(), location.getLongitude());
                     }
                 }
             });
@@ -132,11 +115,79 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 }
             });
         } else {
-            LatLng mapItaly = new LatLng(41.2925, 12.5736);
-            gMap.addMarker(new MarkerOptions().position(mapItaly));
-            gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
-            gMap.setMinZoomPreference(5);
-            gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199,6.7499), new LatLng(47.1153, 18.4802)));
+            if (logUser != null) {
+                setMap(logUser.getAddress().getCoordinate().getLatitude(), logUser.getAddress().getCoordinate().getLongitude());
+            } else {
+                setMap(41.2925, 12.5736);
+            }
         }
+    }
+
+    private void setMap(double lat, double lon) {
+        LatLng mapItaly = new LatLng(lat, lon);
+        gMap.addMarker(new MarkerOptions().position(mapItaly));
+        for (RequestModel request : requestList) {
+            gMap.addMarker(new MarkerOptions().position(new LatLng(request.getAddress().getCoordinate().getLatitude(), request.getAddress().getCoordinate().getLongitude())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        }
+        gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
+        gMap.setMinZoomPreference(5);
+        gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199, 6.7499), new LatLng(47.1153, 18.4802)));
+    }
+
+    private static double distanceBetweenLatLong(double lat1, double lon1, double lat2, double lon2) {
+        lat1 = Math.toRadians(lat1);
+        lon1 = Math.toRadians(lon1);
+        lat2 = Math.toRadians(lat2);
+        lon2 = Math.toRadians(lon2);
+
+        double earthRadius = 6371.01; //Kilometers
+        return earthRadius * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
+    }
+
+    private void getRequest() {
+        FirebaseDatabase.getInstance().getReference("requests").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        RequestModel requestModel = data.getValue(RequestModel.class);
+                        if (distanceBetweenLatLong(requestModel.getAddress().getCoordinate().getLatitude(), requestModel.getAddress().getCoordinate().getLongitude(), userLatLng.latitude, userLatLng.longitude) < radius) {
+                            requestList.add(requestModel);
+                        }
+                    }
+                    loadMap();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Error", "exception", error.toException());
+            }
+        });
+    }
+
+    private void hiddenFloatingButton() {
+        if (!logUser.getHasCar()) {
+            binding.floatingButton.setVisibility(View.INVISIBLE);
+            binding.floatingButton.setEnabled(false);
+        }
+    }
+
+    private void getLoggedUser(FirebaseUser user) {
+        mDatabase.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    logUser = snapshot.getValue(UserModel.class);
+                    hiddenFloatingButton();
+                    getRequest();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Error", "exception", error.toException());
+            }
+        });
     }
 }

@@ -5,12 +5,14 @@ import com.google.android.gms.maps.model.LatLng;
 public class AddressModel {
 
     private String location;
-    private LatLng coordinate;
+    private LatLonModel coordinate;
 
-    public AddressModel(String location, LatLng coordinate) {
+    public AddressModel(String location, LatLonModel coordinate) {
         this.location = location;
         this.coordinate = coordinate;
     }
+
+    public AddressModel() {}
 
     public String getLocation() {
         return location;
@@ -20,11 +22,11 @@ public class AddressModel {
         this.location = location;
     }
 
-    public LatLng getCoordinate() {
+    public LatLonModel getCoordinate() {
         return coordinate;
     }
 
-    public void setCoordinate(LatLng coordinate) {
+    public void setCoordinate(LatLonModel coordinate) {
         this.coordinate = coordinate;
     }
 }

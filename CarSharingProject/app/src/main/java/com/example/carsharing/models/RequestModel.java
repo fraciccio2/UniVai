@@ -14,6 +14,8 @@ public class RequestModel {
         this.active = active;
     }
 
+    public RequestModel(){}
+
     public AddressModel getAddress() {
         return address;
     }

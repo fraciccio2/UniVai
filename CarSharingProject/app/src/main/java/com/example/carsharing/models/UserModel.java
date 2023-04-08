@@ -6,11 +6,11 @@ public class UserModel {
 
     private String name;
     private String surname;
-    private String address;
+    private AddressModel address;
     private String university;
     private Boolean hasCar;
 
-    public UserModel(String name, String surname, String address, String university, Boolean hasCar) {
+    public UserModel(String name, String surname, AddressModel address, String university, Boolean hasCar) {
         this.name = name;
         this.surname = surname;
         this.address = address;
@@ -18,13 +18,7 @@ public class UserModel {
         this.hasCar = hasCar;
     }
 
-    public UserModel(HashMap<String, String> map, Boolean hasCar){
-        this.name = map.get("name");
-        this.surname = map.get("surname");
-        this.address = map.get("address");
-        this.university = map.get("university");
-        this.hasCar = hasCar;
-    }
+    public UserModel(){}
 
     public String getName() {
         return name;
@@ -42,11 +36,11 @@ public class UserModel {
         this.surname = surname;
     }
 
-    public String getAddress() {
+    public AddressModel getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(AddressModel address) {
         this.address = address;
     }
 

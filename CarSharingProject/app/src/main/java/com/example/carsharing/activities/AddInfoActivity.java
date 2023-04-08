@@ -12,6 +12,8 @@ import android.widget.Toast;
 
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityAddInfoBinding;
+import com.example.carsharing.models.AddressModel;
+import com.example.carsharing.models.LatLonModel;
 import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -36,7 +38,7 @@ public class AddInfoActivity extends AppCompatActivity {
     ArrayAdapter<String> adapterItems;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
-    String address;
+    AddressModel address;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,7 +64,7 @@ public class AddInfoActivity extends AppCompatActivity {
 
                 @Override
                 public void onPlaceSelected(@NonNull Place place) {
-                    address = place.getAddress();
+                    address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
                 }
             });
         }
