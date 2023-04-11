@@ -102,7 +102,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 @Override
                 public void onSuccess(Location location) {
                     if (location != null) {
-                        setMap(location.getLatitude(), location.getLongitude());
+                        userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                        getRequest();
                     }
                 }
             });
@@ -115,10 +116,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             });
         } else {
             if (logUser != null) {
-                setMap(logUser.getAddress().getCoordinate().getLatitude(), logUser.getAddress().getCoordinate().getLongitude());
+                userLatLng = new LatLng(logUser.getAddress().getCoordinate().getLatitude(), logUser.getAddress().getCoordinate().getLongitude());
             } else {
-                setMap(41.90370, 12.49524);
+                userLatLng = new LatLng(41.90370, 12.49524);
             }
+            getRequest();
         }
     }
 
@@ -131,6 +133,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
         gMap.setMinZoomPreference(5);
         gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199, 6.7499), new LatLng(47.1153, 18.4802)));
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mapItaly, 14));
     }
 
     private static double distanceBetweenLatLong(double lat1, double lon1, double lat2, double lon2) {
@@ -154,9 +157,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             requestList.add(requestModel);
                         }
                     }
-                    loadMap();
+                    setMap(userLatLng.latitude, userLatLng.longitude);
                 } else {
-                    loadMap();
+                    setMap(userLatLng.latitude, userLatLng.longitude);
                 }
             }
 
@@ -167,7 +170,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    //TODO dopo che si è preso lo user, si vede se si ha la'utorizzazione per la posizione, dopo ri caricano le richieste con le coordinate trovate e poi si carica la mappa
     private void getLoggedUser(FirebaseUser user) {
         mDatabase.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -175,7 +177,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (snapshot.exists()) {
                     logUser = snapshot.getValue(UserModel.class);
                     navigationHelper.hideButton(binding.floatingButton, binding.bottomNavigationView, logUser);
-                    getRequest();
+                    loadMap();
                 }
             }
 
