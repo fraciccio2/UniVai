@@ -17,6 +17,7 @@ import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityMainBinding;
 import com.example.carsharing.models.RequestModel;
 import com.example.carsharing.models.UserModel;
+import com.example.carsharing.services.NavigationHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -30,6 +31,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomnavigation.BottomNavigationItemView;
+import com.google.android.material.navigation.NavigationBarView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -53,6 +55,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     double radius = 1000;
     List<RequestModel> requestList = new ArrayList<>();
     UserModel logUser;
+    NavigationHelper navigationHelper = new NavigationHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +66,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         FirebaseUser user = mAuth.getCurrentUser();
-        binding.bottomNavigationView.setBackground(null);
         if(user != null) {
             getLoggedUser(user);
         }
@@ -71,17 +73,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
         mapFragment.getMapAsync(this);
 
-        binding.floatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), NewRequestActivity.class);
-                startActivity(intent);
-            }
-        });
-
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
         }
+
+        navigationHelper.navigate(binding.bottomNavigationView, getApplicationContext());
+        navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
     }
 
     @Override
@@ -170,21 +167,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void hiddenFloatingButton() {
-        if (!logUser.getHasCar()) {
-            binding.floatingButton.setVisibility(View.INVISIBLE);
-            binding.floatingButton.setEnabled(false);
-            binding.bottomNavigationView.getMenu().removeItem(R.id.action_disabled);
-        }
-    }
-
+    //TODO dopo che si è preso lo user, si vede se si ha la'utorizzazione per la posizione, dopo ri caricano le richieste con le coordinate trovate e poi si carica la mappa
     private void getLoggedUser(FirebaseUser user) {
         mDatabase.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     logUser = snapshot.getValue(UserModel.class);
-                    hiddenFloatingButton();
+                    navigationHelper.hideButton(binding.floatingButton, binding.bottomNavigationView, logUser);
                     getRequest();
                 }
             }
