@@ -2,7 +2,7 @@ package com.example.carsharing.services;
 
 import android.util.Patterns;
 
-public class HelperDataBase {
+public class DataBaseHelper {
 
     public Boolean isCorrectEmail(String email) {
         return Patterns.EMAIL_ADDRESS.matcher(email).matches() && email.contains("studium");

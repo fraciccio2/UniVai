@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.carsharing.databinding.ActivitySignupBinding;
-import com.example.carsharing.services.HelperDataBase;
+import com.example.carsharing.services.DataBaseHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -21,7 +21,7 @@ import com.google.firebase.database.FirebaseDatabase;
 public class SignupActivity extends AppCompatActivity {
 
     ActivitySignupBinding binding;
-    HelperDataBase helperDataBase;
+    DataBaseHelper dataBaseHelper;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
@@ -33,7 +33,7 @@ public class SignupActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
-        helperDataBase = new HelperDataBase();
+        dataBaseHelper = new DataBaseHelper();
 
         binding.signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -46,7 +46,7 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, "Tutti i campi sono obbligatori", Toast.LENGTH_SHORT).show();
                 } else {
                     if (password.equals(confirmPassword)) {
-                        Boolean correctEmail = helperDataBase.isCorrectEmail(email);
+                        Boolean correctEmail = dataBaseHelper.isCorrectEmail(email);
                         if (correctEmail) {
                                 mAuth.createUserWithEmailAndPassword(email, password)
                                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {

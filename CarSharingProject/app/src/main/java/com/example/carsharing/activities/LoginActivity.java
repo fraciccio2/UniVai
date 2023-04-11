@@ -10,7 +10,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.carsharing.databinding.ActivityLoginBinding;
-import com.example.carsharing.services.HelperDataBase;
+import com.example.carsharing.services.DataBaseHelper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -25,7 +25,7 @@ import com.google.firebase.database.ValueEventListener;
 public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
-    HelperDataBase helperDataBase;
+    DataBaseHelper dataBaseHelper;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
 
@@ -37,7 +37,7 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
-        helperDataBase = new HelperDataBase();
+        dataBaseHelper = new DataBaseHelper();
 
         binding.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
