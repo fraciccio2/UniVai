@@ -10,16 +10,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.carsharing.R;
 import com.example.carsharing.holders.RequestViewHolder;
 import com.example.carsharing.models.RequestModel;
+import com.example.carsharing.models.RequestWithUserModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
-    private List<RequestModel> requestList;
+    private List<RequestWithUserModel> requestUserList;
 
-    public RequestAdapter(List<RequestModel> requestList) {
-        this.requestList = requestList;
+    public RequestAdapter(List<RequestWithUserModel> requestList) {
+        this.requestUserList = requestList;
     }
 
     @NonNull
@@ -32,16 +33,16 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-        RequestModel request = requestList.get(position);
+        RequestWithUserModel requestUser = requestUserList.get(position);
         //holder.avatarUser.setImageURI(); //TODO settare immagine
-        holder.requestNote.setText(request.getNote());
-        holder.requestDate.setText(formatter.format(new Date(request.getDate())));
-        holder.requestAddress.setText(request.getAddress().getLocation());
-        holder.nameUser.setText("Ture Polpetta"); //TODO settare nome
+        holder.requestNote.setText(requestUser.getNote());
+        holder.requestDate.setText(formatter.format(new Date(requestUser.getDate())));
+        holder.requestAddress.setText(requestUser.getAddress().getLocation());
+        holder.nameUser.setText(requestUser.getName() + " "+requestUser.getSurname()); //TODO settare nome
     }
 
     @Override
     public int getItemCount() {
-        return requestList.size();
+        return requestUserList.size();
     }
 }
