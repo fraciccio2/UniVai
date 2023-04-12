@@ -10,6 +10,7 @@ import android.util.Log;
 
 import com.example.carsharing.adapters.RequestAdapter;
 import com.example.carsharing.databinding.ActivityRequestListBinding;
+import com.example.carsharing.models.AddressModel;
 import com.example.carsharing.models.RequestModel;
 import com.example.carsharing.models.RequestWithUserModel;
 import com.example.carsharing.models.UserModel;
@@ -67,15 +68,19 @@ public class RequestListActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.exists()) {
-                                    //TODO sistemare modello perché torna un hashMap con key, value e me serve il value del getValue
-                                    UserModel user = snapshot.getValue(UserModel.class);
+                                    String name = "";
+                                    String surname = "";
+                                    for (DataSnapshot datas: snapshot.getChildren()){
+                                        name = datas.child("name").getValue(String.class);
+                                        surname = datas.child("surname").getValue(String.class);
+                                    }
                                     RequestWithUserModel requestUser = new RequestWithUserModel(
                                             request.getAddress(),
                                             request.getDate(),
                                             request.getNote(),
                                             request.getActive(),
-                                            user.getName(),
-                                            user.getSurname()
+                                            name,
+                                            surname
                                     );
                                     requestUserList.add(requestUser);
                                 }
