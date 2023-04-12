@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="name_text">Name</string>
+    <string name="surname_text">Surname</string>
+    <string name="confirm_password_text">Confirm Password</string>
+    <string name="login_button_text">Log In</string>
+    <string name="signup_button_text">Sign Up</string>
+    <string name="signUpRedirect_text">Not registered yet? Sign up</string>
+    <string name="loginRedirect_text">Already registered? Log in</string>
+    <string name="map_text">Map</string>
+    <string name="request_text">Requests</string>
+    <string name="settings_text">Settings</string>
+    <string name="start_text">Enter some of your information</string>
+    <string name="car_checkbox_text">Have a car?</string>
+    <string name="select_uni_text">Select your department</string>
+    <string name="start_button_text">Add data</string>
+    <string name="search_text">Search address</string>
+    <string name="new_request_title_text">Create a new request</string>
+    <string name="new_request_address_text">Enter your starting address</string>
+    <string name="new_request_check_text">Same home address</string>
+    <string name="new_request_time_text">Enter date and time</string>
+    <string name="new_request_note_text">Insert some notes</string>
+    <string name="new_request_button_text">Create request</string>
+</resources>

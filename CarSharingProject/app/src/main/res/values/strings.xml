@@ -1,19 +1,19 @@
 <resources>
-    <string name="app_name">Car Sharing</string>
-    <string name="api_key">AIzaSyAQEzSH8uY_Rf8YtUrY1D2a3e4PmelhSgU</string>
-    <string name="date_pattern">dd/MM/yyyy HH:mm</string>
-    <string name="email_text">Email</string>
+    <string name="app_name" translatable="false">Car Sharing</string>
+    <string name="api_key" translatable="false">AIzaSyAQEzSH8uY_Rf8YtUrY1D2a3e4PmelhSgU</string>
+    <string name="date_pattern" translatable="false">dd/MM/yyyy HH:mm</string>
+    <string name="email_text" translatable="false">Email</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
-    <string name="location_text">Cognome</string>
-    <string name="password_text">Password</string>
+    <string name="password_text" translatable="false">Password</string>
     <string name="confirm_password_text">Conferma Password</string>
     <string name="login_button_text">Accedi</string>
     <string name="signup_button_text">Registrati</string>
     <string name="signUpRedirect_text">Non ancora registrato? Registrati</string>
     <string name="loginRedirect_text">Già iscritto? Accedi</string>
     <string name="map_text">Mappa</string>
-    <string name="settings_text">Opzioni</string>
+    <string name="request_text">Richieste</string>
+    <string name="settings_text">Impostazioni</string>
     <string name="start_text">Inserisci qualche tua informazione</string>
     <string name="car_checkbox_text">Hai la macchina?</string>
     <string name="select_uni_text">Seleziona il tuo dipartimento</string>
