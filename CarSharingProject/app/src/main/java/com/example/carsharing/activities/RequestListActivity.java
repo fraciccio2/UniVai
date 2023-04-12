@@ -75,6 +75,7 @@ public class RequestListActivity extends AppCompatActivity {
                                         surname = datas.child("surname").getValue(String.class);
                                     }
                                     RequestWithUserModel requestUser = new RequestWithUserModel(
+                                            data.getKey(),
                                             request.getAddress(),
                                             request.getDate(),
                                             request.getNote(),

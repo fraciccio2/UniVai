@@ -1,8 +1,10 @@
 package com.example.carsharing.adapters;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -38,6 +40,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
         holder.requestDate.setText(formatter.format(new Date(requestUser.getDate())));
         holder.requestAddress.setText(requestUser.getAddress().getLocation());
         holder.nameUser.setText(requestUser.getName() + " "+requestUser.getSurname());
+        holder.card.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.i("Info", requestUser.getId());
+            }
+        });
     }
 
     @Override

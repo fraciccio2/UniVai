@@ -2,6 +2,7 @@ package com.example.carsharing.holders;
 
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +16,7 @@ public class RequestViewHolder extends RecyclerView.ViewHolder {
     public TextView requestAddress;
     public TextView requestDate;
     public TextView requestNote;
+    public LinearLayout card;
 
     public RequestViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -23,5 +25,6 @@ public class RequestViewHolder extends RecyclerView.ViewHolder {
         requestAddress = itemView.findViewById(R.id.request_address);
         requestDate = itemView.findViewById(R.id.request_date);
         requestNote = itemView.findViewById(R.id.request_note);
+        card = itemView.findViewById(R.id.card_request);
     }
 }

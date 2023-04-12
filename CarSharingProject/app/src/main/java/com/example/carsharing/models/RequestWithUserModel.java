@@ -2,6 +2,7 @@ package com.example.carsharing.models;
 
 public class RequestWithUserModel {
 
+    private String id;
     private AddressModel address;
     private String date;
     private String note;
@@ -9,13 +10,22 @@ public class RequestWithUserModel {
     private String name;
     private String surname;
 
-    public RequestWithUserModel(AddressModel address, String date, String note, Boolean active, String name, String surname) {
+    public RequestWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname) {
+        this.id = id;
         this.address = address;
         this.date = date;
         this.note = note;
         this.active = active;
         this.name = name;
         this.surname = surname;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public AddressModel getAddress() {
