@@ -25,4 +25,8 @@
     <string name="new_request_time_text">Inserisci data e ora</string>
     <string name="new_request_note_text">Inserisci delle note</string>
     <string name="new_request_button_text">Crea richiesta</string>
+    <string name="load_image_text">Carica la tua foto di profilo</string>
+    <string name="skip_text">Salta</string>
+    <string name="next_text">Prosegui</string>
+    <string name="no_image_selected_text">Nessuna Immagine Selezionata</string>
 </resources>

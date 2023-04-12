@@ -21,4 +21,8 @@
     <string name="new_request_time_text">Enter date and time</string>
     <string name="new_request_note_text">Insert some notes</string>
     <string name="new_request_button_text">Create request</string>
+    <string name="load_image_text">Load your profile image</string>
+    <string name="skip_text">Skip</string>
+    <string name="next_text">Continue</string>
+    <string name="no_image_selected_text">No Image Selected</string>
 </resources>

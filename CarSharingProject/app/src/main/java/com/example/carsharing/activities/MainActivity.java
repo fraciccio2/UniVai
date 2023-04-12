@@ -2,7 +2,6 @@ package com.example.carsharing.activities;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -25,8 +24,6 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -94,22 +91,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void loadMap() {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            providerClient.getLastLocation().addOnSuccessListener(new OnSuccessListener<Location>() {
-                @Override
-                public void onSuccess(Location location) {
-                    if (location != null) {
-                        userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                        getRequest();
-                    }
+            providerClient.getLastLocation().addOnSuccessListener(location -> {
+                if (location != null) {
+                    userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
+                    getRequest();
                 }
             });
 
-            providerClient.getLastLocation().addOnFailureListener(new OnFailureListener() {
-                @Override
-                public void onFailure(@NonNull Exception e) {
-                    Log.e("Error", "exception", e);
-                }
-            });
+            providerClient.getLastLocation().addOnFailureListener(e -> Log.e("Error", "exception", e));
         } else {
             if (logUser != null) {
                 userLatLng = new LatLng(logUser.getAddress().getCoordinate().getLatitude(), logUser.getAddress().getCoordinate().getLongitude());

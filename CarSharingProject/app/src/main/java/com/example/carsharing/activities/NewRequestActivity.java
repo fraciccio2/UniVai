@@ -1,18 +1,15 @@
 package com.example.carsharing.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.DatePicker;
-import android.widget.TimePicker;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityNewRequestBinding;
@@ -52,7 +49,7 @@ public class NewRequestActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         binding = ActivityNewRequestBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(getString(R.string.new_request_title_text));
@@ -82,59 +79,42 @@ public class NewRequestActivity extends AppCompatActivity {
             });
         }
 
-        binding.newRequestAddressCheck.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(binding.newRequestAddressCheck.isChecked()){
-                    autocompleteFragment.setHint(logUser.getAddress().getLocation());
-                    address = logUser.getAddress();
-                } else {
-                    autocompleteFragment.setHint(getString(R.string.new_request_address_text));
-                    address = null;
-                }
+        binding.newRequestAddressCheck.setOnClickListener(view -> {
+            if(binding.newRequestAddressCheck.isChecked()){
+                autocompleteFragment.setHint(logUser.getAddress().getLocation());
+                address = logUser.getAddress();
+            } else {
+                autocompleteFragment.setHint(getString(R.string.new_request_address_text));
+                address = null;
             }
         });
 
-        binding.newRequestTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar calendar = Calendar.getInstance();
-                int year = calendar.get(Calendar.YEAR);
-                int month = calendar.get(Calendar.MONTH);
-                int day = calendar.get(Calendar.DAY_OF_MONTH);
-                int hour = calendar.get(Calendar.HOUR_OF_DAY);
-                int minute = calendar.get(Calendar.MINUTE);
-                DatePickerDialog mDatePicker;
-                mDatePicker = new DatePickerDialog(NewRequestActivity.this, new DatePickerDialog.OnDateSetListener() {
-                    @Override
-                    public void onDateSet(DatePicker datePicker, int selectedYear, int selectedMonth, int selectedDay) {
-                        TimePickerDialog mTimePicker;
-                        mTimePicker = new TimePickerDialog(NewRequestActivity.this, new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker timePicker, int selectedHour, int selectedMinute) {
-                                calendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-                                date = calendar.getTime().toString();
-                                SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.date_pattern));
-                                text = simpleDateFormat.format(calendar.getTime());
-                                binding.newRequestTime.setText(text);
-                            }
-                        }, hour, minute, true);
-                        mTimePicker.setTitle(getString(R.string.new_request_time_text));
-                        mTimePicker.show();
-                    }
-                }, year, month, day);
-                mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-                mDatePicker.setTitle(getString(R.string.new_request_time_text));
-                mDatePicker.show();
-            }
+        binding.newRequestTime.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            DatePickerDialog mDatePicker;
+            mDatePicker = new DatePickerDialog(NewRequestActivity.this, (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(NewRequestActivity.this, (timePicker, selectedHour, selectedMinute) -> {
+                    calendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+                    date = calendar.getTime().toString();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.date_pattern));
+                    text = simpleDateFormat.format(calendar.getTime());
+                    binding.newRequestTime.setText(text);
+                }, hour, minute, true);
+                mTimePicker.setTitle(getString(R.string.new_request_time_text));
+                mTimePicker.show();
+            }, year, month, day);
+            mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            mDatePicker.setTitle(getString(R.string.new_request_time_text));
+            mDatePicker.show();
         });
 
-        binding.newRequestButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                saveNewRequest(user);
-            }
-        });
+        binding.newRequestButton.setOnClickListener(view -> saveNewRequest(user));
     }
 
     private void saveNewRequest(FirebaseUser user) {

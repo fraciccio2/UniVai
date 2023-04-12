@@ -8,7 +8,17 @@ public class UserModel {
     private String surname;
     private AddressModel address;
     private String university;
+    private String userImage;
     private Boolean hasCar;
+
+    public UserModel(String name, String surname, AddressModel address, String university, String userImage, Boolean hasCar) {
+        this.name = name;
+        this.surname = surname;
+        this.address = address;
+        this.university = university;
+        this.userImage = userImage;
+        this.hasCar = hasCar;
+    }
 
     public UserModel(String name, String surname, AddressModel address, String university, Boolean hasCar) {
         this.name = name;
@@ -50,6 +60,14 @@ public class UserModel {
 
     public void setUniversity(String university) {
         this.university = university;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 
     public Boolean getHasCar() {

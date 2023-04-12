@@ -15,8 +15,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarSharing">
         <activity
-            android:name=".activities.RequestListActivity"
+            android:name=".activities.LoadImageActivity"
             android:exported="true" />
+        <activity
+            android:name=".activities.RequestListActivity"
+            android:exported="false" />
         <activity
             android:name=".activities.NewRequestActivity"
             android:exported="false" />

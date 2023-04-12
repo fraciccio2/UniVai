@@ -9,8 +9,9 @@ public class RequestWithUserModel {
     private Boolean active;
     private String name;
     private String surname;
+    private String userImage;
 
-    public RequestWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname) {
+    public RequestWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname, String userImage) {
         this.id = id;
         this.address = address;
         this.date = date;
@@ -18,6 +19,7 @@ public class RequestWithUserModel {
         this.active = active;
         this.name = name;
         this.surname = surname;
+        this.userImage = userImage;
     }
 
     public String getId() {
@@ -74,5 +76,13 @@ public class RequestWithUserModel {
 
     public void setSurname(String surname) {
         this.surname = surname;
+    }
+
+    public String getUserImage() {
+        return userImage;
+    }
+
+    public void setUserImage(String userImage) {
+        this.userImage = userImage;
     }
 }

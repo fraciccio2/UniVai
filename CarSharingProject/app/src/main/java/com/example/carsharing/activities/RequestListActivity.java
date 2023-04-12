@@ -70,9 +70,11 @@ public class RequestListActivity extends AppCompatActivity {
                                 if(snapshot.exists()) {
                                     String name = "";
                                     String surname = "";
+                                    String userImage = "";
                                     for (DataSnapshot datas: snapshot.getChildren()){
                                         name = datas.child("name").getValue(String.class);
                                         surname = datas.child("surname").getValue(String.class);
+                                        userImage = datas.child("userImage").getValue(String.class);
                                     }
                                     RequestWithUserModel requestUser = new RequestWithUserModel(
                                             data.getKey(),
@@ -81,7 +83,8 @@ public class RequestListActivity extends AppCompatActivity {
                                             request.getNote(),
                                             request.getActive(),
                                             name,
-                                            surname
+                                            surname,
+                                            userImage
                                     );
                                     requestUserList.add(requestUser);
                                 }

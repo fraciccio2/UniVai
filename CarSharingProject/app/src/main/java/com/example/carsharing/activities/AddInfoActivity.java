@@ -1,14 +1,13 @@
 package com.example.carsharing.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityAddInfoBinding;
@@ -49,7 +48,7 @@ public class AddInfoActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
 
-        adapterItems = new ArrayAdapter<String>(this, R.layout.list_item, items);
+        adapterItems = new ArrayAdapter<>(this, R.layout.list_item, items);
         binding.autoCompleteText.setAdapter(adapterItems);
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.start_address);
         if (autocompleteFragment != null) {
@@ -69,22 +68,19 @@ public class AddInfoActivity extends AppCompatActivity {
             });
         }
 
-        binding.startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                String name = binding.startName.getText().toString();
-                String surname = binding.startSurname.getText().toString();
-                String university = binding.autoCompleteText.getText().toString();
-                Boolean hasCar = binding.startCar.isChecked();
-                if (name.equals("") || surname.equals("") || university.equals("") || address.equals("")) {
-                    Toast.makeText(AddInfoActivity.this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (mAuth.getCurrentUser() != null) {
-                        UserModel user = new UserModel(name, surname, address, university, hasCar);
-                        mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).setValue(user);
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
-                    }
+        binding.startButton.setOnClickListener(view -> {
+            String name = binding.startName.getText().toString();
+            String surname = binding.startSurname.getText().toString();
+            String university = binding.autoCompleteText.getText().toString();
+            Boolean hasCar = binding.startCar.isChecked();
+            if (name.equals("") || surname.equals("") || university.equals("") || address.equals("")) {
+                Toast.makeText(AddInfoActivity.this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
+            } else {
+                if (mAuth.getCurrentUser() != null) {
+                    UserModel user = new UserModel(name, surname, address, university, hasCar);
+                    mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).setValue(user);
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    startActivity(intent);
                 }
             }
         });

@@ -1,5 +1,6 @@
 package com.example.carsharing.adapters;
 
+import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,17 +36,12 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         RequestWithUserModel requestUser = requestUserList.get(position);
-        //holder.avatarUser.setImageURI(); //TODO settare immagine
+        holder.avatarUser.setImageURI(Uri.parse(requestUser.getUserImage()));
         holder.requestNote.setText(requestUser.getNote());
         holder.requestDate.setText(formatter.format(new Date(requestUser.getDate())));
         holder.requestAddress.setText(requestUser.getAddress().getLocation());
         holder.nameUser.setText(requestUser.getName() + " "+requestUser.getSurname());
-        holder.card.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.i("Info", requestUser.getId());
-            }
-        });
+        holder.card.setOnClickListener(view -> Log.i("Info", requestUser.getId())); //TODO aprire fragment con più informazioni
     }
 
     @Override
