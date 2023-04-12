@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carsharing.R;
 import com.example.carsharing.holders.RequestViewHolder;
-import com.example.carsharing.models.RequestModel;
 import com.example.carsharing.models.RequestWithUserModel;
 
 import java.text.SimpleDateFormat;
@@ -17,7 +16,7 @@ import java.util.Date;
 import java.util.List;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
-    private List<RequestWithUserModel> requestUserList;
+    private final List<RequestWithUserModel> requestUserList;
 
     public RequestAdapter(List<RequestWithUserModel> requestList) {
         this.requestUserList = requestList;
@@ -38,7 +37,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
         holder.requestNote.setText(requestUser.getNote());
         holder.requestDate.setText(formatter.format(new Date(requestUser.getDate())));
         holder.requestAddress.setText(requestUser.getAddress().getLocation());
-        holder.nameUser.setText(requestUser.getName() + " "+requestUser.getSurname()); //TODO settare nome
+        holder.nameUser.setText(requestUser.getName() + " "+requestUser.getSurname());
     }
 
     @Override

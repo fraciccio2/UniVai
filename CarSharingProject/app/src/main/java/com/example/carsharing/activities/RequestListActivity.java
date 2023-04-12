@@ -8,9 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.carsharing.R;
 import com.example.carsharing.adapters.RequestAdapter;
 import com.example.carsharing.databinding.ActivityRequestListBinding;
-import com.example.carsharing.models.AddressModel;
 import com.example.carsharing.models.RequestModel;
 import com.example.carsharing.models.RequestWithUserModel;
 import com.example.carsharing.models.UserModel;
@@ -25,7 +25,6 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.StreamSupport;
 
 public class RequestListActivity extends AppCompatActivity {
 
@@ -46,6 +45,7 @@ public class RequestListActivity extends AppCompatActivity {
         mDatabaseRequests = FirebaseDatabase.getInstance().getReference("requests");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
         FirebaseUser user = mAuth.getCurrentUser();
+        binding.bottomNavigationView.setSelectedItemId(R.id.action_todo);
         if(user != null) {
             getLoggedUser(user);
         }
@@ -55,13 +55,13 @@ public class RequestListActivity extends AppCompatActivity {
     private void getRequests() {
         mDatabaseRequests.orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
+            public void onDataChange(@NonNull DataSnapshot snapshotData) {
                 List<RequestWithUserModel> requestUserList = new ArrayList<>();
-                if(snapshot.exists()) {
-                    for (DataSnapshot data: snapshot.getChildren()) {
+                if(snapshotData.exists()) {
+                    for (DataSnapshot ignored : snapshotData.getChildren()) {
                         i++;
                     }
-                    for (DataSnapshot data: snapshot.getChildren()){
+                    for (DataSnapshot data: snapshotData.getChildren()){
                         l++;
                         RequestModel request = data.getValue(RequestModel.class);
                         mDatabaseUsers.orderByKey().equalTo(data.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
