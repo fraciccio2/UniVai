@@ -16,18 +16,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarSharing">
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.LoadImageActivity"
             android:exported="false" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.RequestListActivity"
             android:exported="true" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.NewRequestActivity"
             android:exported="false" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.AddInfoActivity"
             android:exported="false" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.LoginActivity"
             android:exported="true">
             <intent-filter>
@@ -37,9 +42,11 @@
             </intent-filter>
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.SignupActivity"
             android:exported="false" />
         <activity
+            android:screenOrientation="portrait"
             android:name=".activities.MainActivity"
             android:exported="false" />
 
