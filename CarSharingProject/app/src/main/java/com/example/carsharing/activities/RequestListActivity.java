@@ -92,7 +92,7 @@ public class RequestListActivity extends AppCompatActivity {
                                     RecyclerView recyclerView = binding.recyclerView;
                                     LinearLayoutManager layoutManager = new LinearLayoutManager(RequestListActivity.this);
                                     recyclerView.setLayoutManager(layoutManager);
-                                    RequestAdapter adapter = new RequestAdapter(requestUserList);
+                                    RequestAdapter adapter = new RequestAdapter(requestUserList, getApplicationContext());
                                     recyclerView.setAdapter(adapter);
                                 }
                             }

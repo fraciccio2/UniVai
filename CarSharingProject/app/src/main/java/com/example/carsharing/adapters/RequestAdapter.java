@@ -1,15 +1,15 @@
 package com.example.carsharing.adapters;
 
-import android.net.Uri;
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
 import com.example.carsharing.R;
 import com.example.carsharing.holders.RequestViewHolder;
 import com.example.carsharing.models.RequestWithUserModel;
@@ -20,9 +20,11 @@ import java.util.List;
 
 public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
     private final List<RequestWithUserModel> requestUserList;
+    private final Context context;
 
-    public RequestAdapter(List<RequestWithUserModel> requestList) {
+    public RequestAdapter(List<RequestWithUserModel> requestList, Context context) {
         this.requestUserList = requestList;
+        this.context = context;
     }
 
     @NonNull
@@ -36,7 +38,7 @@ public class RequestAdapter extends RecyclerView.Adapter<RequestViewHolder> {
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
         RequestWithUserModel requestUser = requestUserList.get(position);
-        holder.avatarUser.setImageURI(Uri.parse(requestUser.getUserImage()));
+        Glide.with(context).load(requestUser.getUserImage()).into(holder.avatarUser);
         holder.requestNote.setText(requestUser.getNote());
         holder.requestDate.setText(formatter.format(new Date(requestUser.getDate())));
         holder.requestAddress.setText(requestUser.getAddress().getLocation());
