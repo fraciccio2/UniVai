@@ -1,10 +1,12 @@
 package com.example.carsharing.activities;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -30,6 +32,7 @@ public class LoadImageActivity extends AppCompatActivity {
     DatabaseReference mDatabase;
     private Uri imageUri;
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
+    final static String anonymousUser = "https://firebasestorage.googleapis.com/v0/b/car-sharing-b39c3.appspot.com/o/user-spy.png?alt=media&token=dece854f-d20a-4aed-98f9-4976fbdcb2fc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,8 +65,14 @@ public class LoadImageActivity extends AppCompatActivity {
         });
 
         binding.skipButton.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
+            FirebaseUser user = mAuth.getCurrentUser();
+            if(user != null) {
+                Map<String, Object> updateUser = new HashMap<>();
+                updateUser.put("userImage", anonymousUser);
+                mDatabase.child(user.getUid()).updateChildren(updateUser);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
         });
 
         binding.continueButton.setOnClickListener(view -> {
@@ -74,7 +83,7 @@ public class LoadImageActivity extends AppCompatActivity {
     }
 
     private void uploadToFirebase(Uri uri) {
-        final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "."); //TODO capire come salvare le foto nello storage, con quale nome
+        final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(uri));
         imageReference.putFile(uri).addOnSuccessListener(taskSnapshot -> imageReference.getDownloadUrl().addOnSuccessListener(uriDownloaded -> {
             FirebaseUser user = mAuth.getCurrentUser();
             if(user != null) {
@@ -85,5 +94,11 @@ public class LoadImageActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         }));
+    }
+
+    private String getFileExtension(Uri fileUri){
+        ContentResolver contentResolver = getContentResolver();
+        MimeTypeMap mime = MimeTypeMap.getSingleton();
+        return mime.getExtensionFromMimeType(contentResolver.getType(fileUri));
     }
 }
