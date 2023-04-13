@@ -3,6 +3,7 @@
     <string name="api_key" translatable="false">AIzaSyAQEzSH8uY_Rf8YtUrY1D2a3e4PmelhSgU</string>
     <string name="date_pattern" translatable="false">dd/MM/yyyy HH:mm</string>
     <string name="email_text" translatable="false">Email</string>
+    <string name="ops_text" translatable="false">Opss</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
     <string name="password_text" translatable="false">Password</string>
@@ -29,4 +30,6 @@
     <string name="skip_text">Salta</string>
     <string name="next_text">Prosegui</string>
     <string name="no_image_selected_text">Nessuna Immagine Selezionata</string>
+    <string name="neutral_button_text">Ho capito!</string>
+    <string name="warning_requests_text">Sembra che non c\'è nessuna richiesta nei dintorni. Prova a modificare i filtri.</string>
 </resources>

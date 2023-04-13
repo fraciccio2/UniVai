@@ -46,12 +46,9 @@ public class NavigationHelper {
     }
 
     public void floatButtonOnClick(FloatingActionButton floatingButton, Context context) {
-        floatingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, NewRequestActivity.class);
-                context.startActivity(intent);
-            }
+        floatingButton.setOnClickListener(view -> {
+            Intent intent = new Intent(context, NewRequestActivity.class);
+            context.startActivity(intent);
         });
     }
 }

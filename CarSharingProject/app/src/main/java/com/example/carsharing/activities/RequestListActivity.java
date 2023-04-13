@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 
@@ -49,6 +50,7 @@ public class RequestListActivity extends AppCompatActivity {
         if(user != null) {
             getLoggedUser(user);
         }
+        navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
         getRequests();
     }
 
@@ -56,15 +58,15 @@ public class RequestListActivity extends AppCompatActivity {
         mDatabaseRequests.orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshotData) {
-                List<RequestWithUserModel> requestUserList = new ArrayList<>();
                 if(snapshotData.exists()) {
+                    List<RequestWithUserModel> requestUserList = new ArrayList<>();
                     for (DataSnapshot ignored : snapshotData.getChildren()) {
                         i++;
                     }
                     for (DataSnapshot data: snapshotData.getChildren()){
                         l++;
                         RequestModel request = data.getValue(RequestModel.class);
-                        mDatabaseUsers.orderByKey().equalTo(data.getKey()).addListenerForSingleValueEvent(new ValueEventListener() {
+                        mDatabaseUsers.orderByKey().equalTo(request.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 if(snapshot.exists()) {
@@ -103,6 +105,12 @@ public class RequestListActivity extends AppCompatActivity {
                             }
                         });
                     }
+                } else {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
+                    builder.setTitle(getString(R.string.ops_text));
+                    builder.setMessage(getString(R.string.warning_requests_text));
+                    builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.cancel());
+                    builder.show();
                 }
             }
 

@@ -25,4 +25,6 @@
     <string name="skip_text">Skip</string>
     <string name="next_text">Continue</string>
     <string name="no_image_selected_text">No Image Selected</string>
+    <string name="neutral_button_text">I understand!</string>
+    <string name="warning_requests_text">There seems to be no requests around. Try changing the filters.</string>
 </resources>

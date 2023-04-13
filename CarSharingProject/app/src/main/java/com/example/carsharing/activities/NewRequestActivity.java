@@ -119,13 +119,11 @@ public class NewRequestActivity extends AppCompatActivity {
 
     private void saveNewRequest(FirebaseUser user) {
         String note = binding.newRequestNote.getText().toString();
-        if(address != null && date != null) {
-            RequestModel request = new RequestModel(address, date, note, true);
-            if(user != null) {
-                mDatabase.child("requests").child(user.getUid()).setValue(request);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
+        if(address != null && date != null && user != null) {
+            RequestModel request = new RequestModel(user.getUid(), address, date, note, true);
+            mDatabase.child("requests").push().setValue(request);
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         } else {
             Toast.makeText(this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
         }
