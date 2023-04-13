@@ -88,14 +88,20 @@ public class RequestListActivity extends AppCompatActivity {
                                             surname,
                                             userImage
                                     );
-                                    requestUserList.add(requestUser);
+                                    if(!request.getUserId().equals(mAuth.getCurrentUser().getUid())) {
+                                        requestUserList.add(requestUser);
+                                    }
                                 }
                                 if(i == l) {
-                                    RecyclerView recyclerView = binding.recyclerView;
-                                    LinearLayoutManager layoutManager = new LinearLayoutManager(RequestListActivity.this);
-                                    recyclerView.setLayoutManager(layoutManager);
-                                    RequestAdapter adapter = new RequestAdapter(requestUserList, getApplicationContext());
-                                    recyclerView.setAdapter(adapter);
+                                    if(requestUserList.size() > 0) {
+                                        RecyclerView recyclerView = binding.recyclerView;
+                                        LinearLayoutManager layoutManager = new LinearLayoutManager(RequestListActivity.this);
+                                        recyclerView.setLayoutManager(layoutManager);
+                                        RequestAdapter adapter = new RequestAdapter(requestUserList, getApplicationContext());
+                                        recyclerView.setAdapter(adapter);
+                                    } else {
+                                        warningRequestsAlert(); //TODO rivedere perché si apre 2 volte
+                                    }
                                 }
                             }
 
@@ -106,11 +112,7 @@ public class RequestListActivity extends AppCompatActivity {
                         });
                     }
                 } else {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(getApplicationContext());
-                    builder.setTitle(getString(R.string.ops_text));
-                    builder.setMessage(getString(R.string.warning_requests_text));
-                    builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.cancel());
-                    builder.show();
+                    warningRequestsAlert();
                 }
             }
 
@@ -137,5 +139,13 @@ public class RequestListActivity extends AppCompatActivity {
                 Log.e("Error", "exception", error.toException());
             }
         });
+    }
+
+    private void warningRequestsAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(RequestListActivity.this);
+        builder.setTitle(getString(R.string.ops_text));
+        builder.setMessage(getString(R.string.warning_requests_text));
+        builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 }
