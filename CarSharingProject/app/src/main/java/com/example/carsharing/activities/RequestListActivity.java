@@ -45,8 +45,8 @@ public class RequestListActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRequests = FirebaseDatabase.getInstance().getReference("requests");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        binding.bottomNavigationView.setSelectedItemId(R.id.action_requests);
         FirebaseUser user = mAuth.getCurrentUser();
-        binding.bottomNavigationView.setSelectedItemId(R.id.action_todo);
         if(user != null) {
             getLoggedUser(user);
         }

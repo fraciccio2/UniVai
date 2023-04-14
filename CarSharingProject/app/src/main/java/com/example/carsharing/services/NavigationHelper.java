@@ -15,7 +15,6 @@ import com.example.carsharing.models.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationBarView;
-import com.google.firebase.auth.FirebaseUser;
 
 public class NavigationHelper {
 
@@ -28,7 +27,7 @@ public class NavigationHelper {
                     case R.id.action_map:
                         context.startActivity(new Intent(context, MainActivity.class));
                         break;
-                    case R.id.action_todo:
+                    case R.id.action_requests:
                         context.startActivity(new Intent(context, RequestListActivity.class));
                         break;
                 }

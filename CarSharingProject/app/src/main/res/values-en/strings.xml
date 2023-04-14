@@ -27,4 +27,6 @@
     <string name="no_image_selected_text">No Image Selected</string>
     <string name="neutral_button_text">I understand!</string>
     <string name="warning_requests_text">There seems to be no requests around. Try changing the filters.</string>
+    <string name="italian_text">Italian</string>
+    <string name="english_text">English</string>
 </resources>

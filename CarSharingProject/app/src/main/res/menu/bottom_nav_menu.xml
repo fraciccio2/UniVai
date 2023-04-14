@@ -3,7 +3,7 @@
         <item android:id="@+id/action_map"
             android:title="@string/map_text"
             android:icon="@drawable/ic_baseline_map_24" />
-        <item android:id="@+id/action_todo"
+        <item android:id="@+id/action_requests"
             android:title="@string/request_text"
             android:icon="@drawable/ic_baseline_directions_car_24" />
         <item

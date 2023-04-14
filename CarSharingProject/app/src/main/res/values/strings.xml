@@ -32,4 +32,6 @@
     <string name="no_image_selected_text">Nessuna Immagine Selezionata</string>
     <string name="neutral_button_text">Ho capito!</string>
     <string name="warning_requests_text">Sembra che non c\'è nessuna richiesta nei dintorni. Prova a modificare i filtri.</string>
+    <string name="italian_text">Italiano</string>
+    <string name="english_text">Inglese</string>
 </resources>
