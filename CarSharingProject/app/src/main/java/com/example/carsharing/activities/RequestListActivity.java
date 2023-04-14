@@ -64,11 +64,11 @@ public class RequestListActivity extends AppCompatActivity {
                         i++;
                     }
                     for (DataSnapshot data: snapshotData.getChildren()){
-                        l++;
                         RequestModel request = data.getValue(RequestModel.class);
                         mDatabaseUsers.orderByKey().equalTo(request.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                l++;
                                 if(snapshot.exists()) {
                                     String name = "";
                                     String surname = "";
@@ -100,7 +100,7 @@ public class RequestListActivity extends AppCompatActivity {
                                         RequestAdapter adapter = new RequestAdapter(requestUserList, getApplicationContext());
                                         recyclerView.setAdapter(adapter);
                                     } else {
-                                        warningRequestsAlert(); //TODO rivedere perché si apre 2 volte
+                                        warningRequestsAlert();
                                     }
                                 }
                             }
