@@ -40,7 +40,7 @@
             android:paddingHorizontal="8dp"
             android:drawableStart="@drawable/ic_baseline_cloud_upload_24"
             android:drawablePadding="5dp"
-            android:text="Modifica la tua immagine profilo"
+            android:text="Modifica immagine profilo"
             android:textColor="@color/black"
             android:textSize="24sp" />
         <com.google.android.material.switchmaterial.SwitchMaterial
@@ -51,22 +51,22 @@
             android:drawableStart="@drawable/ic_baseline_dark_mode_24"
             android:drawablePadding="5dp"
             android:text="Dark Mode"
-            android:textOff="No"
-            android:textOn="Si"
             android:textColor="@color/black"
             android:textSize="24sp" />
         <Spinner
             android:id="@+id/spinner_language"
             android:layout_width="match_parent"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"
+            tools:ignore="SpeakableTextPresentCheck" />
         <TextView
+            android:id="@+id/logout_action"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center|start"
             android:paddingHorizontal="8dp"
             android:drawableStart="@drawable/ic_baseline_logout_24"
             android:drawablePadding="5dp"
-            android:text="LogOut"
+            android:text="@string/logout_text"
             android:textColor="@color/black"
             android:textSize="24sp" />
     </LinearLayout>

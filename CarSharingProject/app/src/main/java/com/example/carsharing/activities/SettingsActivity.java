@@ -4,11 +4,17 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.content.Intent;
+import android.database.DataSetObserver;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.SpinnerAdapter;
 
 import com.example.carsharing.R;
+import com.example.carsharing.adapters.LanguageSpinnerAdapter;
 import com.example.carsharing.databinding.ActivitySettingsBinding;
 import com.example.carsharing.models.UserModel;
 import com.example.carsharing.services.NavigationHelper;
@@ -47,12 +53,9 @@ public class SettingsActivity extends AppCompatActivity {
         if (user != null) {
             getLoggedUser(user);
         }
-        List<CharSequence> languages = new ArrayList<>();
-        languages.add(getString(R.string.italian_text));
-        languages.add(getString(R.string.english_text));
-        ArrayAdapter<CharSequence> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,languages);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        binding.spinnerLanguage.setAdapter(adapter);
+
+        populateLanguageSpinner();
+        logOutAction();
     }
 
     private void getLoggedUser(FirebaseUser user) {
@@ -71,5 +74,23 @@ public class SettingsActivity extends AppCompatActivity {
                 Log.e("Error", "exception", error.toException());
             }
         });
+    }
+
+    private void logOutAction () {
+        binding.logoutAction.setOnClickListener(view -> {
+            mAuth.signOut();
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
+        });
+    }
+
+    private void populateLanguageSpinner () {
+        List<String> languages = new ArrayList<>();
+        languages.add(getString(R.string.italian_text));
+        languages.add(getString(R.string.english_text));
+        LanguageSpinnerAdapter adapter = new LanguageSpinnerAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, languages);
+        adapter.setDropDownViewResource(R.layout.language_dropdown_item);
+        binding.spinnerLanguage.setAdapter(adapter);
     }
 }

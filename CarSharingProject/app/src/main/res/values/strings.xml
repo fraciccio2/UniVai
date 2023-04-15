@@ -4,6 +4,7 @@
     <string name="date_pattern" translatable="false">dd/MM/yyyy HH:mm</string>
     <string name="email_text" translatable="false">Email</string>
     <string name="ops_text" translatable="false">Opss</string>
+    <string name="logout_text" translatable="false">LogOut</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
     <string name="password_text" translatable="false">Password</string>
