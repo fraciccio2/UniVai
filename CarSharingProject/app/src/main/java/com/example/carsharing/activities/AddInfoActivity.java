@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityAddInfoBinding;
@@ -20,10 +21,15 @@ import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
 import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AddInfoActivity extends AppCompatActivity {
 
@@ -38,6 +44,8 @@ public class AddInfoActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     AddressModel address;
+    boolean editMode = false;
+    UserModel logUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +55,10 @@ public class AddInfoActivity extends AppCompatActivity {
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
+
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle(getString(R.string.start_text));
 
         adapterItems = new ArrayAdapter<>(this, R.layout.list_item, items);
         binding.autoCompleteText.setAdapter(adapterItems);
@@ -68,21 +80,80 @@ public class AddInfoActivity extends AppCompatActivity {
             });
         }
 
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            editMode(extras, autocompleteFragment);
+        }
+
+        addDataToUserAction();
+    }
+
+    private void addDataToUserAction() {
         binding.startButton.setOnClickListener(view -> {
-            String name = binding.startName.getText().toString();
-            String surname = binding.startSurname.getText().toString();
-            String university = binding.autoCompleteText.getText().toString();
-            Boolean hasCar = binding.startCar.isChecked();
-            if (name.equals("") || surname.equals("") || university.equals("") || address.equals("")) {
-                Toast.makeText(AddInfoActivity.this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
-            } else {
-                if (mAuth.getCurrentUser() != null) {
-                    UserModel user = new UserModel(name, surname, address, university, hasCar);
-                    mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).setValue(user);
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
+            if(!editMode) {
+                String name = binding.startName.getText().toString();
+                String surname = binding.startSurname.getText().toString();
+                String university = binding.autoCompleteText.getText().toString();
+                Boolean hasCar = binding.startCar.isChecked();
+                if (name.equals("") || surname.equals("") || university.equals("") || address.equals("")) {
+                    Toast.makeText(AddInfoActivity.this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (mAuth.getCurrentUser() != null) {
+                        UserModel user = new UserModel(name, surname, address, university, hasCar);
+                        mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).setValue(user);
+                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        startActivity(intent);
+                    }
                 }
+            } else {
+                Map<String, Object> updateUser = new HashMap<>();
+                if (logUser.getHasCar() != binding.startCar.isChecked()) {
+                    updateUser.put("hasCar", binding.startCar.isChecked());
+                }
+                if(address != null && !(logUser.getAddress().getLocation().equals(address.getLocation()))) {
+                    updateUser.put("address", address);
+                }
+                if(!(logUser.getName().equals(binding.startName.getText().toString()))) {
+                    updateUser.put("name", binding.startName.getText().toString());
+                }
+                if(!(logUser.getSurname().equals(binding.startSurname.getText().toString()))) {
+                    updateUser.put("surname", binding.startSurname.getText().toString());
+                }
+                if(!(logUser.getUniversity().equals(binding.autoCompleteText.getText().toString()))) {
+                    updateUser.put("university", binding.autoCompleteText.getText().toString());
+                }
+                mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).updateChildren(updateUser);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
             }
         });
+    }
+
+    private void editMode (Bundle extras, AutocompleteSupportFragment autocompleteFragment) {
+        boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
+        if(editMode) {
+            this.editMode = true;
+            binding.startButton.setText(getString(R.string.edit_button_text));
+            getSupportActionBar().setTitle(getString(R.string.edit_button_text));
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()) {
+                        logUser = snapshot.getValue(UserModel.class);
+                        binding.startName.setText(logUser.getName());
+                        binding.startSurname.setText(logUser.getSurname());
+                        autocompleteFragment.setText(logUser.getAddress().getLocation());
+                        binding.autoCompleteText.setText(logUser.getUniversity());
+                        binding.startCar.setChecked(logUser.getHasCar());
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("Error", "exception", error.toException());
+                }
+            });
+        }
     }
 }

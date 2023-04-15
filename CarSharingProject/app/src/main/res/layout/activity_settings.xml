@@ -23,13 +23,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/edit_data_action"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center|start"
             android:paddingHorizontal="8dp"
             android:drawableStart="@drawable/ic_baseline_person_24"
             android:drawablePadding="5dp"
-            android:text="Modifica i tuoi dati utenti"
+            android:text="@string/edit_user_data_text"
             android:textColor="@color/black"
             android:textSize="24sp" />
 

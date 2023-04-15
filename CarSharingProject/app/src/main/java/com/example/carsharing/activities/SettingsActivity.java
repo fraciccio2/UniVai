@@ -42,9 +42,11 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.bottomNavigationView.setSelectedItemId(R.id.action_settings);
+
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(getString(R.string.settings_text));
+
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
         navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
@@ -56,6 +58,7 @@ public class SettingsActivity extends AppCompatActivity {
         populateLanguageSpinner();
         logOutAction();
         changeUserImageAction();
+        editUserDataAction();
     }
 
     private void getLoggedUser(FirebaseUser user) {
@@ -127,6 +130,14 @@ public class SettingsActivity extends AppCompatActivity {
     private void changeUserImageAction() {
         binding.changeImageAction.setOnClickListener(view -> {
             Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
+            intent.putExtra(getString(R.string.edit_mode_text), true);
+            startActivity(intent);
+        });
+    }
+
+    private void editUserDataAction() {
+        binding.editDataAction.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), AddInfoActivity.class);
             intent.putExtra(getString(R.string.edit_mode_text), true);
             startActivity(intent);
         });

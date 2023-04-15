@@ -14,6 +14,7 @@
     <string name="car_checkbox_text">Have a car?</string>
     <string name="select_uni_text">Select your department</string>
     <string name="start_button_text">Add data</string>
+    <string name="edit_button_text">Edit data</string>
     <string name="search_text">Search address</string>
     <string name="new_request_title_text">Create a new request</string>
     <string name="new_request_address_text">Enter your starting address</string>
@@ -30,4 +31,5 @@
     <string name="italian_text">Italian</string>
     <string name="english_text">English</string>
     <string name="change_user_image_text">Change profile image</string>
+    <string name="edit_user_data_text">Modify user data</string>
 </resources>
