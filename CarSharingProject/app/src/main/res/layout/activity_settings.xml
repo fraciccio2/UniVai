@@ -34,13 +34,14 @@
             android:textSize="24sp" />
 
         <TextView
+            android:id="@+id/change_image_action"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:gravity="center|start"
             android:paddingHorizontal="8dp"
             android:drawableStart="@drawable/ic_baseline_cloud_upload_24"
             android:drawablePadding="5dp"
-            android:text="Modifica immagine profilo"
+            android:text="@string/change_user_image_text"
             android:textColor="@color/black"
             android:textSize="24sp" />
         <com.google.android.material.switchmaterial.SwitchMaterial

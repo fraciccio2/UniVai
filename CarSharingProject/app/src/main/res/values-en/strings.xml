@@ -29,4 +29,5 @@
     <string name="warning_requests_text">There seems to be no requests around. Try changing the filters.</string>
     <string name="italian_text">Italian</string>
     <string name="english_text">English</string>
+    <string name="change_user_image_text">Change profile image</string>
 </resources>

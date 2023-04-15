@@ -5,13 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
-import android.database.DataSetObserver;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.SpinnerAdapter;
+import android.widget.AdapterView;
 
 import com.example.carsharing.R;
 import com.example.carsharing.adapters.LanguageSpinnerAdapter;
@@ -28,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -56,6 +55,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         populateLanguageSpinner();
         logOutAction();
+        changeUserImageAction();
     }
 
     private void getLoggedUser(FirebaseUser user) {
@@ -92,5 +92,43 @@ public class SettingsActivity extends AppCompatActivity {
         LanguageSpinnerAdapter adapter = new LanguageSpinnerAdapter(getApplicationContext(), android.R.layout.simple_spinner_item, languages);
         adapter.setDropDownViewResource(R.layout.language_dropdown_item);
         binding.spinnerLanguage.setAdapter(adapter);
+        String language = Locale.getDefault().getLanguage();
+        if(language.equals("en")) {
+            binding.spinnerLanguage.setSelection(1);
+        }
+        changeLanguage();
+    }
+
+    private void changeLanguage() {
+        binding.spinnerLanguage.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                Locale locale;
+                if(i == 0) {
+                    locale = new Locale("it");
+                } else {
+                    locale = new Locale("en");
+                }
+                if(!(Locale.getDefault().getLanguage().equals(locale.getLanguage()))){
+                    Locale.setDefault(locale);
+                    Configuration config = new Configuration();
+                    getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+                    recreate();
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Log.i("Info", "Nothing");
+            }
+        });
+    }
+
+    private void changeUserImageAction() {
+        binding.changeImageAction.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
+            intent.putExtra(getString(R.string.edit_mode_text), true);
+            startActivity(intent);
+        });
     }
 }

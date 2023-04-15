@@ -9,14 +9,15 @@
     android:orientation="vertical"
     tools:context=".activities.LoadImageActivity">
 
-    <TextView
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/load_image_text"
-        android:textColor="@color/white"
-        android:padding="8dp"
-        android:textSize="24sp"
-        android:gravity="center"/>
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <androidx.cardview.widget.CardView
         android:layout_marginTop="25dp"
@@ -62,6 +63,7 @@
             android:layout_height="48dp"
             android:backgroundTint="@color/main_color"
             android:text="@string/next_text"
+            android:enabled="false"
             android:visibility="invisible"
             app:cornerRadius="30dp"/>
     </LinearLayout>

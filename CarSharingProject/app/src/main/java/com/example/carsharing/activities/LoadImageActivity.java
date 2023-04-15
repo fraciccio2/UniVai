@@ -5,20 +5,28 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
+import com.bumptech.glide.Glide;
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityLoadImageBinding;
+import com.example.carsharing.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 
@@ -40,8 +48,17 @@ public class LoadImageActivity extends AppCompatActivity {
         binding = ActivityLoadImageBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle(getString(R.string.load_image_text));
+
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            editMode(extras);
+        }
 
         ActivityResultLauncher<Intent> activityResultLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
@@ -51,6 +68,7 @@ public class LoadImageActivity extends AppCompatActivity {
                         imageUri = data.getData();
                         binding.uploadImage.setImageURI(imageUri);
                         binding.continueButton.setVisibility(View.VISIBLE);
+                        binding.continueButton.setEnabled(true);
                     } else {
                         Toast.makeText(LoadImageActivity.this, getString(R.string.no_image_selected_text), Toast.LENGTH_SHORT).show();
                     }
@@ -100,5 +118,28 @@ public class LoadImageActivity extends AppCompatActivity {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(fileUri));
+    }
+
+    private void editMode (Bundle extras) {
+        boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
+        if(editMode) {
+            binding.skipButton.setVisibility(View.INVISIBLE);
+            binding.skipButton.setEnabled(false);
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+            mDatabase.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists()) {
+                        UserModel user = snapshot.getValue(UserModel.class);
+                        Glide.with(getApplicationContext()).load(user.getUserImage()).into(binding.uploadImage);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+                    Log.e("Error", "exception", error.toException());
+                }
+            });
+        }
     }
 }
