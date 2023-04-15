@@ -11,7 +11,7 @@ import androidx.fragment.app.FragmentActivity;
 
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityMainBinding;
-import com.example.carsharing.models.RequestModel;
+import com.example.carsharing.models.RideModel;
 import com.example.carsharing.models.UserModel;
 import com.example.carsharing.services.NavigationHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -45,7 +45,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     DatabaseReference mDatabase;
     LatLng userLatLng;
     double radius = 1000;
-    List<RequestModel> requestList = new ArrayList<>();
+    List<RideModel> ridesList = new ArrayList<>();
     UserModel logUser;
     NavigationHelper navigationHelper = new NavigationHelper();
 
@@ -94,7 +94,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             providerClient.getLastLocation().addOnSuccessListener(location -> {
                 if (location != null) {
                     userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
-                    getRequest();
+                    getRides();
                 }
             });
 
@@ -105,15 +105,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             } else {
                 userLatLng = new LatLng(41.90370, 12.49524);
             }
-            getRequest();
+            getRides();
         }
     }
 
     private void setMap(double lat, double lon) {
         LatLng mapItaly = new LatLng(lat, lon);
         gMap.addMarker(new MarkerOptions().position(mapItaly));
-        for (RequestModel request : requestList) {
-            gMap.addMarker(new MarkerOptions().position(new LatLng(request.getAddress().getCoordinate().getLatitude(), request.getAddress().getCoordinate().getLongitude())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+        for (RideModel ride : ridesList) {
+            gMap.addMarker(new MarkerOptions().position(new LatLng(ride.getAddress().getCoordinate().getLatitude(), ride.getAddress().getCoordinate().getLongitude())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
         }
         gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
         gMap.setMinZoomPreference(5);
@@ -131,15 +131,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         return earthRadius * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
     }
 
-    private void getRequest() {
-        FirebaseDatabase.getInstance().getReference("requests").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
+    private void getRides() {
+        FirebaseDatabase.getInstance().getReference("rides").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     for (DataSnapshot data : snapshot.getChildren()) {
-                        RequestModel requestModel = data.getValue(RequestModel.class);
-                        if (distanceBetweenLatLong(requestModel.getAddress().getCoordinate().getLatitude(), requestModel.getAddress().getCoordinate().getLongitude(), userLatLng.latitude, userLatLng.longitude) < radius) {
-                            requestList.add(requestModel);
+                        RideModel rideModel = data.getValue(RideModel.class);
+                        if (distanceBetweenLatLong(rideModel.getAddress().getCoordinate().getLatitude(), rideModel.getAddress().getCoordinate().getLongitude(), userLatLng.latitude, userLatLng.longitude) < radius) {
+                            ridesList.add(rideModel);
                         }
                     }
                     setMap(userLatLng.latitude, userLatLng.longitude);

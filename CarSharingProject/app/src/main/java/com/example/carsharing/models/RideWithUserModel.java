@@ -1,6 +1,6 @@
 package com.example.carsharing.models;
 
-public class RequestWithUserModel {
+public class RideWithUserModel {
 
     private String id;
     private AddressModel address;
@@ -11,7 +11,7 @@ public class RequestWithUserModel {
     private String surname;
     private String userImage;
 
-    public RequestWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname, String userImage) {
+    public RideWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname, String userImage) {
         this.id = id;
         this.address = address;
         this.date = date;

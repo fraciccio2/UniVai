@@ -13,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import com.example.carsharing.R;
-import com.example.carsharing.databinding.ActivityNewRequestBinding;
+import com.example.carsharing.databinding.ActivityNewRideBinding;
 import com.example.carsharing.models.AddressModel;
 import com.example.carsharing.models.LatLonModel;
-import com.example.carsharing.models.RequestModel;
+import com.example.carsharing.models.RideModel;
 import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
@@ -35,9 +35,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 
-public class NewRequestActivity extends AppCompatActivity {
+public class NewRideActivity extends AppCompatActivity {
 
-    ActivityNewRequestBinding binding;
+    ActivityNewRideBinding binding;
     AddressModel address;
     String text;
     String date;
@@ -48,12 +48,12 @@ public class NewRequestActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        binding = ActivityNewRequestBinding.inflate(getLayoutInflater());
+        binding = ActivityNewRideBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(getString(R.string.new_request_title_text));
+        getSupportActionBar().setTitle(getString(R.string.new_ride_title_text));
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
         FirebaseUser user = mAuth.getCurrentUser();
@@ -62,10 +62,10 @@ public class NewRequestActivity extends AppCompatActivity {
         }
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
 
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.new_request_address);
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.new_ride_address);
         if (autocompleteFragment != null) {
             autocompleteFragment.setCountry("it");
-            autocompleteFragment.setHint(getString(R.string.new_request_address_text));
+            autocompleteFragment.setHint(getString(R.string.new_ride_address_text));
             autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override
@@ -80,17 +80,17 @@ public class NewRequestActivity extends AppCompatActivity {
             });
         }
 
-        binding.newRequestAddressCheck.setOnClickListener(view -> {
-            if(binding.newRequestAddressCheck.isChecked()){
+        binding.newRideAddressCheck.setOnClickListener(view -> {
+            if(binding.newRideAddressCheck.isChecked()){
                 autocompleteFragment.setHint(logUser.getAddress().getLocation());
                 address = logUser.getAddress();
             } else {
-                autocompleteFragment.setHint(getString(R.string.new_request_address_text));
+                autocompleteFragment.setHint(getString(R.string.new_ride_address_text));
                 address = null;
             }
         });
 
-        binding.newRequestTime.setOnClickListener(view -> {
+        binding.newRideTime.setOnClickListener(view -> {
             Calendar calendar = Calendar.getInstance();
             int year = calendar.get(Calendar.YEAR);
             int month = calendar.get(Calendar.MONTH);
@@ -98,31 +98,31 @@ public class NewRequestActivity extends AppCompatActivity {
             int hour = calendar.get(Calendar.HOUR_OF_DAY);
             int minute = calendar.get(Calendar.MINUTE);
             DatePickerDialog mDatePicker;
-            mDatePicker = new DatePickerDialog(NewRequestActivity.this, (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+            mDatePicker = new DatePickerDialog(NewRideActivity.this, (datePicker, selectedYear, selectedMonth, selectedDay) -> {
                 TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(NewRequestActivity.this, (timePicker, selectedHour, selectedMinute) -> {
+                mTimePicker = new TimePickerDialog(NewRideActivity.this, (timePicker, selectedHour, selectedMinute) -> {
                     calendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
                     date = calendar.getTime().toString();
                     SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.date_pattern));
                     text = simpleDateFormat.format(calendar.getTime());
-                    binding.newRequestTime.setText(text);
+                    binding.newRideTime.setText(text);
                 }, hour, minute, true);
-                mTimePicker.setTitle(getString(R.string.new_request_time_text));
+                mTimePicker.setTitle(getString(R.string.new_ride_time_text));
                 mTimePicker.show();
             }, year, month, day);
             mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-            mDatePicker.setTitle(getString(R.string.new_request_time_text));
+            mDatePicker.setTitle(getString(R.string.new_ride_time_text));
             mDatePicker.show();
         });
 
-        binding.newRequestButton.setOnClickListener(view -> saveNewRequest(user));
+        binding.newRideButton.setOnClickListener(view -> saveNewRide(user));
     }
 
-    private void saveNewRequest(FirebaseUser user) {
-        String note = binding.newRequestNote.getText().toString();
+    private void saveNewRide(FirebaseUser user) {
+        String note = binding.newRideNote.getText().toString();
         if(address != null && date != null && user != null) {
-            RequestModel request = new RequestModel(user.getUid(), address, date, note, true);
-            mDatabase.child("requests").push().setValue(request);
+            RideModel ride = new RideModel(user.getUid(), address, date, note, true);
+            mDatabase.child("rides").push().setValue(ride);
             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
             startActivity(intent);
         } else {

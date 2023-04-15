@@ -66,7 +66,7 @@ public class AddInfoActivity extends AppCompatActivity {
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.start_address);
         if (autocompleteFragment != null) {
             autocompleteFragment.setCountry("it");
-            autocompleteFragment.setHint(getString(R.string.search_text));
+            autocompleteFragment.setHint(getString(R.string.search_address_text));
             autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
             autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
                 @Override

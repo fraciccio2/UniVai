@@ -1,7 +1,5 @@
 package com.example.carsharing.models;
 
-import java.util.HashMap;
-
 public class UserModel {
 
     private String name;

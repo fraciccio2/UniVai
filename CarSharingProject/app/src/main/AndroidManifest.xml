@@ -23,11 +23,11 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.RequestListActivity"
+            android:name=".activities.RidesListActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".activities.NewRequestActivity"
+            android:name=".activities.NewRideActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity

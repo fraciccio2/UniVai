@@ -3,9 +3,9 @@
         <item android:id="@+id/action_map"
             android:title="@string/map_text"
             android:icon="@drawable/ic_baseline_map_24" />
-        <item android:id="@+id/action_requests"
-            android:title="@string/request_text"
-            android:icon="@drawable/ic_baseline_directions_car_24" />
+        <item android:id="@+id/action_search"
+            android:title="@string/search_text"
+            android:icon="@drawable/ic_baseline_search_24" />
         <item
             android:id="@+id/action_disabled"
             android:title=""
