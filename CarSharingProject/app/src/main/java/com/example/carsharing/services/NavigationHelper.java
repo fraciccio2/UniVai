@@ -11,6 +11,7 @@ import com.example.carsharing.R;
 import com.example.carsharing.activities.MainActivity;
 import com.example.carsharing.activities.NewRequestActivity;
 import com.example.carsharing.activities.RequestListActivity;
+import com.example.carsharing.activities.SettingsActivity;
 import com.example.carsharing.models.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -25,11 +26,13 @@ public class NavigationHelper {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.action_map:
-                        context.startActivity(new Intent(context, MainActivity.class));
+                        context.startActivity(new Intent(context, MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                         break;
                     case R.id.action_requests:
-                        context.startActivity(new Intent(context, RequestListActivity.class));
+                        context.startActivity(new Intent(context, RequestListActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                         break;
+                    case R.id.action_settings:
+                        context.startActivity(new Intent(context, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
                 }
                 return false;
             }
@@ -46,7 +49,7 @@ public class NavigationHelper {
 
     public void floatButtonOnClick(FloatingActionButton floatingButton, Context context) {
         floatingButton.setOnClickListener(view -> {
-            Intent intent = new Intent(context, NewRequestActivity.class);
+            Intent intent = new Intent(context, NewRequestActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
     }
