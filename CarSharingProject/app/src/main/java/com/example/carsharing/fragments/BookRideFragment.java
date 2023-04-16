@@ -11,16 +11,24 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.carsharing.R;
 import com.example.carsharing.activities.MainActivity;
+import com.example.carsharing.activities.RidesListActivity;
 import com.example.carsharing.databinding.FragmentBookRideBinding;
 import com.example.carsharing.enums.StatusEnum;
 import com.example.carsharing.models.AddressModel;
+import com.example.carsharing.models.LatLonModel;
 import com.example.carsharing.models.RequestRideModel;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -30,6 +38,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 
 public class BookRideFragment extends Fragment {
@@ -39,6 +48,7 @@ public class BookRideFragment extends Fragment {
     DatabaseReference mDatabaseRides;
     String rideId;
     String userId;
+    String location;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
@@ -47,6 +57,25 @@ public class BookRideFragment extends Fragment {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRides = FirebaseDatabase.getInstance().getReference("rides");
+
+        Places.initialize(getActivity(), getString(R.string.api_key));
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.other_location);
+        if (autocompleteFragment != null) {
+            autocompleteFragment.setCountry("it");
+            autocompleteFragment.setHint(getString(R.string.search_address_text));
+            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
+            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
+                @Override
+                public void onError(@NonNull Status status) {
+                    Log.i("ERROR", "An error occurred: " + status);
+                }
+
+                @Override
+                public void onPlaceSelected(@NonNull Place place) {
+                    location = place.getAddress();
+                }
+            });
+        }
 
         Bundle bundle = getArguments();
         if(bundle != null) {
@@ -58,6 +87,8 @@ public class BookRideFragment extends Fragment {
         }
 
         saveRequestForRide();
+        someLocationButton();
+        otherLocationButton();
 
         return binding.getRoot();
     }
@@ -90,18 +121,47 @@ public class BookRideFragment extends Fragment {
         binding.bookButton.setOnClickListener(view -> {
             FirebaseUser user = mAuth.getCurrentUser();
             if(user != null) {
-                RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId);
-                FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(new OnCompleteListener<Void>() {
-                    @Override
-                    public void onComplete(@NonNull Task<Void> task) {
+                if(binding.otherLocationButton.isChecked()) {
+                    if(location != null) {
+                        RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location);
+                        FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
+                            if(task.isSuccessful()) {
+                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getActivity(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    } else {
+                        Toast.makeText(getActivity(), "Inserisci l'indirizo in cui ti farai trovare", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId);
+                    FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
                             Intent intent = new Intent(getActivity(), MainActivity.class);
                             startActivity(intent);
                         } else {
                             Toast.makeText(getActivity(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
                         }
-                    }
-                });
+                    });
+                }
+            }
+        });
+    }
+
+    private void someLocationButton() {
+        binding.someLocationButton.setOnClickListener(view ->{
+            if(binding.someLocationButton.isChecked()) {
+                binding.autocompleteCard.setVisibility(View.INVISIBLE);
+            }
+        });
+    }
+
+    private void otherLocationButton() {
+        binding.otherLocationButton.setOnClickListener(view ->{
+            if(binding.otherLocationButton.isChecked()) {
+                binding.autocompleteCard.setVisibility(View.VISIBLE);
             }
         });
     }
