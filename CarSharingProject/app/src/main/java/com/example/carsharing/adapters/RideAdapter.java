@@ -1,19 +1,17 @@
 package com.example.carsharing.adapters;
 
 import android.content.Context;
-import android.os.Bundle;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.example.carsharing.R;
-import com.example.carsharing.activities.RidesListActivity;
-import com.example.carsharing.fragments.BookRideFragment;
+import com.example.carsharing.activities.BookRideActivity;
 import com.example.carsharing.holders.RideViewHolder;
 import com.example.carsharing.models.RideWithUserModel;
 
@@ -47,18 +45,11 @@ public class RideAdapter extends RecyclerView.Adapter<RideViewHolder> {
         holder.rideAddress.setText(rideUser.getAddress().getLocation());
         holder.nameUser.setText(rideUser.getName() + " "+rideUser.getSurname());
         holder.card.setOnClickListener(view -> {
-            Bundle bundle = new Bundle();
-            bundle.putString(context.getString(R.string.ride_id_text), rideUser.getId());
-            bundle.putString(context.getString(R.string.user_name_text), rideUser.getName() + " "+rideUser.getSurname());
-            bundle.putString(context.getString(R.string.user_id_text), rideUser.getUserId());
-            BookRideFragment fragment = new BookRideFragment();
-            fragment.setArguments(bundle);
-            RidesListActivity activity = (RidesListActivity) view.getContext();
-            RecyclerView recyclerView = activity.findViewById(R.id.recycler_view);
-            recyclerView.setVisibility(View.GONE);
-            FragmentTransaction transaction = activity.getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.book_ride, fragment);
-            transaction.commit();
+            Intent intent = new Intent(context.getApplicationContext(), BookRideActivity.class);
+            intent.putExtra(context.getString(R.string.ride_id_text), rideUser.getId());
+            intent.putExtra(context.getString(R.string.user_name_text), rideUser.getName() + " "+rideUser.getSurname());
+            intent.putExtra(context.getString(R.string.user_id_text), rideUser.getUserId());
+            context.startActivity(intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         });
     }
 

@@ -1,30 +1,22 @@
-package com.example.carsharing.fragments;
+package com.example.carsharing.activities;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
 import android.util.Log;
-import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.carsharing.R;
-import com.example.carsharing.activities.MainActivity;
-import com.example.carsharing.activities.RidesListActivity;
-import com.example.carsharing.databinding.FragmentBookRideBinding;
+import com.example.carsharing.databinding.ActivityBookRideBinding;
 import com.example.carsharing.enums.StatusEnum;
 import com.example.carsharing.models.AddressModel;
-import com.example.carsharing.models.LatLonModel;
 import com.example.carsharing.models.RequestRideModel;
 import com.google.android.gms.common.api.Status;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
@@ -41,9 +33,9 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
-public class BookRideFragment extends Fragment {
+public class BookRideActivity extends AppCompatActivity {
 
-    FragmentBookRideBinding binding;
+    ActivityBookRideBinding binding;
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseRides;
     String rideId;
@@ -51,15 +43,21 @@ public class BookRideFragment extends Fragment {
     String location;
 
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        binding = FragmentBookRideBinding.inflate(inflater, container, false);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        binding = ActivityBookRideBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRides = FirebaseDatabase.getInstance().getReference("rides");
 
-        Places.initialize(getActivity(), getString(R.string.api_key));
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getChildFragmentManager().findFragmentById(R.id.other_location);
+        Toolbar myToolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(myToolbar);
+        getSupportActionBar().setTitle(getString(R.string.book_ride_text));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        Places.initialize(getApplicationContext(), getString(R.string.api_key));
+        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.other_location);
         if (autocompleteFragment != null) {
             autocompleteFragment.setCountry("it");
             autocompleteFragment.setHint(getString(R.string.search_address_text));
@@ -77,11 +75,11 @@ public class BookRideFragment extends Fragment {
             });
         }
 
-        Bundle bundle = getArguments();
-        if(bundle != null) {
-            rideId = bundle.getString(getString(R.string.ride_id_text));
-            userId = bundle.getString(getString(R.string.user_id_text));
-            String userName = bundle.getString(getString(R.string.user_name_text));
+        Bundle extras = getIntent().getExtras();
+        if(extras != null) {
+            rideId = extras.getString(getString(R.string.ride_id_text));
+            userId = extras.getString(getString(R.string.user_id_text));
+            String userName = extras.getString(getString(R.string.user_name_text));
             binding.creatorUser.setText(userName);
             getRide();
         }
@@ -89,8 +87,6 @@ public class BookRideFragment extends Fragment {
         saveRequestForRide();
         someLocationButton();
         otherLocationButton();
-
-        return binding.getRoot();
     }
 
     private void getRide() {
@@ -126,23 +122,23 @@ public class BookRideFragment extends Fragment {
                         RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location);
                         FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                             if(task.isSuccessful()) {
-                                Intent intent = new Intent(getActivity(), MainActivity.class);
+                                Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
                                 startActivity(intent);
                             } else {
-                                Toast.makeText(getActivity(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
+                                Toast.makeText(getApplicationContext(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
                             }
                         });
                     } else {
-                        Toast.makeText(getActivity(), "Inserisci l'indirizo in cui ti farai trovare", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), "Inserisci l'indirizo in cui ti farai trovare", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId);
                     FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                         if(task.isSuccessful()) {
-                            Intent intent = new Intent(getActivity(), MainActivity.class);
+                            Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(getActivity(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -164,5 +160,15 @@ public class BookRideFragment extends Fragment {
                 binding.autocompleteCard.setVisibility(View.VISIBLE);
             }
         });
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

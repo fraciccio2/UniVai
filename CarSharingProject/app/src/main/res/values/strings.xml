@@ -49,4 +49,5 @@
     <string name="some_address_text">Mi faccio trovare al tuo indirizzo</string>
     <string name="other_address_text">Mi faccio trovare in un altro indirizzo</string>
     <string name="book_text">Prenota</string>
+    <string name="book_ride_text">Prenota la tua Ride</string>
 </resources>

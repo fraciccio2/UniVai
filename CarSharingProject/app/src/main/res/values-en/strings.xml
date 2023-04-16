@@ -39,4 +39,5 @@
     <string name="some_address_text">I\'ll be found at your address</string>
     <string name="other_address_text">I can be found at another address</string>
     <string name="book_text">Book</string>
+    <string name="book_ride_text">Book your Ride</string>
 </resources>
