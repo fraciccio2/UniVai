@@ -10,8 +10,9 @@ public class RideWithUserModel {
     private String name;
     private String surname;
     private String userImage;
+    private String userId;
 
-    public RideWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname, String userImage) {
+    public RideWithUserModel(String id, AddressModel address, String date, String note, Boolean active, String name, String surname, String userImage, String userId) {
         this.id = id;
         this.address = address;
         this.date = date;
@@ -20,6 +21,7 @@ public class RideWithUserModel {
         this.name = name;
         this.surname = surname;
         this.userImage = userImage;
+        this.userId = userId;
     }
 
     public String getId() {
@@ -84,5 +86,13 @@ public class RideWithUserModel {
 
     public void setUserImage(String userImage) {
         this.userImage = userImage;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
     }
 }

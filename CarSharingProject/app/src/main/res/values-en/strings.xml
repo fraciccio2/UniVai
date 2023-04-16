@@ -32,4 +32,11 @@
     <string name="english_text">English</string>
     <string name="change_user_image_text">Change profile image</string>
     <string name="edit_user_data_text">Modify user data</string>
+    <string name="ride_create_text">Ride created by:</string>
+    <string name="address_text">Address:</string>
+    <string name="time_text">Departure:</string>
+    <string name="notes_text">Notes:</string>
+    <string name="some_address_text">I\'ll be found at your address</string>
+    <string name="other_address_text">I can be found at another address</string>
+    <string name="book_text">Book</string>
 </resources>

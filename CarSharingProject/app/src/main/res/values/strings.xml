@@ -7,6 +7,9 @@
     <string name="ops_text" translatable="false">Opss</string>
     <string name="logout_text" translatable="false">LogOut</string>
     <string name="edit_mode_text" translatable="false">editMode</string>
+    <string name="ride_id_text" translatable="false">rideId</string>
+    <string name="user_id_text" translatable="false">userId</string>
+    <string name="user_name_text" translatable="false">userName</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
     <string name="confirm_password_text">Conferma Password</string>
@@ -39,4 +42,11 @@
     <string name="english_text">Inglese</string>
     <string name="change_user_image_text">Cambia immagine profilo</string>
     <string name="edit_user_data_text">Modifica dati utente</string>
+    <string name="ride_create_text">Ride creato da:</string>
+    <string name="address_text">Indirizzo:</string>
+    <string name="time_text">Partenza:</string>
+    <string name="notes_text">Note:</string>
+    <string name="some_address_text">Mi faccio trovare al tuo indirizzo</string>
+    <string name="other_address_text">Mi faccio trovare in un altro indirizzo</string>
+    <string name="book_text">Prenota</string>
 </resources>

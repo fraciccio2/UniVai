@@ -46,20 +46,17 @@ public class SignupActivity extends AppCompatActivity {
                     Boolean correctEmail = dataBaseHelper.isCorrectEmail(email);
                     if (correctEmail) {
                             mAuth.createUserWithEmailAndPassword(email, password)
-                                    .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<AuthResult> task) {
-                                            if (task.isSuccessful()) {
-                                                Toast.makeText(SignupActivity.this, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
-                                                FirebaseUser user = mAuth.getCurrentUser();
-                                                if(user != null) {
-                                                    mDatabase.setValue(user.getUid());
-                                                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                                    startActivity(intent);
-                                                }
-                                            } else {
-                                                Toast.makeText(SignupActivity.this, "Errore nella registrazione", Toast.LENGTH_SHORT).show();
+                                    .addOnCompleteListener(task -> {
+                                        if (task.isSuccessful()) {
+                                            Toast.makeText(SignupActivity.this, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
+                                            FirebaseUser user = mAuth.getCurrentUser();
+                                            if(user != null) {
+                                                mDatabase.setValue(user.getUid());
+                                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                                startActivity(intent);
                                             }
+                                        } else {
+                                            Toast.makeText(SignupActivity.this, "Errore nella registrazione", Toast.LENGTH_SHORT).show();
                                         }
                                     });
                     } else {

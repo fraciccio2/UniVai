@@ -50,6 +50,7 @@ public class RidesListActivity extends AppCompatActivity {
         if(user != null) {
             getLoggedUser(user);
         }
+
         navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
         getRides();
     }
@@ -86,7 +87,8 @@ public class RidesListActivity extends AppCompatActivity {
                                             ride.getActive(),
                                             name,
                                             surname,
-                                            userImage
+                                            userImage,
+                                            ride.getUserId()
                                     );
                                     if(!ride.getUserId().equals(mAuth.getCurrentUser().getUid())) {
                                         rideUserList.add(rideUser);

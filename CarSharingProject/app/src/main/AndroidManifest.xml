@@ -16,7 +16,7 @@
         android:theme="@style/Theme.CarSharing">
         <activity
             android:name=".activities.SettingsActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.LoadImageActivity"
@@ -24,7 +24,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.RidesListActivity"
-            android:exported="false"
+            android:exported="true"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.NewRideActivity"
