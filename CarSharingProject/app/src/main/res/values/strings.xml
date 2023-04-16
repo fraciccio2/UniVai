@@ -7,6 +7,7 @@
     <string name="ops_text" translatable="false">Opss</string>
     <string name="logout_text" translatable="false">LogOut</string>
     <string name="edit_mode_text" translatable="false">editMode</string>
+    <string name="rides_text" translatable="false">Rides</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
     <string name="confirm_password_text">Conferma Password</string>
@@ -39,4 +40,5 @@
     <string name="english_text">Inglese</string>
     <string name="change_user_image_text">Cambia immagine profilo</string>
     <string name="edit_user_data_text">Modifica dati utente</string>
+    <string name="search_rides_text">Cerca Rides</string>
 </resources>

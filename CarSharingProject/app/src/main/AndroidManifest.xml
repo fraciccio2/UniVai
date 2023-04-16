@@ -15,8 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.CarSharing">
         <activity
-            android:name=".activities.SettingsActivity"
+            android:name=".activities.RidesSummaryActivity"
             android:exported="true"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activities.SettingsActivity"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.LoadImageActivity"

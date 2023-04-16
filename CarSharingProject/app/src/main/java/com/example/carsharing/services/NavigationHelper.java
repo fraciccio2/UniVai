@@ -8,6 +8,7 @@ import com.example.carsharing.R;
 import com.example.carsharing.activities.MainActivity;
 import com.example.carsharing.activities.NewRideActivity;
 import com.example.carsharing.activities.RidesListActivity;
+import com.example.carsharing.activities.RidesSummaryActivity;
 import com.example.carsharing.activities.SettingsActivity;
 import com.example.carsharing.models.UserModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -27,6 +28,10 @@ public class NavigationHelper {
                     break;
                 case R.id.action_settings:
                     context.startActivity(new Intent(context, SettingsActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    break;
+                case R.id.action_summary:
+                    context.startActivity(new Intent(context, RidesSummaryActivity.class).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                    break;
             }
             return false;
         });
