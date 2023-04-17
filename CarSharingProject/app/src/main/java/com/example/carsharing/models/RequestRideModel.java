@@ -58,4 +58,12 @@ public class RequestRideModel {
     public void setRideId(String rideId) {
         this.rideId = rideId;
     }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
 }
