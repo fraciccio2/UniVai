@@ -40,4 +40,5 @@
     <string name="other_address_text">I can be found at another address</string>
     <string name="book_text">Book</string>
     <string name="book_ride_text">Book your Ride</string>
+    <string name="search_rides_text">Search Rides</string>
 </resources>
