@@ -53,7 +53,6 @@ public class RidesOutFragment extends Fragment {
         mDatabaseRides = FirebaseDatabase.getInstance().getReference("rides");
 
         searchView = (SearchView) view.findViewById(R.id.search_view);
-
         searchView.setActivated(true);
         searchView.setQueryHint(getString(R.string.search_rides_text));
         searchView.onActionViewExpanded();

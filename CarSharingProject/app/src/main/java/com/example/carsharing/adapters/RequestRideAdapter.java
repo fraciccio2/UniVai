@@ -40,6 +40,14 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
             holder.labelUser.setText(context.getString(R.string.created_by_text));
             holder.labelPosition.setText(context.getString(R.string.appointment_text));
             holder.position.setText(requestRide.getLocation() + " " +requestRide.getDate());
+        } else {
+            holder.labelUser.setText(context.getString(R.string.request_by_text));
+            holder.labelPosition.setText(context.getString(R.string.appointment_text));
+            if(requestRide.getLocation() != null) {
+                holder.position.setText(requestRide.getLocation());
+            } else {
+                holder.position.setText(context.getString(R.string.some_address_info_text));
+            }
         }
         holder.user.setText(requestRide.getUserName());
         int dpSize = 2;
@@ -49,7 +57,7 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
         switch (requestRide.getStatus()) {
             case ACCEPT:
                 holder.requestCard.setStrokeColor(context.getResources().getColor(R.color.success_border));
-                holder.status.setText(context.getString(R.string.accept_text));
+                holder.status.setText(context.getString(R.string.accepted_text));
                 holder.status.setBackground(AppCompatResources.getDrawable(context, R.drawable.success_status));
                 holder.status.setTextColor(context.getResources().getColor(R.color.white));
                 break;

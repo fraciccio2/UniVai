@@ -53,9 +53,12 @@
     <string name="book_text">Prenota</string>
     <string name="book_ride_text">Prenota la tua Ride</string>
     <string name="search_rides_text">Cerca Rides</string>
-    <string name="accept_text">Accettata</string>
+    <string name="accepted_text">Accettata</string>
+    <string name="accept_text">Accetta</string>
     <string name="pending_text">In Attesa</string>
     <string name="refused_text">Rifiutata</string>
+    <string name="refuse_text">Rifiuta</string>
     <string name="created_by_text">Ride creata da:</string>
+    <string name="request_by_text">Ride richiesta da:</string>
     <string name="appointment_text">Appuntamento:</string>
 </resources>

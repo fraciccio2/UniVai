@@ -42,9 +42,12 @@
     <string name="book_text">Book</string>
     <string name="book_ride_text">Book your Ride</string>
     <string name="search_rides_text">Search Rides</string>
+    <string name="accepted_text">Accepted</string>
     <string name="accept_text">Accept</string>
     <string name="pending_text">Pending</string>
     <string name="refused_text">Refused</string>
+    <string name="refuse_text">Refuse</string>
     <string name="created_by_text">Ride created by:</string>
+    <string name="request_by_text">Ride request by:</string>
     <string name="appointment_text">Appointment:</string>
 </resources>

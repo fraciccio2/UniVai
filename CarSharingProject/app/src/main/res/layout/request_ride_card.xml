@@ -58,6 +58,23 @@
                 android:layout_marginBottom="4dp"
                 android:textStyle="bold"
                 android:textSize="15sp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="end|bottom"
+                android:orientation="vertical">
+                <Button
+                    android:id="@+id/book_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    app:cornerRadius="30dp"
+                    android:text="@string/refuse_text"/>
+            </LinearLayout>
         </LinearLayout>
 
     </com.google.android.material.card.MaterialCardView>

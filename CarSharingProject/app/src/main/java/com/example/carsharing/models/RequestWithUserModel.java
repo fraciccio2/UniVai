@@ -21,6 +21,15 @@ public class RequestWithUserModel {
         this.out = out;
     }
 
+    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, boolean out) {
+        this.status = status;
+        this.userName = userName;
+        this.rideId = rideId;
+        this.tokenRequest = tokenRequest;
+        this.location = location;
+        this.out = out;
+    }
+
     public StatusEnum getStatus() {
         return status;
     }
