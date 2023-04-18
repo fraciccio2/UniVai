@@ -20,7 +20,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.RidesSummaryActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait"/>
         <activity
             android:name=".activities.SettingsActivity"
@@ -32,7 +32,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.RidesListActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name=".activities.NewRideActivity"

@@ -1,5 +1,6 @@
 package com.example.carsharing.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -32,6 +33,7 @@ import java.util.List;
 
 public class RidesOutFragment extends Fragment {
 
+    RecyclerView recyclerView;
     DatabaseReference mDatabaseRequests;
     DatabaseReference mDatabaseUsers;
     DatabaseReference mDatabaseRides;
@@ -39,6 +41,7 @@ public class RidesOutFragment extends Fragment {
     SearchView searchView;
     int i = 0, l = 0;
     String userName = "";
+    List<RequestWithUserModel> requestsRideList = new ArrayList<>();
 
     public RidesOutFragment(){}
 
@@ -52,7 +55,9 @@ public class RidesOutFragment extends Fragment {
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
         mDatabaseRides = FirebaseDatabase.getInstance().getReference("rides");
 
-        searchView = (SearchView) view.findViewById(R.id.search_view);
+        recyclerView = view.findViewById(R.id.recycler_view_out);
+
+        searchView = view.findViewById(R.id.search_view);
         searchView.setActivated(true);
         searchView.setQueryHint(getString(R.string.search_rides_text));
         searchView.onActionViewExpanded();
@@ -66,7 +71,7 @@ public class RidesOutFragment extends Fragment {
     private void getRequests(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            List<RequestWithUserModel> requestsRideList = new ArrayList<>();
+            requestsRideList = new ArrayList<>();
             mDatabaseRequests.orderByChild("requesterUser").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -85,8 +90,8 @@ public class RidesOutFragment extends Fragment {
                                             mDatabaseRides.orderByKey().equalTo(requestRide.getRideId()).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    l++;
                                                     if(snapshot.exists()){
-                                                        l++;
                                                         AddressModel address;
                                                         String date;
                                                         for(DataSnapshot ride: snapshot.getChildren()) {
@@ -120,6 +125,8 @@ public class RidesOutFragment extends Fragment {
                                 }
                             });
                         }
+                    } else {
+                        warningRidesAlert(getString(R.string.warning_no_request_text));
                     }
                 }
 
@@ -129,5 +136,38 @@ public class RidesOutFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void filterRides() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String text) {
+                List<RequestWithUserModel> filteredRequestsRideList = new ArrayList<>();
+                for (RequestWithUserModel requestRide : requestsRideList) {
+                    if (requestRide.getTokenRequest().contains(text) || requestRide.getUserName().contains(text) || requestRide.getLocation().contains(text)) {
+                        filteredRequestsRideList.add(requestRide);
+                    }
+                }
+                if (filteredRequestsRideList.size() > 0) {
+                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), requestsRideList));
+                } else {
+                    warningRidesAlert(getString(R.string.warning_request_filter_text));
+                }
+                return false;
+            }
+        });
+    }
+
+    private void warningRidesAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.ops_text));
+        builder.setMessage(message);
+        builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 }

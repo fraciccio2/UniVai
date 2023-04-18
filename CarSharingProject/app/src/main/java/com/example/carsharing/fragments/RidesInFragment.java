@@ -1,6 +1,11 @@
 package com.example.carsharing.fragments;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
@@ -8,20 +13,11 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-
 import com.example.carsharing.R;
-import com.example.carsharing.activities.RidesListActivity;
 import com.example.carsharing.adapters.RequestRideAdapter;
-import com.example.carsharing.adapters.RideAdapter;
 import com.example.carsharing.enums.StatusEnum;
 import com.example.carsharing.models.RequestRideModel;
 import com.example.carsharing.models.RequestWithUserModel;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -38,10 +34,12 @@ import java.util.Map;
 public class RidesInFragment extends Fragment {
 
     SearchView searchView;
+    RecyclerView recyclerView;
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseRequests;
     DatabaseReference mDatabaseUsers;
     View view;
+    List<RequestWithUserModel> requestsRideList = new ArrayList<>();
     int i = 0, l = 0;
 
     public RidesInFragment() {
@@ -56,13 +54,16 @@ public class RidesInFragment extends Fragment {
         mDatabaseRequests = FirebaseDatabase.getInstance().getReference("requests");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
 
-        searchView = (SearchView) view.findViewById(R.id.search_view);
+        recyclerView = view.findViewById(R.id.recycler_view_in);
+
+        searchView = view.findViewById(R.id.search_view);
         searchView.setActivated(true);
         searchView.setQueryHint(getString(R.string.search_rides_text));
         searchView.onActionViewExpanded();
         searchView.clearFocus();
 
         getRequests();
+        filterRides();
 
         return view;
     }
@@ -70,7 +71,7 @@ public class RidesInFragment extends Fragment {
     private void getRequests() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
-            List<RequestWithUserModel> requestsRideList = new ArrayList<>();
+            requestsRideList = new ArrayList<>();
             mDatabaseRequests.orderByChild("creatorUser").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -83,20 +84,23 @@ public class RidesInFragment extends Fragment {
                             mDatabaseUsers.orderByKey().equalTo(requestRide.getRequesterUser()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    l++;
                                     if (snapshot.exists()) {
-                                        l++;
                                         String userName = "";
                                         for (DataSnapshot datas : snapshot.getChildren()) {
                                             userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
                                         }
                                         requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), false));
-                                    }
-                                    if (i == l && requestsRideList.size() > 0) {
-                                        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_in);
-                                        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
-                                        recyclerView.setLayoutManager(layoutManager);
-                                        RequestRideAdapter adapter = new RequestRideAdapter(getContext(),  RidesInFragment.this, requestsRideList);
-                                        recyclerView.setAdapter(adapter);
+                                        if (i == l) {
+                                            if (requestsRideList.size() > 0) {
+                                                LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
+                                                recyclerView.setLayoutManager(layoutManager);
+                                                RequestRideAdapter adapter = new RequestRideAdapter(getContext(), RidesInFragment.this, requestsRideList);
+                                                recyclerView.setAdapter(adapter);
+                                            } else {
+                                                warningRidesAlert(getString(R.string.warning_no_request_text));
+                                            }
+                                        }
                                     }
                                 }
 
@@ -106,6 +110,8 @@ public class RidesInFragment extends Fragment {
                                 }
                             });
                         }
+                    } else {
+                        warningRidesAlert(getString(R.string.warning_no_request_text));
                     }
                 }
 
@@ -115,6 +121,43 @@ public class RidesInFragment extends Fragment {
                 }
             });
         }
+    }
+
+    private void filterRides() {
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String text) {
+                List<RequestWithUserModel> filteredRequestsRideList = new ArrayList<>();
+                for (RequestWithUserModel requestRide : requestsRideList) {
+                    if (
+                            requestRide.getTokenRequest().toLowerCase().contains(text.toLowerCase()) ||
+                                    requestRide.getUserName().toLowerCase().contains(text.toLowerCase()) ||
+                                    (requestRide.getLocation() != null && requestRide.getLocation().toLowerCase().contains(text.toLowerCase()))
+                    ) {
+                        filteredRequestsRideList.add(requestRide);
+                    }
+                }
+                if (filteredRequestsRideList.size() > 0) {
+                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesInFragment.this, requestsRideList));
+                } else {
+                    warningRidesAlert(getString(R.string.warning_request_filter_text));
+                }
+                return false;
+            }
+        });
+    }
+
+    private void warningRidesAlert(String message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setTitle(getString(R.string.ops_text));
+        builder.setMessage(message);
+        builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     public void refuseRequest(String requestId) {
