@@ -12,11 +12,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:queryHint="@string/search_rides_text"
-        android:background="@drawable/main_color_border"/>
+        android:clickable="true"
+        android:background="@drawable/main_color_border"
+        android:focusable="true" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view"
+        android:id="@+id/recycler_view_out"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"

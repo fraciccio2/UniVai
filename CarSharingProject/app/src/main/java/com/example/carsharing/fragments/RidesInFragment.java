@@ -12,6 +12,8 @@ import com.example.carsharing.R;
 
 public class RidesInFragment extends Fragment {
 
+    public RidesInFragment() {}
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {

@@ -9,4 +9,10 @@
     <color name="white">#FFFFFFFF</color>
     <color name="main_color">#0078bd</color>
     <color name="light_grey">#919b93</color>
+    <color name="warning_border">#ffcc00</color>
+    <color name="warning_bg">#eec337</color>
+    <color name="danger_border">#cc3300</color>
+    <color name="danger_bg">#dc3545</color>
+    <color name="success_border">#339900</color>
+    <color name="success_bg">#28a77a</color>
 </resources>

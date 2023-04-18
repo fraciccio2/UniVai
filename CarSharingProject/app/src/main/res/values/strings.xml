@@ -48,8 +48,14 @@
     <string name="time_text">Partenza:</string>
     <string name="notes_text">Note:</string>
     <string name="some_address_text">Mi faccio trovare al tuo indirizzo</string>
+    <string name="some_address_info_text">L\'utente si farà trovare nel tuo punto di partenza</string>
     <string name="other_address_text">Mi faccio trovare in un altro indirizzo</string>
     <string name="book_text">Prenota</string>
     <string name="book_ride_text">Prenota la tua Ride</string>
     <string name="search_rides_text">Cerca Rides</string>
+    <string name="accept_text">Accettata</string>
+    <string name="pending_text">In Attesa</string>
+    <string name="refused_text">Rifiutata</string>
+    <string name="created_by_text">Ride creata da:</string>
+    <string name="appointment_text">Appuntamento:</string>
 </resources>

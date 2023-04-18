@@ -14,6 +14,8 @@ public class RequestRideViewHolder extends RecyclerView.ViewHolder {
     public TextView status;
     public TextView user;
     public TextView position;
+    public TextView labelUser;
+    public TextView labelPosition;
 
     public RequestRideViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -21,5 +23,7 @@ public class RequestRideViewHolder extends RecyclerView.ViewHolder {
         status = itemView.findViewById(R.id.request_status);
         user = itemView.findViewById(R.id.request_user);
         position = itemView.findViewById(R.id.request_position);
+        labelUser = itemView.findViewById(R.id.label_request_user);
+        labelPosition = itemView.findViewById(R.id.label_request_position);
     }
 }
