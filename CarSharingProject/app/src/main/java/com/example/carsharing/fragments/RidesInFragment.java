@@ -17,8 +17,11 @@ import com.example.carsharing.R;
 import com.example.carsharing.activities.RidesListActivity;
 import com.example.carsharing.adapters.RequestRideAdapter;
 import com.example.carsharing.adapters.RideAdapter;
+import com.example.carsharing.enums.StatusEnum;
 import com.example.carsharing.models.RequestRideModel;
 import com.example.carsharing.models.RequestWithUserModel;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -28,7 +31,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RidesInFragment extends Fragment {
 
@@ -36,6 +41,7 @@ public class RidesInFragment extends Fragment {
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseRequests;
     DatabaseReference mDatabaseUsers;
+    View view;
     int i = 0, l = 0;
 
     public RidesInFragment() {
@@ -44,7 +50,7 @@ public class RidesInFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rides_in, container, false);
+        view = inflater.inflate(R.layout.fragment_rides_in, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRequests = FirebaseDatabase.getInstance().getReference("requests");
@@ -56,12 +62,12 @@ public class RidesInFragment extends Fragment {
         searchView.onActionViewExpanded();
         searchView.clearFocus();
 
-        getRequests(view);
+        getRequests();
 
         return view;
     }
 
-    private void getRequests(View view) {
+    private void getRequests() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             List<RequestWithUserModel> requestsRideList = new ArrayList<>();
@@ -89,7 +95,7 @@ public class RidesInFragment extends Fragment {
                                         RecyclerView recyclerView = view.findViewById(R.id.recycler_view_in);
                                         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                                         recyclerView.setLayoutManager(layoutManager);
-                                        RequestRideAdapter adapter = new RequestRideAdapter(getContext(), requestsRideList);
+                                        RequestRideAdapter adapter = new RequestRideAdapter(getContext(),  RidesInFragment.this, requestsRideList);
                                         recyclerView.setAdapter(adapter);
                                     }
                                 }
@@ -109,5 +115,17 @@ public class RidesInFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public void refuseRequest(String requestId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", StatusEnum.REFUSED);
+        mDatabaseRequests.child(requestId).updateChildren(map).addOnCompleteListener(task -> getRequests());
+    }
+
+    public void acceptRequest(String requestId) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("status", StatusEnum.ACCEPT);
+        mDatabaseRequests.child(requestId).updateChildren(map).addOnCompleteListener(task -> getRequests());
     }
 }

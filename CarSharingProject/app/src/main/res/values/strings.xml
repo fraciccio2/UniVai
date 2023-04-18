@@ -11,6 +11,7 @@
     <string name="user_id_text" translatable="false">userId</string>
     <string name="user_name_text" translatable="false">userName</string>
     <string name="rides_text" translatable="false">Rides</string>
+    <string name="token_text" translatable="false">Token:</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
     <string name="confirm_password_text">Conferma Password</string>

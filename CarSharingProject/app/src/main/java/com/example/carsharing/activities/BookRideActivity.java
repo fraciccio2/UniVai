@@ -149,7 +149,7 @@ public class BookRideActivity extends AppCompatActivity {
     private void someLocationButton() {
         binding.someLocationButton.setOnClickListener(view ->{
             if(binding.someLocationButton.isChecked()) {
-                binding.autocompleteCard.setVisibility(View.INVISIBLE);
+                binding.autocompleteCard.setVisibility(View.GONE);
             }
         });
     }

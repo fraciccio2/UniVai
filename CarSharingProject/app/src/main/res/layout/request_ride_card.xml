@@ -59,21 +59,45 @@
                 android:textStyle="bold"
                 android:textSize="15sp"/>
 
+            <TextView
+                android:id="@+id/token_request"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="4dp"
+                android:textStyle="bold"
+                android:visibility="gone"
+                android:textSize="18sp"/>
+
             <LinearLayout
+                android:id="@+id/layout_with_button"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
-                android:gravity="end|bottom"
-                android:orientation="vertical">
-                <Button
-                    android:id="@+id/book_button"
+                android:layout_height="wrap_content"
+                android:gravity="end"
+                android:visibility="gone"
+                android:orientation="horizontal">
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/refuse_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="8dp"
                     android:gravity="center"
                     android:textSize="18sp"
-                    app:cornerRadius="30dp"
-                    android:text="@string/refuse_text"/>
+                    android:text="@string/refuse_text"
+                    android:textColor="@color/main_color"
+                    android:backgroundTint="@color/white"
+                    app:strokeWidth="2dp"
+                    app:strokeColor="@color/main_color"
+                    app:cornerRadius="30dp"/>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/accept_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:gravity="center"
+                    android:textSize="18sp"
+                    android:text="@string/accept_text"
+                    app:cornerRadius="30dp"/>
             </LinearLayout>
         </LinearLayout>
 
