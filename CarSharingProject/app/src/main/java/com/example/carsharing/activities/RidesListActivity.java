@@ -8,16 +8,12 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -35,11 +31,9 @@ import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
 import com.google.android.libraries.places.widget.Autocomplete;
 import com.google.android.libraries.places.widget.AutocompleteActivity;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
-import com.google.android.material.card.MaterialCardView;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -187,12 +181,21 @@ public class RidesListActivity extends AppCompatActivity {
             BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(RidesListActivity.this, R.style.Theme_MaterialComponents_BottomSheetDialog);
             View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_layout, findViewById(R.id.bottom_sheet_linear_layout));
             autocompleteText = bottomSheetView.findViewById(R.id.autocomplete_text);
+            autocompleteText.setText(logUser.getAddress().getLocation());
             autocompleteText.setOnClickListener(view1 -> {
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                         .build(getApplicationContext());
                 startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
             });
+            //TODO implementare il tasto per filtrare
+            /*MaterialButton filterButton = bottomSheetView.findViewById(R.id.filter_button);
+            filterButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });*/
             SeekBar seekBar = bottomSheetView.findViewById(R.id.seekbar_distance);
             TextView distanceText = bottomSheetView.findViewById(R.id.text_view_radius);
             distanceText.setText("1Km");
