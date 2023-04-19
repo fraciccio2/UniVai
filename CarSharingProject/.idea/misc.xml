@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/bottom_sheet_bg.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/lavander_border.xml" value="0.2520833333333333" />
@@ -19,9 +20,8 @@
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_rides_summary.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_settings.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_signup.xml" value="0.2" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_book_ride.xml" value="0.25" />
-        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_rides_in.xml" value="0.25" />
-        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_rides_out.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_rides_in.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_rides_out.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/language_dropdown_item.xml" value="0.25" />

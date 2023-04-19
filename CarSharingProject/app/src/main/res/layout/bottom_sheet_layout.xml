@@ -53,7 +53,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
-        android:progress="0"
         android:thumbTint="@color/main_color"
         android:progressTint="@color/main_color"
         android:max="9"/>

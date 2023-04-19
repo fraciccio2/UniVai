@@ -14,6 +14,7 @@ import com.example.carsharing.databinding.ActivityMainBinding;
 import com.example.carsharing.models.RideModel;
 import com.example.carsharing.models.UserModel;
 import com.example.carsharing.services.NavigationHelper;
+import com.example.carsharing.services.RidesHelper;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -48,6 +49,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     List<RideModel> ridesList = new ArrayList<>();
     UserModel logUser;
     NavigationHelper navigationHelper = new NavigationHelper();
+    RidesHelper ridesHelper = new RidesHelper();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,16 +123,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mapItaly, 14));
     }
 
-    private static double distanceBetweenLatLong(double lat1, double lon1, double lat2, double lon2) {
-        lat1 = Math.toRadians(lat1);
-        lon1 = Math.toRadians(lon1);
-        lat2 = Math.toRadians(lat2);
-        lon2 = Math.toRadians(lon2);
-
-        double earthRadius = 6371.01; //Kilometers
-        return earthRadius * Math.acos(Math.sin(lat1) * Math.sin(lat2) + Math.cos(lat1) * Math.cos(lat2) * Math.cos(lon1 - lon2));
-    }
-
     private void getRides() {
         FirebaseDatabase.getInstance().getReference("rides").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -138,7 +130,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 if (snapshot.exists()) {
                     for (DataSnapshot data : snapshot.getChildren()) {
                         RideModel rideModel = data.getValue(RideModel.class);
-                        if (distanceBetweenLatLong(rideModel.getAddress().getCoordinate().getLatitude(), rideModel.getAddress().getCoordinate().getLongitude(), userLatLng.latitude, userLatLng.longitude) < radius) {
+                        if (ridesHelper.distanceBetweenLatLong(rideModel.getAddress().getCoordinate().getLatitude(), rideModel.getAddress().getCoordinate().getLongitude(), userLatLng.latitude, userLatLng.longitude) < radius) {
                             ridesList.add(rideModel);
                         }
                     }

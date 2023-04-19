@@ -8,6 +8,7 @@ import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewTreeObserver;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import com.example.carsharing.models.RideModel;
 import com.example.carsharing.models.RideWithUserModel;
 import com.example.carsharing.models.UserModel;
 import com.example.carsharing.services.NavigationHelper;
+import com.example.carsharing.services.RidesHelper;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -53,9 +55,11 @@ public class RidesListActivity extends AppCompatActivity {
     DatabaseReference mDatabaseRides;
     DatabaseReference mDatabaseUsers;
     NavigationHelper navigationHelper = new NavigationHelper();
+    RidesHelper ridesHelper = new RidesHelper();
     UserModel logUser;
     AddressModel address;
     TextView autocompleteText;
+    double radius = 1;
     int i = 0, l = 0;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
@@ -116,7 +120,15 @@ public class RidesListActivity extends AppCompatActivity {
                                             ride.getUserId()
                                     );
                                     if (!ride.getUserId().equals(mAuth.getCurrentUser().getUid())) {
-                                        rideUserList.add(rideUser);
+                                        if (ridesHelper.distanceBetweenLatLong(
+                                                rideUser.getAddress().getCoordinate().getLatitude(),
+                                                rideUser.getAddress().getCoordinate().getLongitude(),
+                                                address.getCoordinate().getLatitude(),
+                                                address.getCoordinate().getLongitude())
+                                                < radius
+                                        ) {
+                                            rideUserList.add(rideUser);
+                                        }
                                     }
                                 }
                                 if (i == l) {
@@ -156,6 +168,7 @@ public class RidesListActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     logUser = snapshot.getValue(UserModel.class);
+                    address = logUser.getAddress();
                     navigationHelper.navigate(binding.bottomNavigationView, getApplicationContext());
                     navigationHelper.hideButton(binding.floatingButton, binding.bottomNavigationView, logUser);
                 }
@@ -178,55 +191,68 @@ public class RidesListActivity extends AppCompatActivity {
 
     private void openFilterBottomSheets() {
         binding.filterButton.setOnClickListener(view -> {
-            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(RidesListActivity.this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(RidesListActivity.this, R.style.BottomSheetDialogTheme);
             View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_layout, findViewById(R.id.bottom_sheet_linear_layout));
-            autocompleteText = bottomSheetView.findViewById(R.id.autocomplete_text);
-            autocompleteText.setText(logUser.getAddress().getLocation());
-            autocompleteText.setOnClickListener(view1 -> {
-                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
-                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
-                        .build(getApplicationContext());
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            MaterialButton filterButton = bottomSheetView.findViewById(R.id.filter_button);
+            createGoogleAutocomplete(bottomSheetView);
+            filterButton.setOnClickListener(view1 -> {
+                getRides();
+                bottomSheetDialog.dismiss();
             });
-            //TODO implementare il tasto per filtrare
-            /*MaterialButton filterButton = bottomSheetView.findViewById(R.id.filter_button);
-            filterButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-
-                }
-            });*/
-            SeekBar seekBar = bottomSheetView.findViewById(R.id.seekbar_distance);
-            TextView distanceText = bottomSheetView.findViewById(R.id.text_view_radius);
-            distanceText.setText("1Km");
-            int dpSize = 16;
-            DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
-            float marginSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, dm);
-            float value = seekBar.getProgress();
-            float currentPosition = (seekBar.getWidth() - marginSize) / seekBar.getMax();
-            currentPosition = currentPosition * value;
-            distanceText.setX(currentPosition);
-            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-                @Override
-                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                    float currentPosition = (seekBar.getWidth() - marginSize) / seekBar.getMax();
-                    currentPosition = currentPosition * i;
-                    distanceText.setX(currentPosition);
-                    distanceText.setText("" + (i + 1) + "Km");
-                }
-
-                @Override
-                public void onStartTrackingTouch(SeekBar seekBar) {
-
-                }
-
-                @Override
-                public void onStopTrackingTouch(SeekBar seekBar) {
-
-                }
-            });
+            initializeSeekBar(bottomSheetView);
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
+        });
+    }
+
+    private void createGoogleAutocomplete(View bottomSheetView) {
+        autocompleteText = bottomSheetView.findViewById(R.id.autocomplete_text);
+        autocompleteText.setText(address.getLocation());
+        autocompleteText.setOnClickListener(view -> {
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(getApplicationContext());
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+        });
+    }
+
+    private void initializeSeekBar(View bottomSheetView) {
+        SeekBar seekBar = bottomSheetView.findViewById(R.id.seekbar_distance);
+        TextView distanceText = bottomSheetView.findViewById(R.id.text_view_radius);
+        distanceText.setText(Math.round(radius) + "Km");
+        seekBar.setProgress(((int) radius) - 1);
+        int dpSize = 16;
+        DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+        float marginSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, dm);
+        seekBar.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                float value = seekBar.getProgress();
+                float currentPosition = (seekBar.getWidth() - marginSize) / seekBar.getMax();
+                currentPosition = currentPosition * value;
+                distanceText.setX(currentPosition);
+                seekBar.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+            }
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                float currentPosition = (seekBar.getWidth() - marginSize) / seekBar.getMax();
+                currentPosition = currentPosition * i;
+                distanceText.setX(currentPosition);
+                distanceText.setText("" + (i + 1) + "Km");
+                radius = i + 1;
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
         });
     }
 
