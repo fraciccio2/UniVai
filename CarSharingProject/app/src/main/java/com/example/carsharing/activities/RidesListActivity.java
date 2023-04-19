@@ -1,21 +1,45 @@
 package com.example.carsharing.activities;
 
 import android.app.AlertDialog;
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carsharing.R;
 import com.example.carsharing.adapters.RideAdapter;
 import com.example.carsharing.databinding.ActivityRidesListBinding;
+import com.example.carsharing.models.AddressModel;
+import com.example.carsharing.models.LatLonModel;
 import com.example.carsharing.models.RideModel;
 import com.example.carsharing.models.RideWithUserModel;
 import com.example.carsharing.models.UserModel;
 import com.example.carsharing.services.NavigationHelper;
+import com.google.android.gms.common.api.Status;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +49,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RidesListActivity extends AppCompatActivity {
@@ -35,7 +60,10 @@ public class RidesListActivity extends AppCompatActivity {
     DatabaseReference mDatabaseUsers;
     NavigationHelper navigationHelper = new NavigationHelper();
     UserModel logUser;
+    AddressModel address;
+    TextView autocompleteText;
     int i = 0, l = 0;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,34 +75,37 @@ public class RidesListActivity extends AppCompatActivity {
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
         binding.bottomNavigationView.setSelectedItemId(R.id.action_search);
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             getLoggedUser(user);
         }
 
+        Places.initialize(getApplicationContext(), getString(R.string.api_key));
+
         navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
         getRides();
+        openFilterBottomSheets();
     }
 
     private void getRides() {
         mDatabaseRides.orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshotData) {
-                if(snapshotData.exists()) {
+                if (snapshotData.exists()) {
                     List<RideWithUserModel> rideUserList = new ArrayList<>();
                     for (DataSnapshot ignored : snapshotData.getChildren()) {
                         i++;
                     }
-                    for (DataSnapshot data: snapshotData.getChildren()){
+                    for (DataSnapshot data : snapshotData.getChildren()) {
                         RideModel ride = data.getValue(RideModel.class);
                         mDatabaseUsers.orderByKey().equalTo(ride.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 l++;
-                                if(snapshot.exists()) {
+                                if (snapshot.exists()) {
                                     String name = "";
                                     String surname = "";
                                     String userImage = "";
-                                    for (DataSnapshot datas: snapshot.getChildren()){
+                                    for (DataSnapshot datas : snapshot.getChildren()) {
                                         name = datas.child("name").getValue(String.class);
                                         surname = datas.child("surname").getValue(String.class);
                                         userImage = datas.child("userImage").getValue(String.class);
@@ -90,12 +121,12 @@ public class RidesListActivity extends AppCompatActivity {
                                             userImage,
                                             ride.getUserId()
                                     );
-                                    if(!ride.getUserId().equals(mAuth.getCurrentUser().getUid())) {
+                                    if (!ride.getUserId().equals(mAuth.getCurrentUser().getUid())) {
                                         rideUserList.add(rideUser);
                                     }
                                 }
-                                if(i == l) {
-                                    if(rideUserList.size() > 0) {
+                                if (i == l) {
+                                    if (rideUserList.size() > 0) {
                                         RecyclerView recyclerView = binding.recyclerView;
                                         LinearLayoutManager layoutManager = new LinearLayoutManager(RidesListActivity.this);
                                         recyclerView.setLayoutManager(layoutManager);
@@ -149,5 +180,66 @@ public class RidesListActivity extends AppCompatActivity {
         builder.setMessage(getString(R.string.warning_rides_text));
         builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
         builder.show();
+    }
+
+    private void openFilterBottomSheets() {
+        binding.filterButton.setOnClickListener(view -> {
+            BottomSheetDialog bottomSheetDialog = new BottomSheetDialog(RidesListActivity.this, R.style.Theme_MaterialComponents_BottomSheetDialog);
+            View bottomSheetView = LayoutInflater.from(getApplicationContext()).inflate(R.layout.bottom_sheet_layout, findViewById(R.id.bottom_sheet_linear_layout));
+            autocompleteText = bottomSheetView.findViewById(R.id.autocomplete_text);
+            autocompleteText.setOnClickListener(view1 -> {
+                List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
+                Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                        .build(getApplicationContext());
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            });
+            SeekBar seekBar = bottomSheetView.findViewById(R.id.seekbar_distance);
+            TextView distanceText = bottomSheetView.findViewById(R.id.text_view_radius);
+            distanceText.setText("1Km");
+            int dpSize = 16;
+            DisplayMetrics dm = getApplicationContext().getResources().getDisplayMetrics();
+            float marginSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, dm);
+            float value = seekBar.getProgress();
+            float currentPosition = (seekBar.getWidth() - marginSize) / seekBar.getMax();
+            currentPosition = currentPosition * value;
+            distanceText.setX(currentPosition);
+            seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                    float currentPosition = (seekBar.getWidth() - marginSize) / seekBar.getMax();
+                    currentPosition = currentPosition * i;
+                    distanceText.setX(currentPosition);
+                    distanceText.setText("" + (i + 1) + "Km");
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+            bottomSheetDialog.setContentView(bottomSheetView);
+            bottomSheetDialog.show();
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
+                autocompleteText.setText(address.getLocation());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i("ERROR", "An error occurred: " + status.getStatusMessage());
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

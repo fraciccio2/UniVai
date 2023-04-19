@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/bottom_sheet_linear_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bottom_sheet_bg"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="20dp"
+        android:text="Vicino a:"
+        android:textColor="@color/main_color"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/autocomplete_text"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="@string/search_address_text"
+        android:layout_marginTop="8dp"
+        android:paddingHorizontal="8dp"
+        android:drawablePadding="5dp"
+        android:drawableStart="@drawable/ic_baseline_search_24"
+        android:textSize="24sp"
+        android:layout_marginHorizontal="8dp"
+        android:gravity="center|start"
+        android:background="@drawable/main_color_border"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="8dp"
+        android:text="Distante:"
+        android:textColor="@color/main_color"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/text_view_radius"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/main_color"
+        android:textSize="12sp"/>
+
+    <SeekBar
+        android:id="@+id/seekbar_distance"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:progress="0"
+        android:max="9"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="end"
+        android:orientation="vertical">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:text="@string/filter_text"
+            android:backgroundTint="@color/main_color"
+            android:textColor="@color/white"
+            android:theme="@style/Theme.MaterialComponents"
+            app:cornerRadius="30dp"/>
+    </LinearLayout>
+
+</LinearLayout>

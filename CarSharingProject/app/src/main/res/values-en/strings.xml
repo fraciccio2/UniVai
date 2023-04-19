@@ -52,4 +52,5 @@
     <string name="created_by_text">Ride created by:</string>
     <string name="request_by_text">Ride request by:</string>
     <string name="appointment_text">Appointment:</string>
+    <string name="filter_text">Filter</string>
 </resources>
