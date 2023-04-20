@@ -83,7 +83,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                 ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSIONS_REQUEST_LOCATION);
             } else {
@@ -150,14 +150,17 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setMap(double lat, double lon) {
         LatLng mapItaly = new LatLng(lat, lon);
-        gMap.addMarker(new MarkerOptions().position(mapItaly));
+        gMap.addMarker(new MarkerOptions().position(mapItaly).zIndex(2.0f));
         for (RideModel ride : ridesList) {
-            gMap.addMarker(new MarkerOptions().position(new LatLng(ride.getAddress().getCoordinate().getLatitude(), ride.getAddress().getCoordinate().getLongitude())).icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+            gMap.addMarker(new MarkerOptions().position(
+                    new LatLng(ride.getAddress().getCoordinate().getLatitude(), ride.getAddress().getCoordinate().getLongitude()))
+                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).zIndex(1.0f));
         }
         gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
         gMap.setMinZoomPreference(5);
         gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199, 6.7499), new LatLng(47.1153, 18.4802)));
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mapItaly, 14));
+        clickOnMarker();
     }
 
     private void getRides() {
@@ -297,5 +300,12 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void clickOnMarker() {
+        gMap.setOnMarkerClickListener(marker -> {
+            // TODO aprire un popup
+            return false;
+        });
     }
 }
