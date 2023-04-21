@@ -23,6 +23,7 @@ import androidx.fragment.app.FragmentActivity;
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityMainBinding;
 import com.example.carsharing.models.RideModel;
+import com.example.carsharing.models.RideWithUserModel;
 import com.example.carsharing.models.UserModel;
 import com.example.carsharing.services.NavigationHelper;
 import com.example.carsharing.services.RidesHelper;
@@ -36,6 +37,7 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -52,8 +54,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
@@ -64,15 +68,16 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     GoogleMap gMap;
     FusedLocationProviderClient providerClient;
     FirebaseAuth mAuth;
-    DatabaseReference mDatabase;
+    DatabaseReference mDatabaseUsers;
     LatLng userLatLng;
     double radius = 1;
-    List<RideModel> ridesList = new ArrayList<>();
+    List<RideWithUserModel> rideUserList = new ArrayList<>();
     UserModel logUser;
     NavigationHelper navigationHelper = new NavigationHelper();
     RidesHelper ridesHelper = new RidesHelper();
     TextView autocompleteText;
     String location, tmpLocation;
+    int i = 0, l = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +86,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference("users");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -93,7 +98,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         binding.bottomNavigationView.setSelectedItemId(R.id.action_map);
         providerClient = LocationServices.getFusedLocationProviderClient(this);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.main_map);
-        mapFragment.getMapAsync(this);
+        if (mapFragment != null) {
+            mapFragment.getMapAsync(this);
+        }
 
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
         openFilterBottomSheets();
@@ -151,9 +158,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private void setMap(double lat, double lon) {
         LatLng mapItaly = new LatLng(lat, lon);
         gMap.addMarker(new MarkerOptions().position(mapItaly).zIndex(2.0f));
-        for (RideModel ride : ridesList) {
+        for (RideWithUserModel ride : rideUserList) {
             gMap.addMarker(new MarkerOptions().position(
-                    new LatLng(ride.getAddress().getCoordinate().getLatitude(), ride.getAddress().getCoordinate().getLongitude()))
+                            new LatLng(ride.getAddress().getCoordinate().getLatitude(), ride.getAddress().getCoordinate().getLongitude()))
                     .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)).zIndex(1.0f));
         }
         gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
@@ -161,6 +168,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199, 6.7499), new LatLng(47.1153, 18.4802)));
         gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mapItaly, 14));
         clickOnMarker();
+        navigateToBookRideActivity();
     }
 
     private void getRides() {
@@ -168,22 +176,63 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
+                    for (DataSnapshot ignored : snapshot.getChildren()) {
+                        i++;
+                    }
                     for (DataSnapshot data : snapshot.getChildren()) {
                         RideModel rideModel = data.getValue(RideModel.class);
-                        if (
-                                ridesHelper.distanceBetweenLatLong(
-                                        rideModel.getAddress().getCoordinate().getLatitude(),
-                                        rideModel.getAddress().getCoordinate().getLongitude(),
-                                        userLatLng.latitude,
-                                        userLatLng.longitude
-                                ) < radius &&
-                                        !rideModel.getUserId().equals(mAuth.getCurrentUser().getUid())
-                        ) {
-                            ridesList.add(rideModel);
-                        }
+                        mDatabaseUsers.orderByKey().equalTo(rideModel.getUserId()).addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                l++;
+                                if(snapshot.exists()){
+                                    String name = "";
+                                    String surname = "";
+                                    String userImage = "";
+                                    for (DataSnapshot datas : snapshot.getChildren()) {
+                                        name = datas.child("name").getValue(String.class);
+                                        surname = datas.child("surname").getValue(String.class);
+                                        userImage = datas.child("userImage").getValue(String.class);
+                                    }
+                                    RideWithUserModel rideUser = new RideWithUserModel(
+                                            data.getKey(),
+                                            rideModel.getAddress(),
+                                            rideModel.getDate(),
+                                            rideModel.getNote(),
+                                            rideModel.getActive(),
+                                            name,
+                                            surname,
+                                            userImage,
+                                            rideModel.getUserId()
+                                    );
+                                    if (
+                                            ridesHelper.distanceBetweenLatLong(
+                                                    rideUser.getAddress().getCoordinate().getLatitude(),
+                                                    rideUser.getAddress().getCoordinate().getLongitude(),
+                                                    userLatLng.latitude,
+                                                    userLatLng.longitude
+                                            ) < radius &&
+                                                    !rideUser.getUserId().equals(mAuth.getCurrentUser().getUid())
+                                    ) {
+                                        rideUserList.add(rideUser);
+                                    }
+                                }
+                                if (i == l) {
+                                    if (rideUserList.size() == 0) {
+                                        warningRidesAlert();
+                                    } else {
+                                        setMap(userLatLng.latitude, userLatLng.longitude);
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Log.e("Error", "exception", error.toException());
+                            }
+                        });
                     }
                 }
-                setMap(userLatLng.latitude, userLatLng.longitude);
             }
 
             @Override
@@ -194,7 +243,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getLoggedUser(FirebaseUser user) {
-        mDatabase.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        mDatabaseUsers.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
@@ -209,6 +258,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 Log.e("Error", "exception", error.toException());
             }
         });
+    }
+
+    private void warningRidesAlert() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle(getString(R.string.ops_text));
+        builder.setMessage(getString(R.string.warning_rides_text));
+        builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     private void openFilterBottomSheets() {
@@ -233,7 +290,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if (location != null) {
             autocompleteText.setText(location);
         } else {
-            if (userLatLng.latitude == logUser.getAddress().getCoordinate().getLatitude() && userLatLng.longitude == logUser.getAddress().getCoordinate().getLongitude()) {
+            if (userLatLng != null && userLatLng.latitude == logUser.getAddress().getCoordinate().getLatitude() && userLatLng.longitude == logUser.getAddress().getCoordinate().getLongitude()) {
                 autocompleteText.setText(logUser.getAddress().getLocation());
             }
         }
@@ -304,8 +361,61 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void clickOnMarker() {
         gMap.setOnMarkerClickListener(marker -> {
-            // TODO aprire un popup
+            RideWithUserModel ride = null;
+            for (RideWithUserModel rideTmp : rideUserList) {
+                if (rideTmp.getAddress().getCoordinate().getLatitude() == marker.getPosition().latitude && rideTmp.getAddress().getCoordinate().getLongitude() == marker.getPosition().longitude) {
+                    ride = rideTmp;
+                }
+            }
+            if (ride != null) {
+                gMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                    @Nullable
+                    @Override
+                    public View getInfoContents(@NonNull Marker marker) {
+                        View view = LayoutInflater.from(getApplicationContext()).inflate(R.layout.ride_popup, null);
+                        TextView userNameView = view.findViewById(R.id.user_name);
+                        TextView locationView = view.findViewById(R.id.ride_location);
+                        TextView timeView = view.findViewById(R.id.ride_time);
+                        RideWithUserModel rideUser = null;
+                        for (RideWithUserModel rideTmp : rideUserList) {
+                            if (rideTmp.getAddress().getCoordinate().getLatitude() == marker.getPosition().latitude && rideTmp.getAddress().getCoordinate().getLongitude() == marker.getPosition().longitude) {
+                                rideUser = rideTmp;
+                            }
+                        }
+                        userNameView.setText(rideUser.getName()+ " "+rideUser.getSurname());
+                        locationView.setText(rideUser.getAddress().getLocation());
+                        SimpleDateFormat formatter = new SimpleDateFormat(getString(R.string.date_pattern));
+                        timeView.setText(formatter.format(new Date(rideUser.getDate())));
+                        return view;
+                    }
+
+                    @Nullable
+                    @Override
+                    public View getInfoWindow(@NonNull Marker marker) {
+                        return null;
+                    }
+                });
+                marker.showInfoWindow();
+            }
             return false;
+        });
+    }
+
+    private void navigateToBookRideActivity() {
+        gMap.setOnInfoWindowClickListener(marker1 -> {
+            RideWithUserModel rideUser = null;
+            for (RideWithUserModel rideTmp : rideUserList) {
+                if (rideTmp.getAddress().getCoordinate().getLatitude() == marker1.getPosition().latitude && rideTmp.getAddress().getCoordinate().getLongitude() == marker1.getPosition().longitude) {
+                    rideUser = rideTmp;
+                }
+            }
+            if (rideUser != null) {
+                Intent intent = new Intent(getApplicationContext(), BookRideActivity.class);
+                intent.putExtra(getString(R.string.ride_id_text), rideUser.getId());
+                intent.putExtra(getString(R.string.user_name_text), rideUser.getName()+" "+rideUser.getSurname());
+                intent.putExtra(getString(R.string.user_id_text), rideUser.getUserId());
+                startActivity(intent);
+            }
         });
     }
 }
