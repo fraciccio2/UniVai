@@ -12,11 +12,15 @@
     <string name="user_name_text" translatable="false">userName</string>
     <string name="rides_text" translatable="false">Rides</string>
     <string name="token_text" translatable="false">Token:</string>
+    <string name="reset_text" translatable="false">Reset</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
+    <string name="cancel_text">Cancella</string>
     <string name="confirm_password_text">Conferma Password</string>
     <string name="login_button_text">Accedi</string>
     <string name="signup_button_text">Registrati</string>
+    <string name="enter_email_text">Inserisci il tuo indirizzo email:</string>
+    <string name="forgot_password_text">Password dimenticata?</string>
     <string name="signUpRedirect_text">Non ancora registrato? Registrati</string>
     <string name="loginRedirect_text">Già iscritto? Accedi</string>
     <string name="map_text">Mappa</string>
@@ -66,4 +70,13 @@
     <string name="request_by_text">Ride richiesta da:</string>
     <string name="appointment_text">Appuntamento:</string>
     <string name="filter_text">Filtra</string>
+    <string name="all_field_required_text">Tutti i campi sono obbligatori</string>
+    <string name="success_login_text">Login effettuata con successo</string>
+    <string name="email_password_wrong_text">Email o Password errate</string>
+    <string name="email_wrong_text">Inserisci un indirizzo email corretto</string>
+    <string name="check_email_text">Controlla la tua email</string>
+    <string name="error_forgot_password_text">Impossibile inviare, errore</string>
+    <string name="error_signup_text">Errore nella registrazione</string>
+    <string name="successful_signup_text">Registrazione avvenuta con successo</string>
+    <string name="different_password_text">Le password inserite sono diverse</string>
 </resources>

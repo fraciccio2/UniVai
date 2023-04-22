@@ -2,9 +2,12 @@
 <resources>
     <string name="name_text">Name</string>
     <string name="surname_text">Surname</string>
+    <string name="cancel_text">Cancel</string>
     <string name="confirm_password_text">Confirm Password</string>
     <string name="login_button_text">Log In</string>
     <string name="signup_button_text">Sign Up</string>
+    <string name="enter_email_text">Enter your email address:</string>
+    <string name="forgot_password_text">Forgot Password?</string>
     <string name="signUpRedirect_text">Not registered yet? Sign up</string>
     <string name="loginRedirect_text">Already registered? Log in</string>
     <string name="map_text">Map</string>
@@ -54,4 +57,13 @@
     <string name="request_by_text">Ride request by:</string>
     <string name="appointment_text">Appointment:</string>
     <string name="filter_text">Filter</string>
+    <string name="all_field_required_text">All fields are required</string>
+    <string name="success_login_text">Login successful</string>
+    <string name="email_password_wrong_text">Wrong Email or Password</string>
+    <string name="email_wrong_text">Enter a correct email address</string>
+    <string name="check_email_text">Check your email</string>
+    <string name="error_forgot_password_text">Unable to send, failed</string>
+    <string name="error_signup_text">Registration error</string>
+    <string name="successful_signup_text">Registration was successful</string>
+    <string name="different_password_text">The passwords entered are different</string>
 </resources>

@@ -8,10 +8,13 @@
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/ic_baseline_email_24.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/ic_launcher_background.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/lavander_border.xml" value="0.2520833333333333" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/main_color_border.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/main_color_right_border.xml" value="0.26614583333333336" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/drawable/white_box.xml" value="0.26614583333333336" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_add_info.xml" value="0.1" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_book_ride.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_load_image.xml" value="0.1" />
-        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_login.xml" value="0.21164021164021163" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_login.xml" value="0.264" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_new_request.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_new_ride.xml" value="0.25" />
@@ -19,8 +22,9 @@
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_rides_list.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_rides_summary.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_settings.xml" value="0.25" />
-        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_signup.xml" value="0.2" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/activity_signup.xml" value="0.264" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/bottom_sheet_layout.xml" value="0.25" />
+        <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/dialog_forgot.xml" value="0.2" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_book_ride.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_rides_in.xml" value="0.25" />
         <entry key="..\:/Users/Francesco/Desktop/CarSharing/CarSharingProject/app/src/main/res/layout/fragment_rides_out.xml" value="0.25" />

@@ -4,14 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivitySignupBinding;
 import com.example.carsharing.services.DataBaseHelper;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
@@ -32,7 +29,7 @@ public class SignupActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
-        dataBaseHelper = new DataBaseHelper();
+        dataBaseHelper = new DataBaseHelper(getApplicationContext());
 
         binding.signupButton.setOnClickListener(view -> {
             String email = binding.signupEmail.getText().toString();
@@ -40,7 +37,7 @@ public class SignupActivity extends AppCompatActivity {
             String confirmPassword = binding.signupConfirmPassword.getText().toString();
 
             if (email.equals("") || password.equals("") || confirmPassword.equals("")) {
-                Toast.makeText(SignupActivity.this, "Tutti i campi sono obbligatori", Toast.LENGTH_SHORT).show();
+                Toast.makeText(SignupActivity.this, getString(R.string.all_field_required_text), Toast.LENGTH_SHORT).show();
             } else {
                 if (password.equals(confirmPassword)) {
                     Boolean correctEmail = dataBaseHelper.isCorrectEmail(email);
@@ -48,7 +45,7 @@ public class SignupActivity extends AppCompatActivity {
                             mAuth.createUserWithEmailAndPassword(email, password)
                                     .addOnCompleteListener(task -> {
                                         if (task.isSuccessful()) {
-                                            Toast.makeText(SignupActivity.this, "Registrazione avvenuta con successo", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(SignupActivity.this, getString(R.string.successful_signup_text), Toast.LENGTH_SHORT).show();
                                             FirebaseUser user = mAuth.getCurrentUser();
                                             if(user != null) {
                                                 mDatabase.setValue(user.getUid());
@@ -56,14 +53,14 @@ public class SignupActivity extends AppCompatActivity {
                                                 startActivity(intent);
                                             }
                                         } else {
-                                            Toast.makeText(SignupActivity.this, "Errore nella registrazione", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(SignupActivity.this, getString(R.string.error_signup_text), Toast.LENGTH_SHORT).show();
                                         }
                                     });
                     } else {
-                        Toast.makeText(SignupActivity.this, "L'email fornita non è valida", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(SignupActivity.this, getString(R.string.email_wrong_text), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(SignupActivity.this, "Le password inserite sono diverse", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SignupActivity.this, getString(R.string.different_password_text), Toast.LENGTH_SHORT).show();
                 }
             }
         });
