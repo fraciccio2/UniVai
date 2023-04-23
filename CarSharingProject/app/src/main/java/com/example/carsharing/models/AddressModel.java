@@ -1,7 +1,5 @@
 package com.example.carsharing.models;
 
-import com.google.android.gms.maps.model.LatLng;
-
 public class AddressModel {
 
     private String location;

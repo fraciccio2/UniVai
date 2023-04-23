@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -19,8 +20,9 @@ import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,6 +32,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AddInfoActivity extends AppCompatActivity {
@@ -47,6 +50,7 @@ public class AddInfoActivity extends AppCompatActivity {
     AddressModel address;
     boolean editMode = false;
     UserModel logUser;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,27 +67,12 @@ public class AddInfoActivity extends AppCompatActivity {
 
         adapterItems = new ArrayAdapter<>(this, R.layout.list_item, items);
         binding.autoCompleteText.setAdapter(adapterItems);
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.start_address);
-        if (autocompleteFragment != null) {
-            autocompleteFragment.setCountry("it");
-            autocompleteFragment.setHint(getString(R.string.search_address_text));
-            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
-            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                @Override
-                public void onError(@NonNull Status status) {
-                    Log.i("ERROR", "An error occurred: " + status);
-                }
 
-                @Override
-                public void onPlaceSelected(@NonNull Place place) {
-                    address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
-                }
-            });
-        }
+        googleAutoComplete();
 
         Bundle extras = getIntent().getExtras();
         if(extras != null) {
-            editMode(extras, autocompleteFragment);
+            editMode(extras);
         }
 
         addDataToUserAction();
@@ -130,9 +119,9 @@ public class AddInfoActivity extends AppCompatActivity {
         });
     }
 
-    private void editMode (Bundle extras, AutocompleteSupportFragment autocompleteFragment) {
+    private void editMode(Bundle extras) {
         boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
-        if(editMode) {
+        if (editMode) {
             this.editMode = true;
             binding.startButton.setText(getString(R.string.edit_button_text));
             getSupportActionBar().setTitle(getString(R.string.edit_button_text));
@@ -140,12 +129,12 @@ public class AddInfoActivity extends AppCompatActivity {
             mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()) {
+                    if (snapshot.exists()) {
                         logUser = snapshot.getValue(UserModel.class);
                         binding.startName.setText(logUser.getName());
                         binding.startSurname.setText(logUser.getSurname());
-                        autocompleteFragment.setText(logUser.getAddress().getLocation());
-                        binding.autoCompleteText.setText(logUser.getUniversity());
+                        binding.startAddress.setText(logUser.getAddress().getLocation());
+                        binding.autoCompleteText.setText(logUser.getUniversity(), false);
                         binding.startCar.setChecked(logUser.getHasCar());
                     }
                 }
@@ -166,5 +155,30 @@ public class AddInfoActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void googleAutoComplete() {
+        binding.startAddress.setOnClickListener(view -> {
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(getApplicationContext());
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
+                binding.startAddress.setText(address.getLocation());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i("ERROR", "An error occurred: " + status.getStatusMessage());
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

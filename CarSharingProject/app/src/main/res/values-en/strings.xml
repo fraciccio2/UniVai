@@ -66,4 +66,7 @@
     <string name="error_signup_text">Registration error</string>
     <string name="successful_signup_text">Registration was successful</string>
     <string name="different_password_text">The passwords entered are different</string>
+    <string name="near_to_text">Near:</string>
+    <string name="distance_text">Distant:</string>
+    <string name="your_address_text">Il tuo indirizzo</string>
 </resources>

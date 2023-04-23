@@ -79,4 +79,7 @@
     <string name="error_signup_text">Errore nella registrazione</string>
     <string name="successful_signup_text">Registrazione avvenuta con successo</string>
     <string name="different_password_text">Le password inserite sono diverse</string>
+    <string name="near_to_text">Vicino a:</string>
+    <string name="distance_text">Distante:</string>
+    <string name="your_address_text">Il tuo indirizzo</string>
 </resources>

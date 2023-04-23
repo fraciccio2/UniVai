@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -12,6 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
@@ -24,85 +24,92 @@
 
         <EditText
             android:id="@+id/start_name"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/main_color_border"
             android:drawableStart="@drawable/ic_baseline_person_24"
             android:drawablePadding="8dp"
-            android:inputType="text"
             android:hint="@string/name_text"
-            android:padding="8dp"/>
+            android:inputType="text"
+            android:padding="8dp" />
+
         <EditText
             android:id="@+id/start_surname"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/main_color_border"
             android:drawableStart="@drawable/ic_baseline_person_24"
             android:drawablePadding="8dp"
-            android:inputType="text"
             android:hint="@string/surname_text"
-            android:padding="8dp"/>
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="350dp"
+            android:inputType="text"
+            android:padding="8dp" />
+
+        <TextView
+            android:id="@+id/start_address"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
-            android:drawablePadding="8dp"
-            android:padding="8dp"
-            app:cardElevation="2dp"
-            app:cardCornerRadius="20dp"
-            app:strokeColor="@color/main_color"
-            app:strokeWidth="2dp">
-            <fragment
-                android:id="@+id/start_address"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:background="@drawable/main_color_border"
-                android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"/>
-        </com.google.android.material.card.MaterialCardView>
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/main_color_border"
+            android:drawableStart="@drawable/ic_baseline_search_24"
+            android:drawablePadding="5dp"
+            android:gravity="center|start"
+            android:paddingHorizontal="8dp"
+            android:text="@string/your_address_text"
+            android:textSize="18sp" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/start_select_uni"
-            android:layout_width="350dp"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
             android:layout_height="60dp"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/main_color_border"
             android:hint="@string/select_uni_text"
+            app:boxBackgroundColor="@android:color/transparent"
             app:boxStrokeWidth="0dp"
-            app:boxStrokeWidthFocused="0dp"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu">
+            app:boxStrokeWidthFocused="0dp">
+
             <AutoCompleteTextView
                 android:id="@+id/auto_complete_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="none"/>
+                android:layout_marginHorizontal="8dp"
+                android:layout_marginBottom="4dp"
+                android:background="@drawable/main_color_border"
+                android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
+
         <CheckBox
             android:id="@+id/start_car"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginTop="30dp"
             android:drawablePadding="8dp"
-            android:textColor="@color/white"
-            android:text="@string/car_checkbox_text"/>
+            android:text="@string/car_checkbox_text"
+            android:textColor="@color/white" />
+
         <Button
             android:id="@+id/start_button"
-            android:layout_width="350dp"
+            android:layout_width="match_parent"
             android:layout_height="70dp"
-            android:layout_marginTop="30dp"
             android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
             android:text="@string/start_button_text"
             android:textSize="18sp"
             app:cornerRadius="30dp" />
 
     </LinearLayout>
-
-
 
 </ScrollView>

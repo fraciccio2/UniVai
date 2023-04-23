@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="20dp"
-        android:text="Vicino a:"
+        android:text="@string/near_to_text"
         android:textColor="@color/main_color"
         android:textSize="18sp" />
 
@@ -37,7 +37,7 @@
         android:layout_marginHorizontal="8dp"
         android:layout_marginTop="20dp"
         android:layout_marginBottom="8dp"
-        android:text="Distante:"
+        android:text="@string/distance_text"
         android:textColor="@color/main_color"
         android:textSize="18sp" />
 
