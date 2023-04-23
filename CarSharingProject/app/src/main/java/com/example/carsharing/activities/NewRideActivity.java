@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
@@ -21,8 +22,9 @@ import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
+import com.google.android.libraries.places.widget.Autocomplete;
+import com.google.android.libraries.places.widget.AutocompleteActivity;
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -34,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.List;
 
 public class NewRideActivity extends AppCompatActivity {
 
@@ -44,6 +47,7 @@ public class NewRideActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     UserModel logUser;
+    private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,58 +66,19 @@ public class NewRideActivity extends AppCompatActivity {
         }
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
 
-        AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.new_ride_address);
-        if (autocompleteFragment != null) {
-            autocompleteFragment.setCountry("it");
-            autocompleteFragment.setHint(getString(R.string.new_ride_address_text));
-            autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS));
-            autocompleteFragment.setOnPlaceSelectedListener(new PlaceSelectionListener() {
-                @Override
-                public void onError(@NonNull Status status) {
-                    Log.i("ERROR", "An error occurred: " + status);
-                }
-
-                @Override
-                public void onPlaceSelected(@NonNull Place place) {
-                    address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
-                }
-            });
-        }
+        googleAutoComplete();
 
         binding.newRideAddressCheck.setOnClickListener(view -> {
             if(binding.newRideAddressCheck.isChecked()){
-                autocompleteFragment.setHint(logUser.getAddress().getLocation());
+                binding.newRideAddress.setHint(logUser.getAddress().getLocation());
                 address = logUser.getAddress();
             } else {
-                autocompleteFragment.setHint(getString(R.string.new_ride_address_text));
+                binding.newRideAddress.setHint(getString(R.string.new_ride_address_text));
                 address = null;
             }
         });
 
-        binding.newRideTime.setOnClickListener(view -> {
-            Calendar calendar = Calendar.getInstance();
-            int year = calendar.get(Calendar.YEAR);
-            int month = calendar.get(Calendar.MONTH);
-            int day = calendar.get(Calendar.DAY_OF_MONTH);
-            int hour = calendar.get(Calendar.HOUR_OF_DAY);
-            int minute = calendar.get(Calendar.MINUTE);
-            DatePickerDialog mDatePicker;
-            mDatePicker = new DatePickerDialog(NewRideActivity.this, (datePicker, selectedYear, selectedMonth, selectedDay) -> {
-                TimePickerDialog mTimePicker;
-                mTimePicker = new TimePickerDialog(NewRideActivity.this, (timePicker, selectedHour, selectedMinute) -> {
-                    calendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
-                    date = calendar.getTime().toString();
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.date_pattern));
-                    text = simpleDateFormat.format(calendar.getTime());
-                    binding.newRideTime.setText(text);
-                }, hour, minute, true);
-                mTimePicker.setTitle(getString(R.string.new_ride_time_text));
-                mTimePicker.show();
-            }, year, month, day);
-            mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
-            mDatePicker.setTitle(getString(R.string.new_ride_time_text));
-            mDatePicker.show();
-        });
+        setDateAndTime();
 
         binding.newRideButton.setOnClickListener(view -> saveNewRide(user));
     }
@@ -154,5 +119,57 @@ public class NewRideActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void setDateAndTime() {
+        binding.newRideTime.setOnClickListener(view -> {
+            Calendar calendar = Calendar.getInstance();
+            int year = calendar.get(Calendar.YEAR);
+            int month = calendar.get(Calendar.MONTH);
+            int day = calendar.get(Calendar.DAY_OF_MONTH);
+            int hour = calendar.get(Calendar.HOUR_OF_DAY);
+            int minute = calendar.get(Calendar.MINUTE);
+            DatePickerDialog mDatePicker;
+            mDatePicker = new DatePickerDialog(NewRideActivity.this, (datePicker, selectedYear, selectedMonth, selectedDay) -> {
+                TimePickerDialog mTimePicker;
+                mTimePicker = new TimePickerDialog(NewRideActivity.this, (timePicker, selectedHour, selectedMinute) -> {
+                    calendar.set(selectedYear, selectedMonth, selectedDay, selectedHour, selectedMinute);
+                    date = calendar.getTime().toString();
+                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat(getString(R.string.date_pattern));
+                    text = simpleDateFormat.format(calendar.getTime());
+                    binding.newRideTime.setText(text);
+                }, hour, minute, true);
+                mTimePicker.setTitle(getString(R.string.new_ride_time_text));
+                mTimePicker.show();
+            }, year, month, day);
+            mDatePicker.getDatePicker().setMinDate(System.currentTimeMillis() - 1000);
+            mDatePicker.setTitle(getString(R.string.new_ride_time_text));
+            mDatePicker.show();
+        });
+    }
+
+    private void googleAutoComplete() {
+        binding.newRideAddress.setOnClickListener(view -> {
+            List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+            Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
+                    .build(getApplicationContext());
+            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = Autocomplete.getPlaceFromIntent(data);
+                address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
+                binding.newRideAddress.setText(address.getLocation());
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                Status status = Autocomplete.getStatusFromIntent(data);
+                Log.i("ERROR", "An error occurred: " + status.getStatusMessage());
+            }
+            return;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }
