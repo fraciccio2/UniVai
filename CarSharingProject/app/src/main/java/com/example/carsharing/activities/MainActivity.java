@@ -121,12 +121,19 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 this.loadMap();
             } else {
-                setMapWithDefaultValue();
+                setMapWithDefaultValue(false);
             }
         }
     }
 
-    private void setMapWithDefaultValue() {
+    private void setMapWithDefaultValue(boolean showAlert) {
+        if (showAlert) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+            builder.setTitle(getString(R.string.ops_text));
+            builder.setMessage(getString(R.string.warning_location_text));
+            builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
+            builder.show();
+        }
         if (logUser != null) {
             userLatLng = new LatLng(logUser.getAddress().getCoordinate().getLatitude(), logUser.getAddress().getCoordinate().getLongitude());
         } else {
@@ -141,16 +148,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             if (location != null) {
                 userLatLng = new LatLng(location.getLatitude(), location.getLongitude());
                 getRides();
+            } else {
+                setMapWithDefaultValue(true);
             }
         });
 
         providerClient.getLastLocation().addOnFailureListener(e -> {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-            builder.setTitle(getString(R.string.ops_text));
-            builder.setMessage(getString(R.string.warning_location_text));
-            builder.setNeutralButton(getString(R.string.neutral_button_text), (dialog, which) -> dialog.dismiss());
-            builder.show();
-            setMapWithDefaultValue();
+            setMapWithDefaultValue(true);
             Log.e("Error", "exception", e);
         });
     }
@@ -218,11 +222,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                 }
                                 if (i == l) {
+                                    Log.i("Tag", "enter");
                                     if (rideUserList.size() == 0) {
                                         warningRidesAlert();
-                                    } else {
-                                        setMap(userLatLng.latitude, userLatLng.longitude);
                                     }
+                                    setMap(userLatLng.latitude, userLatLng.longitude);
                                 }
                             }
 

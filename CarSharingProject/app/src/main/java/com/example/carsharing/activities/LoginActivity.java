@@ -24,8 +24,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-import java.util.HashMap;
-
 public class LoginActivity extends AppCompatActivity {
 
     ActivityLoginBinding binding;
@@ -41,7 +39,7 @@ public class LoginActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
-        dataBaseHelper = new DataBaseHelper(getApplicationContext());
+        dataBaseHelper = new DataBaseHelper();
 
         checkIfAreLoggedUser();
 
@@ -63,7 +61,6 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
                                 Toast.makeText(LoginActivity.this, getString(R.string.success_login_text), Toast.LENGTH_SHORT).show();
                                 FirebaseUser user = mAuth.getCurrentUser();
-                                dataBaseHelper.insertData(email, password);
                                 if (user != null) {
                                     mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -132,15 +129,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void checkIfAreLoggedUser() {
-        HashMap<String, String> map = dataBaseHelper.getEmailAndPassword();
-        if (map != null) {
-            mAuth.signInWithEmailAndPassword(map.get("email"), map.get("password")).addOnCompleteListener(task -> {
-                if (task.isSuccessful()) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                }
-            });
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
+            finish();
         }
     }
 }

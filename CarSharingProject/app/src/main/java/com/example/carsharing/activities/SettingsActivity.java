@@ -15,7 +15,6 @@ import com.example.carsharing.R;
 import com.example.carsharing.adapters.LanguageSpinnerAdapter;
 import com.example.carsharing.databinding.ActivitySettingsBinding;
 import com.example.carsharing.models.UserModel;
-import com.example.carsharing.services.DataBaseHelper;
 import com.example.carsharing.services.NavigationHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,7 +35,6 @@ public class SettingsActivity extends AppCompatActivity {
     NavigationHelper navigationHelper = new NavigationHelper();
     DatabaseReference mDatabaseUsers;
     UserModel logUser;
-    DataBaseHelper dataBaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +42,6 @@ public class SettingsActivity extends AppCompatActivity {
         binding = ActivitySettingsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
         binding.bottomNavigationView.setSelectedItemId(R.id.action_settings);
-
-        dataBaseHelper = new DataBaseHelper(getApplicationContext());
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -86,7 +82,6 @@ public class SettingsActivity extends AppCompatActivity {
     private void logOutAction () {
         binding.logoutAction.setOnClickListener(view -> {
             mAuth.signOut();
-            dataBaseHelper.dropTable();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
             finish();

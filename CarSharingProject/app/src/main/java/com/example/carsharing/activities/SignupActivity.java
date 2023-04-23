@@ -29,7 +29,7 @@ public class SignupActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference();
         setContentView(binding.getRoot());
 
-        dataBaseHelper = new DataBaseHelper(getApplicationContext());
+        dataBaseHelper = new DataBaseHelper();
 
         binding.signupButton.setOnClickListener(view -> {
             String email = binding.signupEmail.getText().toString();
