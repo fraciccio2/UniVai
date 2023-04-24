@@ -1,17 +1,24 @@
 package com.example.carsharing.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.carsharing.R;
 import com.example.carsharing.activities.BookRideActivity;
+import com.example.carsharing.activities.RidesListActivity;
 import com.example.carsharing.holders.RideViewHolder;
 import com.example.carsharing.models.RideWithUserModel;
 
@@ -22,10 +29,12 @@ import java.util.List;
 public class RideAdapter extends RecyclerView.Adapter<RideViewHolder> {
     private final List<RideWithUserModel> rideUserList;
     private final Context context;
+    private final RidesListActivity activity;
 
-    public RideAdapter(List<RideWithUserModel> rideUserList, Context context) {
+    public RideAdapter(List<RideWithUserModel> rideUserList, Context context, RidesListActivity activity) {
         this.rideUserList = rideUserList;
         this.context = context;
+        this.activity = activity;
     }
 
     @NonNull
@@ -39,6 +48,23 @@ public class RideAdapter extends RecyclerView.Adapter<RideViewHolder> {
     public void onBindViewHolder(@NonNull RideViewHolder holder, int position) {
         SimpleDateFormat formatter = new SimpleDateFormat(context.getString(R.string.date_pattern));
         RideWithUserModel rideUser = rideUserList.get(position);
+        holder.avatarUser.setOnClickListener(view -> {
+            Dialog dialog = new Dialog(activity);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            ImageView imageView = new ImageView(activity);
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round);
+            Glide.with(activity).load(rideUser.getUserImage()).apply(options).into(imageView);
+            dialog.addContentView(imageView, new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        });
         Glide.with(context).load(rideUser.getUserImage()).into(holder.avatarUser);
         holder.rideNote.setText(rideUser.getNote());
         holder.rideDate.setText(formatter.format(new Date(rideUser.getDate())));

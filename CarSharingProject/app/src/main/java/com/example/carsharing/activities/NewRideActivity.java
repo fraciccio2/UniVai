@@ -1,5 +1,6 @@
 package com.example.carsharing.activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
@@ -86,12 +87,25 @@ public class NewRideActivity extends AppCompatActivity {
     private void saveNewRide(FirebaseUser user) {
         String note = binding.newRideNote.getText().toString();
         if(address != null && date != null && user != null) {
-            RideModel ride = new RideModel(user.getUid(), address, date, note, true);
-            mDatabase.child("rides").push().setValue(ride);
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
+            if(logUser.getUserImage() == null || logUser.getUserImage().equals("")) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(NewRideActivity.this);
+                builder.setTitle(getString(R.string.attention_title_text));
+                builder.setMessage(getString(R.string.new_ride_warning_text));
+                builder.setNegativeButton(getString(R.string.dont_insert_text), (dialog, which) -> dialog.dismiss());
+                builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
+                    Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
+                    intent.putExtra(getString(R.string.edit_mode_text), true);
+                    startActivity(intent);
+                });
+                builder.show();
+            } else {
+                RideModel ride = new RideModel(user.getUid(), address, date, note, true);
+                mDatabase.child("rides").push().setValue(ride);
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+            }
         } else {
-            Toast.makeText(this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.all_field_required_text), Toast.LENGTH_SHORT).show();
         }
     }
 

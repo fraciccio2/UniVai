@@ -222,7 +222,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                     }
                                 }
                                 if (i == l) {
-                                    Log.i("Tag", "enter");
                                     if (rideUserList.size() == 0) {
                                         warningRidesAlert();
                                     }

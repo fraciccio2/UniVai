@@ -51,7 +51,7 @@
     <string name="english_text">Inglese</string>
     <string name="change_user_image_text">Cambia immagine profilo</string>
     <string name="edit_user_data_text">Modifica dati utente</string>
-    <string name="ride_create_text">Ride creato da:</string>
+    <string name="ride_create_text">Ride creata da:</string>
     <string name="address_text">Indirizzo:</string>
     <string name="time_text">Partenza:</string>
     <string name="notes_text">Note:</string>
@@ -82,4 +82,10 @@
     <string name="near_to_text">Vicino a:</string>
     <string name="distance_text">Distante:</string>
     <string name="your_address_text">Il tuo indirizzo</string>
+    <string name="attention_title_text">ATTENZIONE</string>
+    <string name="new_ride_warning_text">Per poter creare una nuova Ride devi inserire un\'immagine di profilo.</string>
+    <string name="dont_insert_text">Non inserire</string>
+    <string name="insert_text">Inserisci</string>
+    <string name="error_retry_text">C\'è stato un problema, riprova.</string>
+    <string name="insert_address_text">Inserisci l\'indirizo in cui ti farai trovare</string>
 </resources>

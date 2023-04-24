@@ -136,7 +136,7 @@ public class RidesListActivity extends AppCompatActivity {
                                         RecyclerView recyclerView = binding.recyclerView;
                                         LinearLayoutManager layoutManager = new LinearLayoutManager(RidesListActivity.this);
                                         recyclerView.setLayoutManager(layoutManager);
-                                        RideAdapter adapter = new RideAdapter(rideUserList, getApplicationContext());
+                                        RideAdapter adapter = new RideAdapter(rideUserList, getApplicationContext(), RidesListActivity.this);
                                         recyclerView.setAdapter(adapter);
                                     } else {
                                         warningRidesAlert();

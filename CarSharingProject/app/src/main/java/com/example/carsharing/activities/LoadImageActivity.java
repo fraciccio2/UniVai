@@ -41,7 +41,6 @@ public class LoadImageActivity extends AppCompatActivity {
     DatabaseReference mDatabase;
     private Uri imageUri;
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
-    final static String anonymousUser = "https://firebasestorage.googleapis.com/v0/b/car-sharing-b39c3.appspot.com/o/user-spy.png?alt=media&token=dece854f-d20a-4aed-98f9-4976fbdcb2fc";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,7 +56,7 @@ public class LoadImageActivity extends AppCompatActivity {
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
+        if (extras != null) {
             editMode(extras);
         }
 
@@ -84,14 +83,8 @@ public class LoadImageActivity extends AppCompatActivity {
         });
 
         binding.skipButton.setOnClickListener(view -> {
-            FirebaseUser user = mAuth.getCurrentUser();
-            if(user != null) {
-                Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("userImage", anonymousUser);
-                mDatabase.child(user.getUid()).updateChildren(updateUser);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
-            }
+            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+            startActivity(intent);
         });
 
         binding.continueButton.setOnClickListener(view -> {
@@ -102,10 +95,10 @@ public class LoadImageActivity extends AppCompatActivity {
     }
 
     private void uploadToFirebase(Uri uri) {
-        final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "."+ getFileExtension(uri));
+        final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(uri));
         imageReference.putFile(uri).addOnSuccessListener(taskSnapshot -> imageReference.getDownloadUrl().addOnSuccessListener(uriDownloaded -> {
             FirebaseUser user = mAuth.getCurrentUser();
-            if(user != null) {
+            if (user != null) {
                 Map<String, Object> updateUser = new HashMap<>();
                 updateUser.put("userImage", uriDownloaded.toString());
                 mDatabase.child(user.getUid()).updateChildren(updateUser);
@@ -115,22 +108,22 @@ public class LoadImageActivity extends AppCompatActivity {
         }));
     }
 
-    private String getFileExtension(Uri fileUri){
+    private String getFileExtension(Uri fileUri) {
         ContentResolver contentResolver = getContentResolver();
         MimeTypeMap mime = MimeTypeMap.getSingleton();
         return mime.getExtensionFromMimeType(contentResolver.getType(fileUri));
     }
 
-    private void editMode (Bundle extras) {
+    private void editMode(Bundle extras) {
         boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
-        if(editMode) {
+        if (editMode) {
             binding.skipButton.setVisibility(View.INVISIBLE);
             binding.skipButton.setEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mDatabase.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()) {
+                    if (snapshot.exists()) {
                         UserModel user = snapshot.getValue(UserModel.class);
                         Glide.with(getApplicationContext()).load(user.getUserImage()).into(binding.uploadImage);
                     }

@@ -69,4 +69,10 @@
     <string name="near_to_text">Near:</string>
     <string name="distance_text">Distant:</string>
     <string name="your_address_text">Il tuo indirizzo</string>
+    <string name="attention_title_text">ATTENTION</string>
+    <string name="new_ride_warning_text">In order to create a new Ride you need to insert a profile picture.</string>
+    <string name="dont_insert_text">Do not insert</string>
+    <string name="insert_text">Insert</string>
+    <string name="error_retry_text">There was a problem, please try again.</string>
+    <string name="insert_address_text">Enter the address where you will be found</string>
 </resources>

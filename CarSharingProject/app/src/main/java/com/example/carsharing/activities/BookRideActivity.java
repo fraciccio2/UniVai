@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,6 +17,7 @@ import com.example.carsharing.databinding.ActivityBookRideBinding;
 import com.example.carsharing.enums.StatusEnum;
 import com.example.carsharing.models.AddressModel;
 import com.example.carsharing.models.RequestRideModel;
+import com.example.carsharing.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -38,9 +40,11 @@ public class BookRideActivity extends AppCompatActivity {
     ActivityBookRideBinding binding;
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseRides;
+    DatabaseReference mDatabaseUsers;
     String rideId;
     String userId;
     String location;
+    UserModel logUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,11 +54,17 @@ public class BookRideActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRides = FirebaseDatabase.getInstance().getReference("rides");
+        mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(getString(R.string.book_ride_text));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null) {
+            getLoggedUser(user);
+        }
 
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
         AutocompleteSupportFragment autocompleteFragment = (AutocompleteSupportFragment) getSupportFragmentManager().findFragmentById(R.id.other_location);
@@ -119,17 +129,30 @@ public class BookRideActivity extends AppCompatActivity {
             if(user != null) {
                 if(binding.otherLocationButton.isChecked()) {
                     if(location != null) {
-                        RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location);
-                        FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
-                            if(task.isSuccessful()) {
-                                Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+                        if(logUser.getUserImage() == null || logUser.getUserImage().equals("")){
+                            AlertDialog.Builder builder = new AlertDialog.Builder(BookRideActivity.this);
+                            builder.setTitle(getString(R.string.attention_title_text));
+                            builder.setMessage(getString(R.string.new_ride_warning_text));
+                            builder.setNegativeButton(getString(R.string.dont_insert_text), (dialog, which) -> dialog.dismiss());
+                            builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
+                                Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
+                                intent.putExtra(getString(R.string.edit_mode_text), true);
                                 startActivity(intent);
-                            } else {
-                                Toast.makeText(getApplicationContext(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                            });
+                            builder.show();
+                        } else {
+                            RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location);
+                            FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
+                                if(task.isSuccessful()) {
+                                    Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+                                    startActivity(intent);
+                                } else {
+                                    Toast.makeText(getApplicationContext(), getString(R.string.error_retry_text), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
                     } else {
-                        Toast.makeText(getApplicationContext(), "Inserisci l'indirizo in cui ti farai trovare", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getApplicationContext(), getString(R.string.insert_address_text), Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId);
@@ -138,7 +161,7 @@ public class BookRideActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(getApplicationContext(), "C'è stato un problema, riprova.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), getString(R.string.error_retry_text), Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
@@ -158,6 +181,22 @@ public class BookRideActivity extends AppCompatActivity {
         binding.otherLocationButton.setOnClickListener(view ->{
             if(binding.otherLocationButton.isChecked()) {
                 binding.autocompleteCard.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void getLoggedUser(FirebaseUser user) {
+        mDatabaseUsers.child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    logUser = snapshot.getValue(UserModel.class);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Error", "exception", error.toException());
             }
         });
     }
