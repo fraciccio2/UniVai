@@ -87,10 +87,12 @@ public class RidesInFragment extends Fragment {
                                     l++;
                                     if (snapshot.exists()) {
                                         String userName = "";
+                                        String userAvatar = "";
                                         for (DataSnapshot datas : snapshot.getChildren()) {
                                             userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
+                                            userAvatar = datas.child("userImage").getValue(String.class);
                                         }
-                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), false));
+                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, false));
                                         if (i == l) {
                                             if (requestsRideList.size() > 0) {
                                                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());

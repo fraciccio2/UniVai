@@ -1,6 +1,7 @@
 package com.example.carsharing.holders;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -16,12 +17,11 @@ public class RequestRideViewHolder extends RecyclerView.ViewHolder {
     public TextView status;
     public TextView user;
     public TextView position;
-    public TextView labelUser;
-    public TextView labelPosition;
     public TextView token;
     public LinearLayout layoutWithButtons;
     public MaterialButton acceptButton;
     public MaterialButton refuseButton;
+    public ImageView userImage;
 
     public RequestRideViewHolder(@NonNull View itemView) {
         super(itemView);
@@ -29,11 +29,10 @@ public class RequestRideViewHolder extends RecyclerView.ViewHolder {
         status = itemView.findViewById(R.id.request_status);
         user = itemView.findViewById(R.id.request_user);
         position = itemView.findViewById(R.id.request_position);
-        labelUser = itemView.findViewById(R.id.label_request_user);
-        labelPosition = itemView.findViewById(R.id.label_request_position);
         layoutWithButtons = itemView.findViewById(R.id.layout_with_button);
         acceptButton = itemView.findViewById(R.id.accept_button);
         refuseButton = itemView.findViewById(R.id.refuse_button);
+        userImage = itemView.findViewById(R.id.user_avatar);
         token = itemView.findViewById(R.id.token_request);
     }
 }

@@ -41,6 +41,7 @@ public class RidesOutFragment extends Fragment {
     SearchView searchView;
     int i = 0, l = 0;
     String userName = "";
+    String userAvatar = "";
     List<RequestWithUserModel> requestsRideList = new ArrayList<>();
 
     public RidesOutFragment(){}
@@ -86,25 +87,26 @@ public class RidesOutFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if(snapshot.exists()) {
                                         for (DataSnapshot datas: snapshot.getChildren()) {
-                                            userName = datas.child("name").getValue(String.class) + " " +datas.child("surname").getValue(String.class);
+                                            userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
+                                            userAvatar = datas.child("userImage").getValue(String.class);
                                             mDatabaseRides.orderByKey().equalTo(requestRide.getRideId()).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                     l++;
-                                                    if(snapshot.exists()){
+                                                    if (snapshot.exists()) {
                                                         AddressModel address;
                                                         String date;
-                                                        for(DataSnapshot ride: snapshot.getChildren()) {
+                                                        for (DataSnapshot ride : snapshot.getChildren()) {
                                                             SimpleDateFormat formatter = new SimpleDateFormat(view.getContext().getString(R.string.date_pattern));
                                                             address = ride.child("address").getValue(AddressModel.class);
                                                             date = formatter.format(new Date(ride.child("date").getValue(String.class)));
-                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date,true));
+                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, true));
                                                         }
                                                         if (requestsRideList.size() > 0 && i == l) {
                                                             RecyclerView recyclerView = view.findViewById(R.id.recycler_view_out);
                                                             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                                                             recyclerView.setLayoutManager(layoutManager);
-                                                            RequestRideAdapter adapter = new RequestRideAdapter(getContext(), requestsRideList);
+                                                            RequestRideAdapter adapter = new RequestRideAdapter(getContext(), RidesOutFragment.this, requestsRideList);
                                                             recyclerView.setAdapter(adapter);
                                                         }
                                                     }
@@ -154,7 +156,7 @@ public class RidesOutFragment extends Fragment {
                     }
                 }
                 if (filteredRequestsRideList.size() > 0) {
-                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), requestsRideList));
+                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesOutFragment.this, requestsRideList));
                 } else {
                     warningRidesAlert(getString(R.string.warning_request_filter_text));
                 }

@@ -9,24 +9,27 @@ public class RequestWithUserModel {
     private String tokenRequest;
     private String location;
     private String date;
+    private String userAvatar;
     private boolean out;
 
-    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, boolean out) {
+    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, String userAvatar, boolean out) {
         this.status = status;
         this.userName = userName;
         this.rideId = rideId;
         this.tokenRequest = tokenRequest;
         this.location = location;
         this.date = date;
+        this.userAvatar = userAvatar;
         this.out = out;
     }
 
-    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, boolean out) {
+    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String userAvatar, boolean out) {
         this.status = status;
         this.userName = userName;
         this.rideId = rideId;
         this.tokenRequest = tokenRequest;
         this.location = location;
+        this.userAvatar = userAvatar;
         this.out = out;
     }
 
@@ -76,6 +79,14 @@ public class RequestWithUserModel {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getUserAvatar() {
+        return userAvatar;
+    }
+
+    public void setUserAvatar(String userAvatar) {
+        this.userAvatar = userAvatar;
     }
 
     public boolean isOut() {

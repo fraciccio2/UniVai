@@ -1,19 +1,26 @@
 package com.example.carsharing.adapters;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.carsharing.R;
-import com.example.carsharing.activities.RidesSummaryActivity;
 import com.example.carsharing.fragments.RidesInFragment;
+import com.example.carsharing.fragments.RidesOutFragment;
 import com.example.carsharing.holders.RequestRideViewHolder;
 import com.example.carsharing.models.RequestWithUserModel;
 
@@ -22,17 +29,19 @@ import java.util.List;
 public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHolder> {
     private final List<RequestWithUserModel> requestRideList;
     private final Context context;
-    private RidesInFragment fragment;
+    private RidesInFragment fragmentIn;
+    private RidesOutFragment fragmentOut;
 
     public RequestRideAdapter(Context context, RidesInFragment fragment, List<RequestWithUserModel> requestRideList) {
         this.context = context;
-        this.fragment = fragment;
+        this.fragmentIn = fragment;
         this.requestRideList = requestRideList;
     }
 
-    public RequestRideAdapter(Context context, List<RequestWithUserModel> requestRideList) {
+    public RequestRideAdapter(Context context, RidesOutFragment fragment, List<RequestWithUserModel> requestRideList) {
         this.context = context;
         this.requestRideList = requestRideList;
+        this.fragmentOut = fragment;
     }
 
     @NonNull
@@ -47,12 +56,8 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
         RequestWithUserModel requestRide = requestRideList.get(position);
         boolean isOutRequest = requestRide.isOut();
         if(isOutRequest) {
-            holder.labelUser.setText(context.getString(R.string.created_by_text));
-            holder.labelPosition.setText(context.getString(R.string.appointment_text));
             holder.position.setText(requestRide.getLocation() + " " +requestRide.getDate());
         } else {
-            holder.labelUser.setText(context.getString(R.string.request_by_text));
-            holder.labelPosition.setText(context.getString(R.string.appointment_text));
             if(requestRide.getLocation() != null) {
                 holder.position.setText(requestRide.getLocation());
             } else {
@@ -61,9 +66,28 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
         }
         holder.user.setText(requestRide.getUserName());
         int dpSize = 2;
-        DisplayMetrics dm = context.getResources().getDisplayMetrics() ;
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
         float strokeWidth = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpSize, dm);
         holder.requestCard.setStrokeWidth(Math.round(strokeWidth));
+        holder.userImage.setOnClickListener(view -> {
+            Context context = fragmentOut != null ? fragmentOut.getContext() : fragmentIn.getContext();
+            Dialog dialog = new Dialog(context);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.getWindow().setBackgroundDrawable(
+                    new ColorDrawable(android.graphics.Color.TRANSPARENT));
+            ImageView imageView = new ImageView(context);
+            RequestOptions options = new RequestOptions()
+                    .centerCrop()
+                    .placeholder(R.mipmap.ic_launcher_round);
+            Glide.with(context).load(requestRide.getUserAvatar()).apply(options).into(imageView);
+            dialog.addContentView(imageView, new RelativeLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT));
+            dialog.setCancelable(true);
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
+        });
+        Glide.with(context).load(requestRide.getUserAvatar()).into(holder.userImage);
         switch (requestRide.getStatus()) {
             case ACCEPT:
                 holder.requestCard.setStrokeColor(context.getResources().getColor(R.color.success_border));
@@ -71,7 +95,7 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
                 holder.status.setBackground(AppCompatResources.getDrawable(context, R.drawable.success_status));
                 holder.status.setTextColor(context.getResources().getColor(R.color.white));
                 holder.token.setVisibility(View.VISIBLE);
-                holder.token.setText(context.getString(R.string.token_text)+" "+requestRide.getTokenRequest());
+                holder.token.setText(context.getString(R.string.token_text) + " " + requestRide.getTokenRequest());
                 break;
             case PENDING:
                 holder.requestCard.setStrokeColor(context.getResources().getColor(R.color.warning_border));
@@ -79,8 +103,8 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
                 holder.status.setBackground(AppCompatResources.getDrawable(context, R.drawable.warnig_status));
                 if(!isOutRequest) {
                     holder.layoutWithButtons.setVisibility(View.VISIBLE);
-                    holder.refuseButton.setOnClickListener(view -> fragment.refuseRequest(requestRide.getTokenRequest()));
-                    holder.acceptButton.setOnClickListener(view -> fragment.acceptRequest(requestRide.getTokenRequest()));
+                    holder.refuseButton.setOnClickListener(view -> fragmentIn.refuseRequest(requestRide.getTokenRequest()));
+                    holder.acceptButton.setOnClickListener(view -> fragmentIn.acceptRequest(requestRide.getTokenRequest()));
                 }
                 break;
             case REFUSED:
