@@ -23,6 +23,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
+
+import java.util.HashMap;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -30,6 +33,7 @@ public class LoginActivity extends AppCompatActivity {
     DataBaseHelper dataBaseHelper;
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
+    DatabaseReference mDatabaseTokens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +41,7 @@ public class LoginActivity extends AppCompatActivity {
         binding = ActivityLoginBinding.inflate(getLayoutInflater());
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference();
+        mDatabaseTokens = FirebaseDatabase.getInstance().getReference("registrationToken");
         setContentView(binding.getRoot());
 
         dataBaseHelper = new DataBaseHelper();
@@ -66,6 +71,7 @@ public class LoginActivity extends AppCompatActivity {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                                             if (snapshot.exists() && snapshot.hasChildren()) {
+                                                checkDeviceToken(user.getUid());
                                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                 startActivity(intent);
                                             } else {
@@ -77,7 +83,7 @@ public class LoginActivity extends AppCompatActivity {
 
                                         @Override
                                         public void onCancelled(@NonNull DatabaseError error) {
-                                            Log.println(Log.ERROR, "Errore", "");
+                                            Log.e("Error", "exception", error.toException());
                                         }
                                     });
                                 }
@@ -135,5 +141,30 @@ public class LoginActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
+    }
+
+    private void checkDeviceToken(String userUid) {
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                mDatabaseTokens.orderByKey().equalTo(task.getResult()).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            String uid = ((HashMap<String, String>) snapshot.getValue()).get(task.getResult());
+                            if (!uid.equals(userUid)) {
+                                mDatabaseTokens.child(task.getResult()).setValue(userUid);
+                            }
+                        } else {
+                            mDatabaseTokens.child(task.getResult()).setValue(userUid);
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("Error", "exception", error.toException());
+                    }
+                });
+            }
+        });
     }
 }

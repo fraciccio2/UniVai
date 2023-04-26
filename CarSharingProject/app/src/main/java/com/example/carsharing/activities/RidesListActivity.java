@@ -46,6 +46,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class RidesListActivity extends AppCompatActivity {
@@ -136,6 +137,7 @@ public class RidesListActivity extends AppCompatActivity {
                                         RecyclerView recyclerView = binding.recyclerView;
                                         LinearLayoutManager layoutManager = new LinearLayoutManager(RidesListActivity.this);
                                         recyclerView.setLayoutManager(layoutManager);
+                                        Collections.reverse(rideUserList);
                                         RideAdapter adapter = new RideAdapter(rideUserList, getApplicationContext(), RidesListActivity.this);
                                         recyclerView.setAdapter(adapter);
                                     } else {

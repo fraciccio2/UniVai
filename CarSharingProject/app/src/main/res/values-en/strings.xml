@@ -75,4 +75,7 @@
     <string name="insert_text">Insert</string>
     <string name="error_retry_text">There was a problem, please try again.</string>
     <string name="insert_address_text">Enter the address where you will be found</string>
+    <string name="refused_message_text">It appears that a user has declined your Ride</string>
+    <string name="accepted_message_text">It appears that a user has accepted your Ride</string>
+    <string name="interested_message_text">It seems that a user is interested in your Ride</string>
 </resources>

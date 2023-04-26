@@ -12,6 +12,6 @@
     <style name="WindowFullScreen">
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowNoTitle">true</item>
-        <item name="android:padding">20dp</item>
+        <item name="android:padding">8dp</item>
     </style>
 </resources>

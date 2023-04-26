@@ -5,6 +5,7 @@ import com.example.carsharing.enums.StatusEnum;
 public class RequestWithUserModel {
     private StatusEnum status;
     private String userName;
+    private String userUid;
     private String rideId;
     private String tokenRequest;
     private String location;
@@ -12,7 +13,7 @@ public class RequestWithUserModel {
     private String userAvatar;
     private boolean out;
 
-    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, String userAvatar, boolean out) {
+    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, boolean out, String userAvatar) {
         this.status = status;
         this.userName = userName;
         this.rideId = rideId;
@@ -23,9 +24,10 @@ public class RequestWithUserModel {
         this.out = out;
     }
 
-    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String userAvatar, boolean out) {
+    public RequestWithUserModel(StatusEnum status, String userName, String userUid, String rideId, String tokenRequest, String location, String userAvatar, boolean out) {
         this.status = status;
         this.userName = userName;
+        this.userUid = userUid;
         this.rideId = rideId;
         this.tokenRequest = tokenRequest;
         this.location = location;
@@ -47,6 +49,14 @@ public class RequestWithUserModel {
 
     public void setUserName(String userName) {
         this.userName = userName;
+    }
+
+    public String getUserUid() {
+        return userUid;
+    }
+
+    public void setUserUid(String userUid) {
+        this.userUid = userUid;
     }
 
     public String getRideId() {

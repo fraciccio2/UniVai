@@ -8,7 +8,6 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -71,7 +70,6 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
         holder.userImage.setOnClickListener(view -> {
             Context context = fragmentOut != null ? fragmentOut.getContext() : fragmentIn.getContext();
             Dialog dialog = new Dialog(context, R.style.WindowFullScreen);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.getWindow().setBackgroundDrawable(
                     new ColorDrawable(android.graphics.Color.TRANSPARENT));
             dialog.setContentView(R.layout.alert_image);
@@ -98,8 +96,8 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
                 holder.status.setBackground(AppCompatResources.getDrawable(context, R.drawable.warnig_status));
                 if(!isOutRequest) {
                     holder.layoutWithButtons.setVisibility(View.VISIBLE);
-                    holder.refuseButton.setOnClickListener(view -> fragmentIn.refuseRequest(requestRide.getTokenRequest()));
-                    holder.acceptButton.setOnClickListener(view -> fragmentIn.acceptRequest(requestRide.getTokenRequest()));
+                    holder.refuseButton.setOnClickListener(view -> fragmentIn.refuseRequest(requestRide.getTokenRequest(), requestRide.getUserUid()));
+                    holder.acceptButton.setOnClickListener(view -> fragmentIn.acceptRequest(requestRide.getTokenRequest(), requestRide.getUserUid()));
                 }
                 break;
             case REFUSED:

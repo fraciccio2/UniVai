@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.deeplabstudio.fcmsend.FCMSend;
 import com.example.carsharing.R;
 import com.example.carsharing.adapters.RequestRideAdapter;
 import com.example.carsharing.enums.StatusEnum;
@@ -27,6 +28,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +40,7 @@ public class RidesInFragment extends Fragment {
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseRequests;
     DatabaseReference mDatabaseUsers;
+    DatabaseReference mDatabaseTokens;
     View view;
     List<RequestWithUserModel> requestsRideList = new ArrayList<>();
     int i = 0, l = 0;
@@ -50,9 +53,12 @@ public class RidesInFragment extends Fragment {
                              Bundle savedInstanceState) {
         view = inflater.inflate(R.layout.fragment_rides_in, container, false);
 
+        FCMSend.SetServerKey(getString(R.string.server_key));
+
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRequests = FirebaseDatabase.getInstance().getReference("requests");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        mDatabaseTokens = FirebaseDatabase.getInstance().getReference("registrationToken");
 
         recyclerView = view.findViewById(R.id.recycler_view_in);
 
@@ -88,15 +94,18 @@ public class RidesInFragment extends Fragment {
                                     if (snapshot.exists()) {
                                         String userName = "";
                                         String userAvatar = "";
+                                        String userUid = "";
                                         for (DataSnapshot datas : snapshot.getChildren()) {
                                             userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
                                             userAvatar = datas.child("userImage").getValue(String.class);
+                                            userUid = datas.getKey();
                                         }
-                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, false));
+                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, userUid, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, false));
                                         if (i == l) {
                                             if (requestsRideList.size() > 0) {
                                                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                                                 recyclerView.setLayoutManager(layoutManager);
+                                                Collections.reverse(requestsRideList);
                                                 RequestRideAdapter adapter = new RequestRideAdapter(getContext(), RidesInFragment.this, requestsRideList);
                                                 recyclerView.setAdapter(adapter);
                                             } else {
@@ -162,15 +171,59 @@ public class RidesInFragment extends Fragment {
         builder.show();
     }
 
-    public void refuseRequest(String requestId) {
+    public void refuseRequest(String requestId, String userUid) {
         Map<String, Object> map = new HashMap<>();
         map.put("status", StatusEnum.REFUSED);
-        mDatabaseRequests.child(requestId).updateChildren(map).addOnCompleteListener(task -> getRequests());
+        mDatabaseRequests.child(requestId).updateChildren(map).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                mDatabaseTokens.orderByValue().equalTo(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                FCMSend.Builder builder = new FCMSend.Builder(data.getKey())
+                                        .setTitle(getString(R.string.app_name))
+                                        .setBody(getString(R.string.refused_message_text));
+                                builder.send();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("Error", "exception", error.toException());
+                    }
+                });
+            }
+            getRequests();
+        });
     }
 
-    public void acceptRequest(String requestId) {
+    public void acceptRequest(String requestId, String userUid) {
         Map<String, Object> map = new HashMap<>();
         map.put("status", StatusEnum.ACCEPT);
-        mDatabaseRequests.child(requestId).updateChildren(map).addOnCompleteListener(task -> getRequests());
+        mDatabaseRequests.child(requestId).updateChildren(map).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                mDatabaseTokens.orderByValue().equalTo(userUid).addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if (snapshot.exists()) {
+                            for (DataSnapshot data : snapshot.getChildren()) {
+                                FCMSend.Builder builder = new FCMSend.Builder(data.getKey())
+                                        .setTitle(getString(R.string.app_name))
+                                        .setBody(getString(R.string.accepted_message_text));
+                                builder.send();
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+                        Log.e("Error", "exception", error.toException());
+                    }
+                });
+            }
+            getRequests();
+        });
     }
 }

@@ -28,6 +28,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -100,12 +101,13 @@ public class RidesOutFragment extends Fragment {
                                                             SimpleDateFormat formatter = new SimpleDateFormat(view.getContext().getString(R.string.date_pattern));
                                                             address = ride.child("address").getValue(AddressModel.class);
                                                             date = formatter.format(new Date(ride.child("date").getValue(String.class)));
-                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, true));
+                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, true, userAvatar));
                                                         }
                                                         if (requestsRideList.size() > 0 && i == l) {
                                                             RecyclerView recyclerView = view.findViewById(R.id.recycler_view_out);
                                                             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                                                             recyclerView.setLayoutManager(layoutManager);
+                                                            Collections.reverse(requestsRideList);
                                                             RequestRideAdapter adapter = new RequestRideAdapter(getContext(), RidesOutFragment.this, requestsRideList);
                                                             recyclerView.setAdapter(adapter);
                                                         }

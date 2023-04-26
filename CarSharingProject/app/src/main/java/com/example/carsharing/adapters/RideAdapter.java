@@ -7,9 +7,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +48,6 @@ public class RideAdapter extends RecyclerView.Adapter<RideViewHolder> {
         RideWithUserModel rideUser = rideUserList.get(position);
         holder.avatarUser.setOnClickListener(view -> {
             Dialog dialog = new Dialog(activity, R.style.WindowFullScreen);
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.getWindow().setBackgroundDrawable(
                     new ColorDrawable(android.graphics.Color.TRANSPARENT));
             dialog.setContentView(R.layout.alert_image);

@@ -1,9 +1,5 @@
 package com.example.carsharing.activities;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,6 +8,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+
+import com.deeplabstudio.fcmsend.FCMSend;
 import com.example.carsharing.R;
 import com.example.carsharing.databinding.ActivityBookRideBinding;
 import com.example.carsharing.enums.StatusEnum;
@@ -41,6 +42,7 @@ public class BookRideActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseRides;
     DatabaseReference mDatabaseUsers;
+    DatabaseReference mDatabaseTokens;
     String rideId;
     String userId;
     String location;
@@ -52,9 +54,12 @@ public class BookRideActivity extends AppCompatActivity {
         binding = ActivityBookRideBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        FCMSend.SetServerKey(getString(R.string.server_key));
+
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRides = FirebaseDatabase.getInstance().getReference("rides");
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        mDatabaseTokens = FirebaseDatabase.getInstance().getReference("registrationToken");
 
         Toolbar myToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(myToolbar);
@@ -144,6 +149,24 @@ public class BookRideActivity extends AppCompatActivity {
                             RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location);
                             FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                                 if(task.isSuccessful()) {
+                                    mDatabaseTokens.orderByValue().equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists()) {
+                                                for (DataSnapshot data : snapshot.getChildren()) {
+                                                    FCMSend.Builder builder = new FCMSend.Builder(data.getKey())
+                                                            .setTitle(getString(R.string.app_name))
+                                                            .setBody(getString(R.string.interested_message_text));
+                                                    builder.send();
+                                                }
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+                                            Log.e("Error", "exception", error.toException());
+                                        }
+                                    });
                                     Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
                                     startActivity(intent);
                                 } else {
