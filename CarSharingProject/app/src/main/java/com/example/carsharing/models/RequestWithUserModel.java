@@ -11,6 +11,7 @@ public class RequestWithUserModel {
     private String location;
     private String date;
     private String userAvatar;
+    private boolean sameAddress;
     private boolean out;
 
     public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, boolean out, String userAvatar) {
@@ -24,7 +25,7 @@ public class RequestWithUserModel {
         this.out = out;
     }
 
-    public RequestWithUserModel(StatusEnum status, String userName, String userUid, String rideId, String tokenRequest, String location, String userAvatar, boolean out) {
+    public RequestWithUserModel(StatusEnum status, String userName, String userUid, String rideId, String tokenRequest, String location, String userAvatar, boolean sameAddress, boolean out) {
         this.status = status;
         this.userName = userName;
         this.userUid = userUid;
@@ -32,6 +33,7 @@ public class RequestWithUserModel {
         this.tokenRequest = tokenRequest;
         this.location = location;
         this.userAvatar = userAvatar;
+        this.sameAddress = sameAddress;
         this.out = out;
     }
 
@@ -97,6 +99,14 @@ public class RequestWithUserModel {
 
     public void setUserAvatar(String userAvatar) {
         this.userAvatar = userAvatar;
+    }
+
+    public boolean isSameAddress() {
+        return sameAddress;
+    }
+
+    public void setSameAddress(boolean sameAddress) {
+        this.sameAddress = sameAddress;
     }
 
     public boolean isOut() {

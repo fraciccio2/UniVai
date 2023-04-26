@@ -9,20 +9,15 @@ public class RequestRideModel {
     private String requesterUser;
     private String rideId;
     private String location;
+    private boolean sameAddress;
 
-    public RequestRideModel(StatusEnum status, String creatorUser, String requesterUser, String rideId, String location) {
+    public RequestRideModel(StatusEnum status, String creatorUser, String requesterUser, String rideId, String location, boolean sameAddress) {
         this.status = status;
         this.creatorUser = creatorUser;
         this.requesterUser = requesterUser;
         this.rideId = rideId;
         this.location = location;
-    }
-
-    public RequestRideModel(StatusEnum status, String creatorUser, String requesterUser, String rideId) {
-        this.status = status;
-        this.creatorUser = creatorUser;
-        this.requesterUser = requesterUser;
-        this.rideId = rideId;
+        this.sameAddress = sameAddress;
     }
 
     public RequestRideModel(){}
@@ -65,5 +60,13 @@ public class RequestRideModel {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public boolean isSameAddress() {
+        return sameAddress;
+    }
+
+    public void setSameAddress(boolean sameAddress) {
+        this.sameAddress = sameAddress;
     }
 }

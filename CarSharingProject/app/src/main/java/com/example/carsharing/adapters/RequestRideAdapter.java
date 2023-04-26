@@ -56,10 +56,10 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
         if(isOutRequest) {
             holder.position.setText(requestRide.getLocation() + " " +requestRide.getDate());
         } else {
-            if(requestRide.getLocation() != null) {
-                holder.position.setText(requestRide.getLocation());
+            if (requestRide.isSameAddress()) {
+                holder.position.setText(requestRide.getLocation() + " (Stesso tuo luogo di partenza)");
             } else {
-                holder.position.setText(context.getString(R.string.some_address_info_text));
+                holder.position.setText(requestRide.getLocation() + " (Diverso dal tuo luogo di partenza)");
             }
         }
         holder.user.setText(requestRide.getUserName());

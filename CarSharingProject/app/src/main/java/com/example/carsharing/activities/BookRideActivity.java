@@ -46,6 +46,8 @@ public class BookRideActivity extends AppCompatActivity {
     String rideId;
     String userId;
     String location;
+    String formattedDate;
+    AddressModel address;
     UserModel logUser;
 
     @Override
@@ -109,13 +111,14 @@ public class BookRideActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if(snapshot.exists()) {
-                    for (DataSnapshot datas: snapshot.getChildren()){
-                        AddressModel address = datas.child("address").getValue(AddressModel.class);
+                    for (DataSnapshot datas: snapshot.getChildren()) {
+                        address = datas.child("address").getValue(AddressModel.class);
                         String date = datas.child("date").getValue(String.class);
                         String note = datas.child("note").getValue(String.class);
                         binding.rideAddress.setText(address.getLocation());
                         SimpleDateFormat formatter = new SimpleDateFormat(getString(R.string.date_pattern));
-                        binding.rideDeparture.setText(formatter.format(new Date(date)));
+                        formattedDate = formatter.format(new Date(date));
+                        binding.rideDeparture.setText(formattedDate);
                         binding.rideNote.setText(note);
                     }
                 }
@@ -146,7 +149,7 @@ public class BookRideActivity extends AppCompatActivity {
                             });
                             builder.show();
                         } else {
-                            RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location);
+                            RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, false);
                             FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                                 if(task.isSuccessful()) {
                                     mDatabaseTokens.orderByValue().equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -178,9 +181,10 @@ public class BookRideActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), getString(R.string.insert_address_text), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId);
+                    String location = address.getLocation() + " " + formattedDate;
+                    RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, true);
                     FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
-                        if(task.isSuccessful()) {
+                        if (task.isSuccessful()) {
                             Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
                             startActivity(intent);
                         } else {

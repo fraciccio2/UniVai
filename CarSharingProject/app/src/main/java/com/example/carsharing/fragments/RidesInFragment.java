@@ -100,7 +100,7 @@ public class RidesInFragment extends Fragment {
                                             userAvatar = datas.child("userImage").getValue(String.class);
                                             userUid = datas.getKey();
                                         }
-                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, userUid, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, false));
+                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, userUid, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, requestRide.isSameAddress(), false));
                                         if (i == l) {
                                             if (requestsRideList.size() > 0) {
                                                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
