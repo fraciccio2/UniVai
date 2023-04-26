@@ -49,20 +49,16 @@ public class RideAdapter extends RecyclerView.Adapter<RideViewHolder> {
         SimpleDateFormat formatter = new SimpleDateFormat(context.getString(R.string.date_pattern));
         RideWithUserModel rideUser = rideUserList.get(position);
         holder.avatarUser.setOnClickListener(view -> {
-            Dialog dialog = new Dialog(activity);
+            Dialog dialog = new Dialog(activity, R.style.WindowFullScreen);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.getWindow().setBackgroundDrawable(
                     new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            ImageView imageView = new ImageView(activity);
+            dialog.setContentView(R.layout.alert_image);
+            ImageView imageView = dialog.findViewById(R.id.image_full_screen);
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round);
             Glide.with(activity).load(rideUser.getUserImage()).apply(options).into(imageView);
-            dialog.addContentView(imageView, new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
             dialog.show();
         });
         Glide.with(context).load(rideUser.getUserImage()).into(holder.avatarUser);

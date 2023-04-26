@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.content.res.AppCompatResources;
@@ -71,20 +70,16 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
         holder.requestCard.setStrokeWidth(Math.round(strokeWidth));
         holder.userImage.setOnClickListener(view -> {
             Context context = fragmentOut != null ? fragmentOut.getContext() : fragmentIn.getContext();
-            Dialog dialog = new Dialog(context);
+            Dialog dialog = new Dialog(context, R.style.WindowFullScreen);
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.getWindow().setBackgroundDrawable(
                     new ColorDrawable(android.graphics.Color.TRANSPARENT));
-            ImageView imageView = new ImageView(context);
+            dialog.setContentView(R.layout.alert_image);
+            ImageView imageView = dialog.findViewById(R.id.image_full_screen);
             RequestOptions options = new RequestOptions()
                     .centerCrop()
                     .placeholder(R.mipmap.ic_launcher_round);
             Glide.with(context).load(requestRide.getUserAvatar()).apply(options).into(imageView);
-            dialog.addContentView(imageView, new RelativeLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.MATCH_PARENT));
-            dialog.setCancelable(true);
-            dialog.setCanceledOnTouchOutside(true);
             dialog.show();
         });
         Glide.with(context).load(requestRide.getUserAvatar()).into(holder.userImage);
