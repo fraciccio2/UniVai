@@ -101,7 +101,7 @@ public class RidesOutFragment extends Fragment {
                                                             SimpleDateFormat formatter = new SimpleDateFormat(view.getContext().getString(R.string.date_pattern));
                                                             address = ride.child("address").getValue(AddressModel.class);
                                                             date = formatter.format(new Date(ride.child("date").getValue(String.class)));
-                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, requestRide.isSameAddress(), true));
+                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, true));
                                                         }
                                                         if (requestsRideList.size() > 0 && i == l) {
                                                             RecyclerView recyclerView = view.findViewById(R.id.recycler_view_out);

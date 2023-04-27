@@ -14,7 +14,7 @@ public class RequestWithUserModel {
     private boolean sameAddress;
     private boolean out;
 
-    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, boolean out, String userAvatar) {
+    public RequestWithUserModel(StatusEnum status, String userName, String rideId, String tokenRequest, String location, String date, String userAvatar, boolean out) {
         this.status = status;
         this.userName = userName;
         this.rideId = rideId;
