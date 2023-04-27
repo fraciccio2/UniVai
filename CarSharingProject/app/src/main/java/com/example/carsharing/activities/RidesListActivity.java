@@ -62,7 +62,7 @@ public class RidesListActivity extends AppCompatActivity {
     UserModel logUser;
     AddressModel address;
     TextView autocompleteText;
-    double radius = 1;
+    double radius = 10;
     int i = 0, l = 0;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
 

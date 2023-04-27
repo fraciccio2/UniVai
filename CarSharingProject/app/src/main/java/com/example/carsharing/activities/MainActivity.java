@@ -72,7 +72,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseUsers;
     LatLng userLatLng;
-    double radius = 1;
+    double radius = 10;
     List<RideWithUserModel> rideUserList = new ArrayList<>();
     UserModel logUser;
     NavigationHelper navigationHelper = new NavigationHelper();

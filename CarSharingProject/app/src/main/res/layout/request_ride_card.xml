@@ -23,14 +23,15 @@
                 android:orientation="vertical"
                 android:layout_gravity="center_vertical">
 
-                <ImageView
+                <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/user_avatar"
                     android:layout_width="60dp"
                     android:layout_height="60dp"
                     android:layout_marginTop="9dp"
                     android:layout_marginStart="12dp"
-                    android:background="@drawable/circle_avatar"
-                    android:scaleType="fitXY" />
+                    android:scaleType="centerCrop"
+                    app:civ_border_width="1dp"
+                    app:civ_border_color="@color/main_color"/>
 
                 <TextView
                     android:id="@+id/request_status"

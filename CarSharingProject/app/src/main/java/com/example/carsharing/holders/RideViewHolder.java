@@ -1,7 +1,6 @@
 package com.example.carsharing.holders;
 
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -10,8 +9,10 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.carsharing.R;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class RideViewHolder extends RecyclerView.ViewHolder {
-    public ImageView avatarUser;
+    public CircleImageView avatarUser;
     public TextView nameUser;
     public TextView rideAddress;
     public TextView rideDate;
