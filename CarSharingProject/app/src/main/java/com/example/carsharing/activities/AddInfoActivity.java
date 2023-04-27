@@ -35,6 +35,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class AddInfoActivity extends AppCompatActivity {
 
     ActivityAddInfoBinding binding;
@@ -122,6 +124,11 @@ public class AddInfoActivity extends AppCompatActivity {
     private void editMode(Bundle extras) {
         boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
         if (editMode) {
+            Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+            alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+            alert.setTitleText(getString(R.string.loading_text));
+            alert.setCancelable(false);
+            alert.show();
             this.editMode = true;
             binding.startButton.setText(getString(R.string.edit_button_text));
             getSupportActionBar().setTitle(getString(R.string.edit_button_text));
@@ -136,12 +143,14 @@ public class AddInfoActivity extends AppCompatActivity {
                         binding.startAddress.setText(logUser.getAddress().getLocation());
                         binding.autoCompleteText.setText(logUser.getUniversity(), false);
                         binding.startCar.setChecked(logUser.getHasCar());
+                        alert.dismiss();
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.e("Error", "exception", error.toException());
+                    alert.dismiss();
                 }
             });
         }

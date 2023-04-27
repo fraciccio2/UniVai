@@ -34,6 +34,8 @@ import com.google.firebase.storage.StorageReference;
 import java.util.HashMap;
 import java.util.Map;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class LoadImageActivity extends AppCompatActivity {
 
     ActivityLoadImageBinding binding;
@@ -117,6 +119,11 @@ public class LoadImageActivity extends AppCompatActivity {
     private void editMode(Bundle extras) {
         boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
         if (editMode) {
+            Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+            alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+            alert.setTitleText(getString(R.string.loading_text));
+            alert.setCancelable(false);
+            alert.show();
             binding.skipButton.setVisibility(View.INVISIBLE);
             binding.skipButton.setEnabled(false);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -126,12 +133,14 @@ public class LoadImageActivity extends AppCompatActivity {
                     if (snapshot.exists()) {
                         UserModel user = snapshot.getValue(UserModel.class);
                         Glide.with(getApplicationContext()).load(user.getUserImage()).into(binding.uploadImage);
+                        alert.dismiss();
                     }
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.e("Error", "exception", error.toException());
+                    alert.dismiss();
                 }
             });
         }

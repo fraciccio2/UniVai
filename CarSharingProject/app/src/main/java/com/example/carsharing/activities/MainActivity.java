@@ -60,6 +60,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private static final int PERMISSIONS_REQUEST_LOCATION = 100;
@@ -176,6 +178,11 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getRides() {
+        Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+        alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+        alert.setTitleText(getString(R.string.loading_text));
+        alert.setCancelable(false);
+        alert.show();
         FirebaseDatabase.getInstance().getReference("rides").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -226,12 +233,14 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                                         warningRidesAlert();
                                     }
                                     setMap(userLatLng.latitude, userLatLng.longitude);
+                                    alert.dismiss();
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 Log.e("Error", "exception", error.toException());
+                                alert.dismiss();
                             }
                         });
                     }
@@ -241,6 +250,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("Error", "exception", error.toException());
+                alert.dismiss();
             }
         });
     }

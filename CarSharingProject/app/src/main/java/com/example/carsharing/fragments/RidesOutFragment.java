@@ -32,6 +32,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class RidesOutFragment extends Fragment {
 
     RecyclerView recyclerView;
@@ -73,6 +75,11 @@ public class RidesOutFragment extends Fragment {
     private void getRequests(View view) {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
+            Sweetalert alert = new Sweetalert(getContext(), Sweetalert.PROGRESS_TYPE);
+            alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+            alert.setTitleText(getString(R.string.loading_text));
+            alert.setCancelable(false);
+            alert.show();
             requestsRideList = new ArrayList<>();
             mDatabaseRequests.orderByChild("requesterUser").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -104,6 +111,7 @@ public class RidesOutFragment extends Fragment {
                                                             requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, true));
                                                         }
                                                         if (requestsRideList.size() > 0 && i == l) {
+                                                            alert.dismiss();
                                                             RecyclerView recyclerView = view.findViewById(R.id.recycler_view_out);
                                                             LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                                                             recyclerView.setLayoutManager(layoutManager);
@@ -117,6 +125,7 @@ public class RidesOutFragment extends Fragment {
                                                 @Override
                                                 public void onCancelled(@NonNull DatabaseError error) {
                                                     Log.e("Error", "exception", error.toException());
+                                                    alert.dismiss();
                                                 }
                                             });
                                         }
@@ -126,10 +135,12 @@ public class RidesOutFragment extends Fragment {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     Log.e("Error", "exception", error.toException());
+                                    alert.dismiss();
                                 }
                             });
                         }
                     } else {
+                        alert.dismiss();
                         warningRidesAlert(getString(R.string.warning_no_request_text));
                     }
                 }
@@ -137,6 +148,7 @@ public class RidesOutFragment extends Fragment {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.e("Error", "exception", error.toException());
+                    alert.dismiss();
                 }
             });
         }

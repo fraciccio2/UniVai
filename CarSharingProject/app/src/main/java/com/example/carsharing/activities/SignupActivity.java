@@ -31,6 +31,15 @@ public class SignupActivity extends AppCompatActivity {
 
         dataBaseHelper = new DataBaseHelper();
 
+        signUpAction();
+
+        binding.loginRedirect.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+            startActivity(intent);
+        });
+    }
+
+    private void signUpAction() {
         binding.signupButton.setOnClickListener(view -> {
             String email = binding.signupEmail.getText().toString();
             String password = binding.signupPassword.getText().toString();
@@ -42,20 +51,20 @@ public class SignupActivity extends AppCompatActivity {
                 if (password.equals(confirmPassword)) {
                     Boolean correctEmail = dataBaseHelper.isCorrectEmail(email);
                     if (correctEmail) {
-                            mAuth.createUserWithEmailAndPassword(email, password)
-                                    .addOnCompleteListener(task -> {
-                                        if (task.isSuccessful()) {
-                                            Toast.makeText(SignupActivity.this, getString(R.string.successful_signup_text), Toast.LENGTH_SHORT).show();
-                                            FirebaseUser user = mAuth.getCurrentUser();
-                                            if(user != null) {
-                                                mDatabase.setValue(user.getUid());
-                                                Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-                                                startActivity(intent);
-                                            }
-                                        } else {
-                                            Toast.makeText(SignupActivity.this, getString(R.string.error_signup_text), Toast.LENGTH_SHORT).show();
+                        mAuth.createUserWithEmailAndPassword(email, password)
+                                .addOnCompleteListener(task -> {
+                                    if (task.isSuccessful()) {
+                                        Toast.makeText(SignupActivity.this, getString(R.string.successful_signup_text), Toast.LENGTH_SHORT).show();
+                                        FirebaseUser user = mAuth.getCurrentUser();
+                                        if(user != null) {
+                                            mDatabase.setValue(user.getUid());
+                                            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                                            startActivity(intent);
                                         }
-                                    });
+                                    } else {
+                                        Toast.makeText(SignupActivity.this, getString(R.string.error_signup_text), Toast.LENGTH_SHORT).show();
+                                    }
+                                });
                     } else {
                         Toast.makeText(SignupActivity.this, getString(R.string.email_wrong_text), Toast.LENGTH_SHORT).show();
                     }
@@ -63,11 +72,6 @@ public class SignupActivity extends AppCompatActivity {
                     Toast.makeText(SignupActivity.this, getString(R.string.different_password_text), Toast.LENGTH_SHORT).show();
                 }
             }
-        });
-
-        binding.loginRedirect.setOnClickListener(view -> {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
         });
     }
 }

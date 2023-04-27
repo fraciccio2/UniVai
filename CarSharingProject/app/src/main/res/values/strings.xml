@@ -92,4 +92,5 @@
     <string name="refused_message_text">Sembra che un utente ha rifiutato la tua Ride</string>
     <string name="accepted_message_text">Sembra che un utente ha accetto la tua Ride</string>
     <string name="interested_message_text">Sembra che un utente è interessato alla tua Ride</string>
+    <string name="loading_text">Caricamento</string>
 </resources>

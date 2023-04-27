@@ -49,6 +49,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class RidesListActivity extends AppCompatActivity {
 
     ActivityRidesListBinding binding;
@@ -86,6 +88,11 @@ public class RidesListActivity extends AppCompatActivity {
     }
 
     private void getRides() {
+        Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+        alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+        alert.setTitleText(getString(R.string.loading_text));
+        alert.setCancelable(false);
+        alert.show();
         mDatabaseRides.orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshotData) {
@@ -133,6 +140,7 @@ public class RidesListActivity extends AppCompatActivity {
                                     }
                                 }
                                 if (i == l) {
+                                    alert.dismiss();
                                     if (rideUserList.size() > 0) {
                                         RecyclerView recyclerView = binding.recyclerView;
                                         LinearLayoutManager layoutManager = new LinearLayoutManager(RidesListActivity.this);
@@ -149,10 +157,12 @@ public class RidesListActivity extends AppCompatActivity {
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 Log.e("Error", "exception", error.toException());
+                                alert.dismiss();
                             }
                         });
                     }
                 } else {
+                    alert.dismiss();
                     warningRidesAlert();
                 }
             }
@@ -160,6 +170,7 @@ public class RidesListActivity extends AppCompatActivity {
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("Error", "exception", error.toException());
+                alert.dismiss();
             }
         });
     }

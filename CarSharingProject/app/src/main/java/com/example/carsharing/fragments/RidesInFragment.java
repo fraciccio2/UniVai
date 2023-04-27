@@ -33,6 +33,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class RidesInFragment extends Fragment {
 
     SearchView searchView;
@@ -77,6 +79,11 @@ public class RidesInFragment extends Fragment {
     private void getRequests() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
+            Sweetalert alert = new Sweetalert(getContext(), Sweetalert.PROGRESS_TYPE);
+            alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+            alert.setTitleText(getString(R.string.loading_text));
+            alert.setCancelable(false);
+            alert.show();
             requestsRideList = new ArrayList<>();
             mDatabaseRequests.orderByChild("creatorUser").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -102,6 +109,7 @@ public class RidesInFragment extends Fragment {
                                         }
                                         requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, userUid, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, requestRide.isSameAddress(), false));
                                         if (i == l) {
+                                            alert.dismiss();
                                             if (requestsRideList.size() > 0) {
                                                 LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
                                                 recyclerView.setLayoutManager(layoutManager);
@@ -118,10 +126,12 @@ public class RidesInFragment extends Fragment {
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     Log.e("Error", "exception", error.toException());
+                                    alert.dismiss();
                                 }
                             });
                         }
                     } else {
+                        alert.dismiss();
                         warningRidesAlert(getString(R.string.warning_no_request_text));
                     }
                 }
@@ -129,6 +139,7 @@ public class RidesInFragment extends Fragment {
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
                     Log.e("Error", "exception", error.toException());
+                    alert.dismiss();
                 }
             });
         }

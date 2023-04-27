@@ -36,6 +36,8 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
+import taimoor.sultani.sweetalert2.Sweetalert;
+
 public class BookRideActivity extends AppCompatActivity {
 
     ActivityBookRideBinding binding;
@@ -107,6 +109,11 @@ public class BookRideActivity extends AppCompatActivity {
     }
 
     private void getRide() {
+        Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+        alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+        alert.setTitleText(getString(R.string.loading_text));
+        alert.setCancelable(false);
+        alert.show();
         mDatabaseRides.orderByKey().equalTo(rideId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -121,12 +128,14 @@ public class BookRideActivity extends AppCompatActivity {
                         binding.rideDeparture.setText(formattedDate);
                         binding.rideNote.setText(note);
                     }
+                    alert.dismiss();
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("Error", "exception", error.toException());
+                alert.dismiss();
             }
         });
     }
