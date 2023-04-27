@@ -1,41 +1,20 @@
 const admin = require("firebase-admin");
+const functions = require("firebase-functions");
 
 admin.initializeApp();
 
-const database = admin.database();
+exports.checkRides = functions.pubsub.schedule("every 1 hours").onRun(
+  async () => {
+    const ridesRef = admin.database().ref("rides");
+    const snapshot = await ridesRef.once("value");
+    const currentTime = new Date().getTime();
 
-function isDateBeforeNow(date) {
-  return new Date(date) < new Date();
-}
-
-function updateActiveStatus(key, value) {
-  database.ref("rides/" + key).update({
-    active: value,
-  }, (error) => {
-    if (error) {
-      console.error("Error updating \"active\" status:", error);
-    } else {
-      console.log("Updated \"active\" status:", key, value);
-    }
-  });
-}
-
-function checkDates() {
-  database.ref("rides").once("value", (snapshot) => {
-    snapshot.forEach((childSnapshot) => {
-      const key = childSnapshot.key;
-      const date = childSnapshot.child("date").val();
-      const active = childSnapshot.child("active").val();
-
-      if (active === false) {
-        return;
-      }
-
-      if (isDateBeforeNow(date)) {
-        updateActiveStatus(key, false);
+    snapshot.forEach((rideSnapshot) => {
+      const ride = rideSnapshot.val();
+      const rideTime = new Date(ride.date).getTime();
+      if (!ride.active && rideTime < currentTime) {
+        rideSnapshot.ref.update({active: false});
       }
     });
-  });
-}
-
-setInterval(checkDates, 60 * 60 * 1000);
+    return null;
+});
