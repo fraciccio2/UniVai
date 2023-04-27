@@ -7,6 +7,7 @@ import androidx.viewpager2.adapter.FragmentStateAdapter;
 
 import com.example.carsharing.fragments.RidesInFragment;
 import com.example.carsharing.fragments.RidesOutFragment;
+import com.example.carsharing.fragments.YourRidesFragment;
 
 public class ViewPagerAdapter extends FragmentStateAdapter {
 
@@ -17,14 +18,18 @@ public class ViewPagerAdapter extends FragmentStateAdapter {
     @NonNull
     @Override
     public Fragment createFragment(int position) {
-        if (position == 1) {
-            return new RidesInFragment();
+        switch (position) {
+            case 1:
+                return new RidesInFragment();
+            case 2:
+                return new YourRidesFragment();
+            default:
+                return new RidesOutFragment();
         }
-        return new RidesOutFragment();
     }
 
     @Override
     public int getItemCount() {
-        return 2;
+        return 3;
     }
 }

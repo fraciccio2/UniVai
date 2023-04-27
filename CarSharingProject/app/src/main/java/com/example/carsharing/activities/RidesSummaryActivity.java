@@ -83,6 +83,9 @@ public class RidesSummaryActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     logUser = snapshot.getValue(UserModel.class);
                     navigationHelper.hideButton(binding.floatingButton, binding.bottomNavigationView, logUser);
+                    if(!logUser.getHasCar()) {
+                        binding.tabLayout.removeTabAt(2);
+                    }
                 }
             }
 

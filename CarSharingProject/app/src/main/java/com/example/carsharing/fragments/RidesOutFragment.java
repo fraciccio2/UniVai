@@ -68,6 +68,7 @@ public class RidesOutFragment extends Fragment {
         searchView.clearFocus();
 
         getRequests(view);
+        filterRides();
 
         return view;
     }
@@ -172,7 +173,7 @@ public class RidesOutFragment extends Fragment {
                 if (filteredRequestsRideList.size() > 0) {
                     recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesOutFragment.this, requestsRideList));
                 } else {
-                    warningRidesAlert(getString(R.string.warning_request_filter_text));
+                    warningRidesAlert(getString(R.string.warning_ride_filter_text));
                 }
                 return false;
             }

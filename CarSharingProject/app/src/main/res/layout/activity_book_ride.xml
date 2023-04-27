@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="18dp"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/roboto_condensed_bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="18dp"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/roboto_condensed_bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -77,7 +77,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="18dp"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/roboto_condensed_bold" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -93,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="18dp"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:fontFamily="@font/roboto_condensed_bold" />
 
             <RadioGroup
                 android:layout_width="match_parent"

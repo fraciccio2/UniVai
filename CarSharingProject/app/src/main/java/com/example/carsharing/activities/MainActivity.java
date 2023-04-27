@@ -80,6 +80,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     TextView autocompleteText;
     String location, tmpLocation;
     int i = 0, l = 0;
+    Sweetalert alert;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +90,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
+
+        alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+        alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+        alert.setTitleText(getString(R.string.loading_text));
+        alert.setCancelable(false);
+        alert.show();
+
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -158,6 +166,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         providerClient.getLastLocation().addOnFailureListener(e -> {
             setMapWithDefaultValue(true);
             Log.e("Error", "exception", e);
+            if(alert != null && alert.isShowing()) {
+                alert.dismiss();
+            }
         });
     }
 
@@ -178,11 +189,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     private void getRides() {
-        Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
-        alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
-        alert.setTitleText(getString(R.string.loading_text));
-        alert.setCancelable(false);
-        alert.show();
+        if(alert != null && !alert.isShowing()) {
+            alert.show();
+        }
         FirebaseDatabase.getInstance().getReference("rides").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -269,6 +278,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
                 Log.e("Error", "exception", error.toException());
+                alert.dismiss();
             }
         });
     }

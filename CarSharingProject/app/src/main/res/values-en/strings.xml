@@ -30,9 +30,11 @@
     <string name="next_text">Continue</string>
     <string name="no_image_selected_text">No Image Selected</string>
     <string name="neutral_button_text">I understand!</string>
+    <string name="warning_your_rides_text">It looks like you haven\'t created any Rides yet.</string>
     <string name="warning_rides_text">There seems to be no Rides around. Try changing the filters.</string>
     <string name="warning_location_text">We had some trouble locating your location, try turning on your location. If so, try again later.</string>
     <string name="warning_request_filter_text">It appears that there is no request with these criteria.</string>
+    <string name="warning_ride_filter_text">It appears that there is no Ride with these criteria.</string>
     <string name="warning_no_request_text">You don\'t have any Ride requests yet.</string>
     <string name="italian_text">Italian</string>
     <string name="english_text">English</string>
@@ -42,6 +44,8 @@
     <string name="address_text">Address:</string>
     <string name="time_text">Departure:</string>
     <string name="notes_text">Notes:</string>
+    <string name="date_and_time_text">Departure date and time:</string>
+    <string name="position_to_start_text">Starting position:</string>
     <string name="some_address_text">I\'ll be found at your address</string>
     <string name="some_address_info_text">The user will be found at your starting point</string>
     <string name="other_address_text">I can be found at another address</string>
@@ -79,4 +83,7 @@
     <string name="accepted_message_text">It appears that a user has accepted your Ride</string>
     <string name="interested_message_text">It seems that a user is interested in your Ride</string>
     <string name="loading_text">Loading</string>
+    <string name="delete_ride_text">Delete Ride</string>
+    <string name="delete_ride_alert_text">Are you sure you want to delete this Ride? You will never be able to go back.</string>
+    <string name="not_delete_text">Do not delete</string>
 </resources>
