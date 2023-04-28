@@ -12,7 +12,7 @@ exports.checkRides = functions.pubsub.schedule("every 1 hours").onRun(
     snapshot.forEach((rideSnapshot) => {
       const ride = rideSnapshot.val();
       const rideTime = new Date(ride.date).getTime();
-      if (!ride.active && rideTime < currentTime) {
+      if (ride.active && rideTime < currentTime) {
         rideSnapshot.ref.update({active: false});
       }
     });
