@@ -48,10 +48,11 @@
     <string name="neutral_button_text">Ho capito!</string>
     <string name="warning_your_rides_text">Sembra che non hai creato ancora nessuna Rides.</string>
     <string name="warning_rides_text">Sembra che non c\'è nessuna Ride nei dintorni. Prova a modificare i filtri.</string>
-    <string name="warning_location_text">Abbiamo avuto dei problemi nel localizzare la tua posizione, prova ad attivare la tua posizione. In caso riprova più tardi.</string>
+    <string name="warning_location_text">Abbiamo avuto dei problemi nel trovare la tua posizione, prova ad attivare la geolocalizzazione. In caso riprova più tardi.</string>
     <string name="warning_request_filter_text">Sembra che non c\'è nessuna richiesta con questi criteri.</string>
     <string name="warning_ride_filter_text">Sembra che non c\'è nessuna Ride con questi criteri.</string>
-    <string name="warning_no_request_text">Non hai ancora nessuna richiesta di Ride.</string>
+    <string name="warning_no_request_out_text">Non hai ancora richiesto una Ride ad altri utenti.</string>
+    <string name="warning_no_request_in_text">Nessun utente ha ancora richiesto una tua Ride.</string>
     <string name="italian_text">Italiano</string>
     <string name="english_text">Inglese</string>
     <string name="change_user_image_text">Cambia immagine profilo</string>

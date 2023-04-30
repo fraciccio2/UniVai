@@ -32,10 +32,11 @@
     <string name="neutral_button_text">I understand!</string>
     <string name="warning_your_rides_text">It looks like you haven\'t created any Rides yet.</string>
     <string name="warning_rides_text">There seems to be no Rides around. Try changing the filters.</string>
-    <string name="warning_location_text">We had some trouble locating your location, try turning on your location. If so, try again later.</string>
+    <string name="warning_location_text">We had some trouble finding your location, try turning on geolocation. If so, try again later.</string>
     <string name="warning_request_filter_text">It appears that there is no request with these criteria.</string>
     <string name="warning_ride_filter_text">It appears that there is no Ride with these criteria.</string>
-    <string name="warning_no_request_text">You don\'t have any Ride requests yet.</string>
+    <string name="warning_no_request_out_text">You haven\'t yet requested a Ride from other users.</string>
+    <string name="warning_no_request_in_text">No user has requested your Ride yet.</string>
     <string name="italian_text">Italian</string>
     <string name="english_text">English</string>
     <string name="change_user_image_text">Change profile image</string>

@@ -46,8 +46,6 @@ public class LoginActivity extends AppCompatActivity {
 
         dataBaseHelper = new DataBaseHelper();
 
-        checkIfAreLoggedUser();
-
         loginButton();
         signUpRedirect();
         forgotPassword();
@@ -70,8 +68,8 @@ public class LoginActivity extends AppCompatActivity {
                                     mDatabase.child("users").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            checkDeviceToken(user.getUid());
                                             if (snapshot.exists() && snapshot.hasChildren()) {
-                                                checkDeviceToken(user.getUid());
                                                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                                 startActivity(intent);
                                             } else {
@@ -132,15 +130,6 @@ public class LoginActivity extends AppCompatActivity {
             }
             dialog.show();
         });
-    }
-
-    private void checkIfAreLoggedUser() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
     }
 
     private void checkDeviceToken(String userUid) {

@@ -93,7 +93,7 @@ public class AddInfoActivity extends AppCompatActivity {
                     if (mAuth.getCurrentUser() != null) {
                         UserModel user = new UserModel(name, surname, address, university, hasCar);
                         mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).setValue(user);
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                        Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
                         startActivity(intent);
                     }
                 }

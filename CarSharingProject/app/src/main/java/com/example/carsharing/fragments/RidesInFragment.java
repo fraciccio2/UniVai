@@ -117,7 +117,7 @@ public class RidesInFragment extends Fragment {
                                                 RequestRideAdapter adapter = new RequestRideAdapter(getContext(), RidesInFragment.this, requestsRideList);
                                                 recyclerView.setAdapter(adapter);
                                             } else {
-                                                warningRidesAlert(getString(R.string.warning_no_request_text));
+                                                warningRidesAlert(getString(R.string.warning_no_request_in_text));
                                             }
                                         }
                                     }
@@ -132,7 +132,7 @@ public class RidesInFragment extends Fragment {
                         }
                     } else {
                         alert.dismiss();
-                        warningRidesAlert(getString(R.string.warning_no_request_text));
+                        warningRidesAlert(getString(R.string.warning_no_request_in_text));
                     }
                 }
 

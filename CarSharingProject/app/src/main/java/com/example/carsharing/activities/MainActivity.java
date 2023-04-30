@@ -183,7 +183,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         gMap.moveCamera(CameraUpdateFactory.newLatLng(mapItaly));
         gMap.setMinZoomPreference(5);
         gMap.setLatLngBoundsForCameraTarget(new LatLngBounds(new LatLng(36.6199, 6.7499), new LatLng(47.1153, 18.4802)));
-        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mapItaly, 14));
+        gMap.animateCamera(CameraUpdateFactory.newLatLngZoom(mapItaly, 13));
         clickOnMarker();
         navigateToBookRideActivity();
     }
@@ -253,6 +253,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                             }
                         });
                     }
+                } else {
+                    setMap(userLatLng.latitude, userLatLng.longitude);
+                    alert.dismiss();
+                    warningRidesAlert();
                 }
             }
 

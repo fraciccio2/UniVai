@@ -142,7 +142,7 @@ public class RidesOutFragment extends Fragment {
                         }
                     } else {
                         alert.dismiss();
-                        warningRidesAlert(getString(R.string.warning_no_request_text));
+                        warningRidesAlert(getString(R.string.warning_no_request_out_text));
                     }
                 }
 

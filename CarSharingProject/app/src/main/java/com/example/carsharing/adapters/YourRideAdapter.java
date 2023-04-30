@@ -43,7 +43,11 @@ public class YourRideAdapter extends RecyclerView.Adapter<YourRideViewHolder> {
         SimpleDateFormat formatter = new SimpleDateFormat(context.getString(R.string.date_pattern));
         holder.dateTime.setText(formatter.format(new Date(ride.getDate())));
         holder.note.setText(ride.getNote());
-        holder.deleteRide.setOnClickListener(view -> fragment.deleteRide(position));
+        if (ride.getActive()) {
+            holder.deleteRide.setOnClickListener(view -> fragment.deleteRide(position));
+        } else {
+            holder.deleteRide.setEnabled(false);
+        }
     }
 
     @Override

@@ -71,6 +71,7 @@ public class NewRideActivity extends AppCompatActivity {
 
         binding.newRideAddressCheck.setOnClickListener(view -> {
             if(binding.newRideAddressCheck.isChecked()){
+                binding.newRideAddress.setText(null);
                 binding.newRideAddress.setHint(logUser.getAddress().getLocation());
                 address = logUser.getAddress();
             } else {
@@ -178,6 +179,7 @@ public class NewRideActivity extends AppCompatActivity {
                 Place place = Autocomplete.getPlaceFromIntent(data);
                 address = new AddressModel(place.getAddress(), new LatLonModel(place.getLatLng().latitude, place.getLatLng().longitude));
                 binding.newRideAddress.setText(address.getLocation());
+                binding.newRideAddressCheck.setChecked(false);
             } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                 Status status = Autocomplete.getStatusFromIntent(data);
                 Log.i("ERROR", "An error occurred: " + status.getStatusMessage());

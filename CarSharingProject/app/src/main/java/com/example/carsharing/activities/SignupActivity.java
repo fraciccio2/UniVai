@@ -57,7 +57,6 @@ public class SignupActivity extends AppCompatActivity {
                                         Toast.makeText(SignupActivity.this, getString(R.string.successful_signup_text), Toast.LENGTH_SHORT).show();
                                         FirebaseUser user = mAuth.getCurrentUser();
                                         if(user != null) {
-                                            mDatabase.setValue(user.getUid());
                                             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                                             startActivity(intent);
                                         }

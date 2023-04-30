@@ -50,7 +50,7 @@
             android:inputType="text"
             android:padding="8dp" />
 
-        <TextView
+        <EditText
             android:id="@+id/start_address"
             android:layout_width="match_parent"
             android:layout_height="60dp"
@@ -62,7 +62,8 @@
             android:drawablePadding="5dp"
             android:gravity="center|start"
             android:paddingHorizontal="8dp"
-            android:text="@string/your_address_text"
+            android:focusable="false"
+            android:hint="@string/your_address_text"
             android:textSize="18sp" />
 
         <com.google.android.material.textfield.TextInputLayout
@@ -96,6 +97,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="30dp"
             android:drawablePadding="8dp"
+            android:buttonTint="@color/main_color"
             android:text="@string/car_checkbox_text"
             android:textColor="@color/white" />
 
