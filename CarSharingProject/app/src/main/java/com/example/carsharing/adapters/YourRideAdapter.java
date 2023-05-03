@@ -45,7 +45,10 @@ public class YourRideAdapter extends RecyclerView.Adapter<YourRideViewHolder> {
         holder.note.setText(ride.getNote());
         if (ride.getActive()) {
             holder.deleteRide.setOnClickListener(view -> fragment.deleteRide(position));
+            holder.deleteRide.setTextColor(context.getResources().getColor(R.color.white));
         } else {
+            holder.deleteRide.setBackgroundColor(context.getResources().getColor(R.color.light_grey));
+            holder.deleteRide.setTextColor(context.getResources().getColor(R.color.white));
             holder.deleteRide.setEnabled(false);
         }
     }

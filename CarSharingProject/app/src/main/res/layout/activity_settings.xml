@@ -45,16 +45,6 @@
             android:text="@string/change_user_image_text"
             android:textColor="@color/black"
             android:textSize="24sp" />
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/dark_mode"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:paddingHorizontal="8dp"
-            android:drawableStart="@drawable/ic_baseline_dark_mode_24"
-            android:drawablePadding="5dp"
-            android:text="Dark Mode"
-            android:textColor="@color/black"
-            android:textSize="24sp" />
         <Spinner
             android:id="@+id/spinner_language"
             android:layout_width="match_parent"

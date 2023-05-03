@@ -70,10 +70,15 @@ public class RidesInFragment extends Fragment {
         searchView.onActionViewExpanded();
         searchView.clearFocus();
 
-        getRequests();
         filterRides();
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getRequests();
     }
 
     private void getRequests() {

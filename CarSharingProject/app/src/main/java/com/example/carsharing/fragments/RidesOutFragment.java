@@ -36,6 +36,7 @@ import taimoor.sultani.sweetalert2.Sweetalert;
 
 public class RidesOutFragment extends Fragment {
 
+    View view;
     RecyclerView recyclerView;
     DatabaseReference mDatabaseRequests;
     DatabaseReference mDatabaseUsers;
@@ -43,8 +44,6 @@ public class RidesOutFragment extends Fragment {
     FirebaseAuth mAuth;
     SearchView searchView;
     int i = 0, l = 0;
-    String userName = "";
-    String userAvatar = "";
     List<RequestWithUserModel> requestsRideList = new ArrayList<>();
 
     public RidesOutFragment(){}
@@ -52,7 +51,7 @@ public class RidesOutFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_rides_out, container, false);
+        view = inflater.inflate(R.layout.fragment_rides_out, container, false);
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseRequests = FirebaseDatabase.getInstance().getReference("requests");
@@ -67,13 +66,18 @@ public class RidesOutFragment extends Fragment {
         searchView.onActionViewExpanded();
         searchView.clearFocus();
 
-        getRequests(view);
         filterRides();
 
         return view;
     }
 
-    private void getRequests(View view) {
+    @Override
+    public void onStart() {
+        super.onStart();
+        getRequests();
+    }
+
+    private void getRequests() {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             Sweetalert alert = new Sweetalert(getContext(), Sweetalert.PROGRESS_TYPE);
@@ -96,8 +100,8 @@ public class RidesOutFragment extends Fragment {
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                                     if(snapshot.exists()) {
                                         for (DataSnapshot datas: snapshot.getChildren()) {
-                                            userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
-                                            userAvatar = datas.child("userImage").getValue(String.class);
+                                            String userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
+                                            String userAvatar = datas.child("userImage").getValue(String.class);
                                             mDatabaseRides.orderByKey().equalTo(requestRide.getRideId()).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {

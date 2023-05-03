@@ -174,6 +174,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void setMap(double lat, double lon) {
         LatLng mapItaly = new LatLng(lat, lon);
+        gMap.clear();
         gMap.addMarker(new MarkerOptions().position(mapItaly).zIndex(2.0f));
         for (RideWithUserModel ride : rideUserList) {
             gMap.addMarker(new MarkerOptions().position(

@@ -62,10 +62,15 @@ public class YourRidesFragment extends Fragment {
         searchView.onActionViewExpanded();
         searchView.clearFocus();
 
-        getRides();
         filterRides();
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getRides();
     }
 
     private void getRides() {

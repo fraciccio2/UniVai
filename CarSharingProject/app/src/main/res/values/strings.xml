@@ -74,7 +74,6 @@
     <string name="pending_text">In Attesa</string>
     <string name="refused_text">Rifiutata</string>
     <string name="refuse_text">Rifiuta</string>
-    <string name="created_by_text">Ride creata da:</string>
     <string name="request_by_text">Ride richiesta da:</string>
     <string name="appointment_text">Appuntamento:</string>
     <string name="filter_text">Filtra</string>
@@ -92,6 +91,7 @@
     <string name="your_address_text">Il tuo indirizzo</string>
     <string name="attention_title_text">ATTENZIONE</string>
     <string name="new_ride_warning_text">Per poter creare una nuova Ride devi inserire un\'immagine di profilo.</string>
+    <string name="book_ride_warning_text">Per poter richiedere una Ride devi inserire un\'immagine di profilo.</string>
     <string name="dont_insert_text">Non inserire</string>
     <string name="insert_text">Inserisci</string>
     <string name="error_retry_text">C\'è stato un problema, riprova.</string>
@@ -103,4 +103,5 @@
     <string name="delete_ride_text">Elimina Ride</string>
     <string name="delete_ride_alert_text">Sei sicuro di voler eliminare questa Ride? Non potrai più tornare indietro.</string>
     <string name="not_delete_text">Non eliminare</string>
+    <string name="request_success_text">Ride richiesta con successo</string>
 </resources>

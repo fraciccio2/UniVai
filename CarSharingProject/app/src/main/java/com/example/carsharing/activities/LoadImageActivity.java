@@ -42,6 +42,7 @@ public class LoadImageActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     private Uri imageUri;
+    Sweetalert alert;
     final private StorageReference storageReference = FirebaseStorage.getInstance().getReference();
 
     @Override
@@ -56,6 +57,11 @@ public class LoadImageActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabase = FirebaseDatabase.getInstance().getReference("users");
+
+        alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
+        alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
+        alert.setTitleText(getString(R.string.loading_text));
+        alert.setCancelable(false);
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
@@ -97,17 +103,29 @@ public class LoadImageActivity extends AppCompatActivity {
     }
 
     private void uploadToFirebase(Uri uri) {
+        alert.show();
         final StorageReference imageReference = storageReference.child(System.currentTimeMillis() + "." + getFileExtension(uri));
-        imageReference.putFile(uri).addOnSuccessListener(taskSnapshot -> imageReference.getDownloadUrl().addOnSuccessListener(uriDownloaded -> {
-            FirebaseUser user = mAuth.getCurrentUser();
-            if (user != null) {
-                Map<String, Object> updateUser = new HashMap<>();
-                updateUser.put("userImage", uriDownloaded.toString());
-                mDatabase.child(user.getUid()).updateChildren(updateUser);
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
+        imageReference.putFile(uri).addOnCompleteListener(task -> {
+            if(task.isSuccessful()) {
+                imageReference.getDownloadUrl().addOnCompleteListener(taskUri -> {
+                    if(taskUri.isSuccessful()) {
+                        FirebaseUser user = mAuth.getCurrentUser();
+                        if (user != null) {
+                            Map<String, Object> updateUser = new HashMap<>();
+                            updateUser.put("userImage", taskUri.getResult().toString());
+                            mDatabase.child(user.getUid()).updateChildren(updateUser);
+                            alert.dismiss();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
+                    } else {
+                        alert.dismiss();
+                    }
+                });
+            } else {
+                alert.dismiss();
             }
-        }));
+        });
     }
 
     private String getFileExtension(Uri fileUri) {
@@ -119,10 +137,6 @@ public class LoadImageActivity extends AppCompatActivity {
     private void editMode(Bundle extras) {
         boolean editMode = extras.getBoolean(getString(R.string.edit_mode_text));
         if (editMode) {
-            Sweetalert alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
-            alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
-            alert.setTitleText(getString(R.string.loading_text));
-            alert.setCancelable(false);
             alert.show();
             binding.skipButton.setVisibility(View.INVISIBLE);
             binding.skipButton.setEnabled(false);
@@ -132,7 +146,11 @@ public class LoadImageActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         UserModel user = snapshot.getValue(UserModel.class);
-                        Glide.with(getApplicationContext()).load(user.getUserImage()).into(binding.uploadImage);
+                        if(user != null && user.getUserImage() != null) {
+                            Glide.with(getApplicationContext()).load(user.getUserImage()).into(binding.uploadImage);
+                        } else {
+                            binding.uploadImage.setImageResource(R.drawable.upload_image);
+                        }
                         alert.dismiss();
                     }
                 }

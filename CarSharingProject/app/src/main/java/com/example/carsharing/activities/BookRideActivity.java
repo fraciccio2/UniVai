@@ -71,7 +71,7 @@ public class BookRideActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         FirebaseUser user = mAuth.getCurrentUser();
-        if(user != null) {
+        if (user != null) {
             getLoggedUser(user);
         }
 
@@ -95,7 +95,7 @@ public class BookRideActivity extends AppCompatActivity {
         }
 
         Bundle extras = getIntent().getExtras();
-        if(extras != null) {
+        if (extras != null) {
             rideId = extras.getString(getString(R.string.ride_id_text));
             userId = extras.getString(getString(R.string.user_id_text));
             String userName = extras.getString(getString(R.string.user_name_text));
@@ -117,8 +117,8 @@ public class BookRideActivity extends AppCompatActivity {
         mDatabaseRides.orderByKey().equalTo(rideId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if(snapshot.exists()) {
-                    for (DataSnapshot datas: snapshot.getChildren()) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot datas : snapshot.getChildren()) {
                         address = datas.child("address").getValue(AddressModel.class);
                         String date = datas.child("date").getValue(String.class);
                         String note = datas.child("note").getValue(String.class);
@@ -143,13 +143,13 @@ public class BookRideActivity extends AppCompatActivity {
     private void saveRequestForRide() {
         binding.bookButton.setOnClickListener(view -> {
             FirebaseUser user = mAuth.getCurrentUser();
-            if(user != null) {
-                if(binding.otherLocationButton.isChecked()) {
-                    if(location != null) {
-                        if(logUser.getUserImage() == null || logUser.getUserImage().equals("")){
+            if (user != null) {
+                if (binding.otherLocationButton.isChecked()) {
+                    if (location != null) {
+                        if (logUser.getUserImage() == null || logUser.getUserImage().equals("")) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(BookRideActivity.this);
                             builder.setTitle(getString(R.string.attention_title_text));
-                            builder.setMessage(getString(R.string.new_ride_warning_text));
+                            builder.setMessage(getString(R.string.book_ride_warning_text));
                             builder.setNegativeButton(getString(R.string.dont_insert_text), (dialog, which) -> dialog.dismiss());
                             builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
                                 Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
@@ -160,7 +160,7 @@ public class BookRideActivity extends AppCompatActivity {
                         } else {
                             RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, false);
                             FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
-                                if(task.isSuccessful()) {
+                                if (task.isSuccessful()) {
                                     mDatabaseTokens.orderByValue().equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -179,6 +179,7 @@ public class BookRideActivity extends AppCompatActivity {
                                             Log.e("Error", "exception", error.toException());
                                         }
                                     });
+                                    Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
                                     startActivity(intent);
                                 } else {
@@ -190,32 +191,46 @@ public class BookRideActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), getString(R.string.insert_address_text), Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    String location = address.getLocation() + " " + formattedDate;
-                    RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, true);
-                    FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
-                        if (task.isSuccessful()) {
-                            Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+                    if (logUser.getUserImage() == null || logUser.getUserImage().equals("")) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(BookRideActivity.this);
+                        builder.setTitle(getString(R.string.attention_title_text));
+                        builder.setMessage(getString(R.string.book_ride_warning_text));
+                        builder.setNegativeButton(getString(R.string.dont_insert_text), (dialog, which) -> dialog.dismiss());
+                        builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
+                            Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
+                            intent.putExtra(getString(R.string.edit_mode_text), true);
                             startActivity(intent);
-                        } else {
-                            Toast.makeText(getApplicationContext(), getString(R.string.error_retry_text), Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                        });
+                        builder.show();
+                    } else {
+                        String location = address.getLocation() + " " + formattedDate;
+                        RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, true);
+                        FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
+                            if (task.isSuccessful()) {
+                                Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
+                                Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+                                startActivity(intent);
+                            } else {
+                                Toast.makeText(getApplicationContext(), getString(R.string.error_retry_text), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    }
                 }
             }
         });
     }
 
     private void someLocationButton() {
-        binding.someLocationButton.setOnClickListener(view ->{
-            if(binding.someLocationButton.isChecked()) {
+        binding.someLocationButton.setOnClickListener(view -> {
+            if (binding.someLocationButton.isChecked()) {
                 binding.autocompleteCard.setVisibility(View.GONE);
             }
         });
     }
 
     private void otherLocationButton() {
-        binding.otherLocationButton.setOnClickListener(view ->{
-            if(binding.otherLocationButton.isChecked()) {
+        binding.otherLocationButton.setOnClickListener(view -> {
+            if (binding.otherLocationButton.isChecked()) {
                 binding.autocompleteCard.setVisibility(View.VISIBLE);
             }
         });
