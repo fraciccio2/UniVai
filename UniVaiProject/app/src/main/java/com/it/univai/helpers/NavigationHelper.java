@@ -1,9 +1,11 @@
-package com.it.univai.services;
+package com.it.univai.helpers;
 
 import android.content.Context;
 import android.content.Intent;
 import android.view.View;
 
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.it.univai.R;
 import com.it.univai.activities.MainActivity;
 import com.it.univai.activities.NewRideActivity;
@@ -11,8 +13,6 @@ import com.it.univai.activities.RidesListActivity;
 import com.it.univai.activities.RidesSummaryActivity;
 import com.it.univai.activities.SettingsActivity;
 import com.it.univai.models.UserModel;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class NavigationHelper {
 

@@ -1,4 +1,4 @@
-package com.it.univai.services;
+package com.it.univai.helpers;
 
 public class RidesHelper {
 

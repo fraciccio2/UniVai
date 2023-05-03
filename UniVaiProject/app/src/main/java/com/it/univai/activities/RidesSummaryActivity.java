@@ -7,11 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager2.widget.ViewPager2;
 
-import com.it.univai.R;
-import com.it.univai.adapters.ViewPagerAdapter;
-import com.it.univai.databinding.ActivityRidesSummaryBinding;
-import com.it.univai.models.UserModel;
-import com.it.univai.services.NavigationHelper;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -20,6 +15,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.adapters.ViewPagerAdapter;
+import com.it.univai.databinding.ActivityRidesSummaryBinding;
+import com.it.univai.helpers.NavigationHelper;
+import com.it.univai.models.UserModel;
 
 public class RidesSummaryActivity extends AppCompatActivity {
 

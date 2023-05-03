@@ -6,13 +6,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.it.univai.R;
-import com.it.univai.databinding.ActivitySignupBinding;
-import com.it.univai.services.DataBaseHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.it.univai.R;
+import com.it.univai.databinding.ActivitySignupBinding;
+import com.it.univai.helpers.DataBaseHelper;
 
 public class SignupActivity extends AppCompatActivity {
 

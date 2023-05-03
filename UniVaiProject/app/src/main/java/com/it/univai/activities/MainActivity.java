@@ -20,13 +20,6 @@ import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentActivity;
 
-import com.it.univai.R;
-import com.it.univai.databinding.ActivityMainBinding;
-import com.it.univai.models.RideModel;
-import com.it.univai.models.RideWithUserModel;
-import com.it.univai.models.UserModel;
-import com.it.univai.services.NavigationHelper;
-import com.it.univai.services.RidesHelper;
 import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -53,6 +46,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.databinding.ActivityMainBinding;
+import com.it.univai.helpers.NavigationHelper;
+import com.it.univai.helpers.RidesHelper;
+import com.it.univai.models.RideModel;
+import com.it.univai.models.RideWithUserModel;
+import com.it.univai.models.UserModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

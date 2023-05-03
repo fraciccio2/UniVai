@@ -8,12 +8,12 @@ import android.app.NotificationManager;
 import androidx.annotation.NonNull;
 import androidx.core.app.NotificationManagerCompat;
 
-import com.it.univai.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.messaging.RemoteMessage;
+import com.it.univai.R;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
 
@@ -40,7 +40,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             Notification.Builder builder = new Notification.Builder(this, CHANNEL_ID)
                     .setContentTitle(title)
                     .setContentText(body)
-                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setSmallIcon(R.mipmap.ic_launcher_logo)
                     .setAutoCancel(true);
             NotificationManagerCompat.from(this).notify(1, builder.build());
         }
