@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "584155001776",
+    "firebase_url": "https://car-sharing-b39c3-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "car-sharing-b39c3",
+    "storage_bucket": "car-sharing-b39c3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:584155001776:android:0274df878d14594c57dc75",
+        "android_client_info": {
+          "package_name": "com.it.univai"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "584155001776-voacqb4r76vfma8m4ms5mqpgahll6n32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA-f0DbXszaxQAI3jARcRQJOo1lkHeIhDo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "584155001776-voacqb4r76vfma8m4ms5mqpgahll6n32.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
