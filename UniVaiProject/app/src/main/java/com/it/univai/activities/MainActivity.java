@@ -193,6 +193,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         if(alert != null && !alert.isShowing()) {
             alert.show();
         }
+        rideUserList = new ArrayList<>();
         FirebaseDatabase.getInstance().getReference("rides").orderByChild("active").equalTo(true).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
