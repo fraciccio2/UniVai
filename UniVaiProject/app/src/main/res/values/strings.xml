@@ -104,4 +104,5 @@
     <string name="delete_ride_alert_text">Sei sicuro di voler eliminare questa Ride? Non potrai più tornare indietro.</string>
     <string name="not_delete_text">Non eliminare</string>
     <string name="request_success_text">Ride richiesta con successo</string>
+    <string name="no_ride_text">Nessuna Ride nei dintorni</string>
 </resources>

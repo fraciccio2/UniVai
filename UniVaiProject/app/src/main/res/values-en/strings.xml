@@ -88,4 +88,5 @@
     <string name="delete_ride_alert_text">Are you sure you want to delete this Ride? You will never be able to go back.</string>
     <string name="not_delete_text">Do not delete</string>
     <string name="request_success_text">Ride request successfully</string>
+    <string name="no_ride_text">No Rides around</string>
 </resources>

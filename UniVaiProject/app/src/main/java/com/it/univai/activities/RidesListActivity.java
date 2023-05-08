@@ -142,15 +142,19 @@ public class RidesListActivity extends AppCompatActivity {
                                 if (i == l) {
                                     alert.dismiss();
                                     if (rideUserList.size() > 0) {
-                                        RecyclerView recyclerView = binding.recyclerView;
-                                        LinearLayoutManager layoutManager = new LinearLayoutManager(RidesListActivity.this);
-                                        recyclerView.setLayoutManager(layoutManager);
-                                        Collections.reverse(rideUserList);
-                                        RideAdapter adapter = new RideAdapter(rideUserList, getApplicationContext(), RidesListActivity.this);
-                                        recyclerView.setAdapter(adapter);
+                                        binding.noRidesCard.setVisibility(View.GONE);
+                                        binding.filterButton.setVisibility(View.VISIBLE);
                                     } else {
+                                        binding.noRidesCard.setVisibility(View.VISIBLE);
+                                        binding.filterButton.setVisibility(View.GONE);
                                         warningRidesAlert();
                                     }
+                                    RecyclerView recyclerView = binding.recyclerView;
+                                    LinearLayoutManager layoutManager = new LinearLayoutManager(RidesListActivity.this);
+                                    recyclerView.setLayoutManager(layoutManager);
+                                    Collections.reverse(rideUserList);
+                                    RideAdapter adapter = new RideAdapter(rideUserList, getApplicationContext(), RidesListActivity.this);
+                                    recyclerView.setAdapter(adapter);
                                 }
                             }
 
@@ -163,6 +167,8 @@ public class RidesListActivity extends AppCompatActivity {
                     }
                 } else {
                     alert.dismiss();
+                    binding.noRidesCard.setVisibility(View.VISIBLE);
+                    binding.filterButton.setVisibility(View.GONE);
                     warningRidesAlert();
                 }
             }
