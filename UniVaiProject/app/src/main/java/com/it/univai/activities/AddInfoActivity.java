@@ -1,5 +1,7 @@
 package com.it.univai.activities;
 
+import static java.lang.Long.parseLong;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -67,6 +69,7 @@ public class AddInfoActivity extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setTitle(getString(R.string.start_text));
 
+        Arrays.sort(items);
         adapterItems = new ArrayAdapter<>(this, R.layout.list_item, items);
         binding.autoCompleteText.setAdapter(adapterItems);
 
@@ -87,11 +90,12 @@ public class AddInfoActivity extends AppCompatActivity {
                 String surname = binding.startSurname.getText().toString();
                 String university = binding.autoCompleteText.getText().toString();
                 Boolean hasCar = binding.startCar.isChecked();
-                if (name.equals("") || surname.equals("") || university.equals("") || address.equals("")) {
+                String phoneNumber = binding.startNumber.getText().toString();
+                if (name.equals("") || surname.equals("") || university.equals("") || address.equals("") || phoneNumber.equals("")) {
                     Toast.makeText(AddInfoActivity.this, "Inserisci tutti i campi necessari", Toast.LENGTH_SHORT).show();
                 } else {
                     if (mAuth.getCurrentUser() != null) {
-                        UserModel user = new UserModel(name, surname, address, university, hasCar);
+                        UserModel user = new UserModel(name, surname, address, university, parseLong(phoneNumber), hasCar);
                         mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).setValue(user);
                         Intent intent = new Intent(getApplicationContext(), LoadImageActivity.class);
                         startActivity(intent);
@@ -113,6 +117,9 @@ public class AddInfoActivity extends AppCompatActivity {
                 }
                 if(!(logUser.getUniversity().equals(binding.autoCompleteText.getText().toString()))) {
                     updateUser.put("university", binding.autoCompleteText.getText().toString());
+                }
+                if(!(logUser.getPhoneNumber().equals(binding.startNumber.getText().toString()))) {
+                    updateUser.put("phoneNumber", binding.startNumber.getText().toString());
                 }
                 mDatabase.child("users").child(mAuth.getCurrentUser().getUid()).updateChildren(updateUser);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
@@ -142,6 +149,7 @@ public class AddInfoActivity extends AppCompatActivity {
                         binding.startSurname.setText(logUser.getSurname());
                         binding.startAddress.setText(logUser.getAddress().getLocation());
                         binding.autoCompleteText.setText(logUser.getUniversity(), false);
+                        binding.startNumber.setText(logUser.getPhoneNumber().toString());
                         binding.startCar.setChecked(logUser.getHasCar());
                         alert.dismiss();
                     }

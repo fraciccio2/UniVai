@@ -7,22 +7,15 @@ public class UserModel {
     private AddressModel address;
     private String university;
     private String userImage;
+    private Long phoneNumber;
     private Boolean hasCar;
 
-    public UserModel(String name, String surname, AddressModel address, String university, String userImage, Boolean hasCar) {
+    public UserModel(String name, String surname, AddressModel address, String university, Long phoneNumber, Boolean hasCar) {
         this.name = name;
         this.surname = surname;
         this.address = address;
         this.university = university;
-        this.userImage = userImage;
-        this.hasCar = hasCar;
-    }
-
-    public UserModel(String name, String surname, AddressModel address, String university, Boolean hasCar) {
-        this.name = name;
-        this.surname = surname;
-        this.address = address;
-        this.university = university;
+        this.phoneNumber = phoneNumber;
         this.hasCar = hasCar;
     }
 
@@ -66,6 +59,14 @@ public class UserModel {
 
     public void setUserImage(String userImage) {
         this.userImage = userImage;
+    }
+
+    public Long getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(Long phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 
     public Boolean getHasCar() {

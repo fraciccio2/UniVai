@@ -2,6 +2,7 @@
 <resources>
     <string name="name_text">Name</string>
     <string name="surname_text">Surname</string>
+    <string name="phone_number_text">Phone number</string>
     <string name="cancel_text">Cancel</string>
     <string name="confirm_password_text">Confirm Password</string>
     <string name="login_button_text">Log In</string>

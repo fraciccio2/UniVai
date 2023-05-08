@@ -90,12 +90,26 @@
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <EditText
+            android:id="@+id/start_number"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginHorizontal="8dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/main_color_border"
+            android:drawableStart="@drawable/ic_baseline_local_phone_24"
+            android:drawablePadding="8dp"
+            android:hint="@string/phone_number_text"
+            android:inputType="number"
+            android:padding="8dp" />
+
         <CheckBox
             android:id="@+id/start_car"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:drawablePadding="8dp"
             android:buttonTint="@color/main_color"
             android:text="@string/car_checkbox_text"
@@ -107,7 +121,7 @@
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_marginHorizontal="8dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:text="@string/start_button_text"
             android:textSize="18sp"
             app:cornerRadius="30dp" />

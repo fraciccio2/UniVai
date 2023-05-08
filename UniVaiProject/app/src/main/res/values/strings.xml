@@ -18,6 +18,7 @@
     <string name="rides_in_text" translatable="false">RIDES IN</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
+    <string name="phone_number_text">Numero di telefono</string>
     <string name="cancel_text">Cancella</string>
     <string name="confirm_password_text">Conferma Password</string>
     <string name="login_button_text">Accedi</string>
