@@ -2,7 +2,9 @@ package com.it.univai.adapters;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -89,12 +91,18 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
                 holder.status.setTextColor(context.getResources().getColor(R.color.white));
                 holder.token.setVisibility(View.VISIBLE);
                 holder.token.setText(context.getString(R.string.token_text) + " " + requestRide.getTokenRequest());
+                holder.phone.setVisibility(View.VISIBLE);
+                holder.phone.setText(context.getString(R.string.phone_number_val_text) + " " + requestRide.getPhoneNumber());
+                holder.phone.setOnClickListener(view -> {
+                    Intent intentDial = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + "+39" + requestRide.getPhoneNumber()));
+                    context.startActivity(intentDial);
+                });
                 break;
             case PENDING:
                 holder.requestCard.setStrokeColor(context.getResources().getColor(R.color.warning_border));
                 holder.status.setText(context.getString(R.string.pending_text));
                 holder.status.setBackground(AppCompatResources.getDrawable(context, R.drawable.warnig_status));
-                if(!isOutRequest) {
+                if (!isOutRequest) {
                     holder.layoutWithButtons.setVisibility(View.VISIBLE);
                     holder.refuseButton.setOnClickListener(view -> fragmentIn.refuseRequest(requestRide.getTokenRequest(), requestRide.getUserUid()));
                     holder.acceptButton.setOnClickListener(view -> fragmentIn.acceptRequest(requestRide.getTokenRequest(), requestRide.getUserUid()));

@@ -14,11 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.deeplabstudio.fcmsend.FCMSend;
-import com.it.univai.R;
-import com.it.univai.adapters.RequestRideAdapter;
-import com.it.univai.enums.StatusEnum;
-import com.it.univai.models.RequestRideModel;
-import com.it.univai.models.RequestWithUserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -26,6 +21,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.adapters.RequestRideAdapter;
+import com.it.univai.enums.StatusEnum;
+import com.it.univai.models.RequestRideModel;
+import com.it.univai.models.RequestWithUserModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -107,12 +107,14 @@ public class RidesInFragment extends Fragment {
                                         String userName = "";
                                         String userAvatar = "";
                                         String userUid = "";
+                                        String phoneNumber = "";
                                         for (DataSnapshot datas : snapshot.getChildren()) {
                                             userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
                                             userAvatar = datas.child("userImage").getValue(String.class);
+                                            phoneNumber = datas.child("phoneNumber").getValue(Long.class).toString();
                                             userUid = datas.getKey();
                                         }
-                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, userUid, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, requestRide.isSameAddress(), false));
+                                        requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, userUid, requestRide.getRideId(), data.getKey(), requestRide.getLocation(), userAvatar, phoneNumber, requestRide.isSameAddress(), false));
                                         if (i == l) {
                                             alert.dismiss();
                                             if (requestsRideList.size() > 0) {

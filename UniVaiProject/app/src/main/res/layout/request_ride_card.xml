@@ -67,6 +67,17 @@
                     android:textSize="15sp" />
 
                 <TextView
+                    android:id="@+id/phone_number"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="12dp"
+                    android:layout_marginVertical="4dp"
+                    android:fontFamily="@font/google_font_italic"
+                    android:visibility="gone"
+                    android:textSize="11sp"
+                    android:textColor="@color/light_grey" />
+
+                <TextView
                     android:id="@+id/token_request"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -74,7 +85,7 @@
                     android:layout_marginVertical="4dp"
                     android:fontFamily="@font/roboto_condensed_bold"
                     android:visibility="gone"
-                    android:textSize="18sp" />
+                    android:autoSizeTextType="uniform" />
 
                 <LinearLayout
                     android:id="@+id/layout_with_button"

@@ -13,11 +13,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.it.univai.R;
-import com.it.univai.adapters.RequestRideAdapter;
-import com.it.univai.models.AddressModel;
-import com.it.univai.models.RequestRideModel;
-import com.it.univai.models.RequestWithUserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -25,6 +20,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.adapters.RequestRideAdapter;
+import com.it.univai.models.AddressModel;
+import com.it.univai.models.RequestRideModel;
+import com.it.univai.models.RequestWithUserModel;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -102,6 +102,7 @@ public class RidesOutFragment extends Fragment {
                                         for (DataSnapshot datas: snapshot.getChildren()) {
                                             String userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
                                             String userAvatar = datas.child("userImage").getValue(String.class);
+                                            String phoneNumber = datas.child("phoneNumber").getValue(Long.class).toString();
                                             mDatabaseRides.orderByKey().equalTo(requestRide.getRideId()).addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -113,7 +114,7 @@ public class RidesOutFragment extends Fragment {
                                                             SimpleDateFormat formatter = new SimpleDateFormat(view.getContext().getString(R.string.date_pattern));
                                                             address = ride.child("address").getValue(AddressModel.class);
                                                             date = formatter.format(new Date(ride.child("date").getValue(String.class)));
-                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, true));
+                                                            requestsRideList.add(new RequestWithUserModel(requestRide.getStatus(), userName, requestRide.getRideId(), data.getKey(), address.getLocation(), date, userAvatar, phoneNumber, true));
                                                         }
                                                         if (requestsRideList.size() > 0 && i == l) {
                                                             alert.dismiss();

@@ -7,9 +7,9 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.it.univai.R;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
+import com.it.univai.R;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -19,6 +19,7 @@ public class RequestRideViewHolder extends RecyclerView.ViewHolder {
     public TextView user;
     public TextView position;
     public TextView token;
+    public TextView phone;
     public LinearLayout layoutWithButtons;
     public MaterialButton acceptButton;
     public MaterialButton refuseButton;
@@ -35,5 +36,6 @@ public class RequestRideViewHolder extends RecyclerView.ViewHolder {
         refuseButton = itemView.findViewById(R.id.refuse_button);
         userImage = itemView.findViewById(R.id.user_avatar);
         token = itemView.findViewById(R.id.token_request);
+        phone = itemView.findViewById(R.id.phone_number);
     }
 }
