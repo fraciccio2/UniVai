@@ -78,7 +78,7 @@ public class RequestRideAdapter extends RecyclerView.Adapter<RequestRideViewHold
             ImageView imageView = dialog.findViewById(R.id.image_full_screen);
             RequestOptions options = new RequestOptions()
                     .centerCrop()
-                    .placeholder(R.mipmap.ic_launcher_round);
+                    .placeholder(R.mipmap.ic_launcher_logo_round);
             Glide.with(context).load(requestRide.getUserAvatar()).apply(options).into(imageView);
             dialog.show();
         });
