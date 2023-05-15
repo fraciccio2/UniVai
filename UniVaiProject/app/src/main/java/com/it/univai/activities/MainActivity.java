@@ -129,7 +129,10 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == PERMISSIONS_REQUEST_LOCATION) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                this.loadMap();
+                FirebaseUser user = mAuth.getCurrentUser();
+                if(user != null) {
+                    getLoggedUser(user);
+                }
             } else {
                 setMapWithDefaultValue(false);
             }
