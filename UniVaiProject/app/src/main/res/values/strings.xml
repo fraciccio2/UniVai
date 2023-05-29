@@ -107,4 +107,5 @@
     <string name="request_success_text">Ride richiesta con successo</string>
     <string name="no_ride_text">Nessuna Ride nei dintorni</string>
     <string name="phone_number_val_text">Numero di telefono:</string>
+    <string name="your_rides_text">Le tue Rides</string>
 </resources>
