@@ -114,7 +114,8 @@ public class SettingsActivity extends AppCompatActivity {
                 }
                 if(!(Locale.getDefault().getLanguage().equals(locale.getLanguage()))){
                     Locale.setDefault(locale);
-                    Configuration config = new Configuration();
+                    Configuration config = getApplicationContext().getResources().getConfiguration();
+                    config.setLocale(locale);
                     getResources().updateConfiguration(config, getResources().getDisplayMetrics());
                     recreate();
                 }
