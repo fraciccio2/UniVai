@@ -4,17 +4,15 @@ import static android.content.pm.PackageManager.PERMISSION_GRANTED;
 
 import android.Manifest;
 import android.app.AlertDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
@@ -256,16 +254,15 @@ public class BookRideActivity extends AppCompatActivity {
         if (savedRide != null) {
             long startTime = new Date(savedRide.getDate()).getTime();
             long endTime = startTime + 3600000;
-            ContentResolver contentResolver = getContentResolver();
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.TITLE, getString(R.string.app_name));
-            values.put(CalendarContract.Events.DESCRIPTION, savedRide.getNote());
-            values.put(CalendarContract.Events.EVENT_LOCATION, address.getLocation());
-            values.put(CalendarContract.Events.CALENDAR_ID, 3);
-            values.put(CalendarContract.Events.DTSTART, startTime);
-            values.put(CalendarContract.Events.DTEND, endTime);
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
-            contentResolver.insert(CalendarContract.Events.CONTENT_URI, values);
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setType("vnd.android.cursor.item/event");
+            intent.putExtra("beginTime", startTime);
+            intent.putExtra("endTime", endTime);
+            intent.putExtra("title", getString(R.string.app_name));
+            intent.putExtra("description", savedRide.getNote());
+            intent.putExtra("eventLocation", address.getLocation());
+            intent.putExtra("eventTimezone", TimeZone.getDefault().getID());
+            startActivity(intent);
         }
     }
 
@@ -304,5 +301,15 @@ public class BookRideActivity extends AppCompatActivity {
         Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
         startActivity(intent);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == CALENDAR_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                createEventOnCalendar();
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

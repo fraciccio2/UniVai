@@ -8,6 +8,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_CALENDAR" />
     <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
     <application
         android:allowBackup="true"
@@ -32,7 +33,7 @@
             android:screenOrientation="portrait"/>
         <activity
             android:name="com.it.univai.activities.LiveChatActivity"
-            android:exported="true"
+            android:exported="false"
             android:screenOrientation="portrait" />
         <activity
             android:name="com.it.univai.activities.BookRideActivity"

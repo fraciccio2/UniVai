@@ -14,9 +14,6 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.it.univai.R;
-import com.it.univai.adapters.YourRideAdapter;
-import com.it.univai.models.RideModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -24,6 +21,9 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.adapters.YourRideAdapter;
+import com.it.univai.models.RideModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,6 +124,7 @@ public class YourRidesFragment extends Fragment {
     }
 
     public void deleteRide(int position) {
+        Collections.reverse(rideIds);
         String rideId = rideIds.get(position);
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle(getString(R.string.attention_title_text));

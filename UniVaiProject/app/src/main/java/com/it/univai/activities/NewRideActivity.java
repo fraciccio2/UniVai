@@ -6,11 +6,8 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
-import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -22,12 +19,6 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
-import com.it.univai.R;
-import com.it.univai.databinding.ActivityNewRideBinding;
-import com.it.univai.models.AddressModel;
-import com.it.univai.models.LatLonModel;
-import com.it.univai.models.RideModel;
-import com.it.univai.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -41,6 +32,12 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.databinding.ActivityNewRideBinding;
+import com.it.univai.models.AddressModel;
+import com.it.univai.models.LatLonModel;
+import com.it.univai.models.RideModel;
+import com.it.univai.models.UserModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -214,16 +211,15 @@ public class NewRideActivity extends AppCompatActivity {
         if(savedRide != null) {
             long startTime = new Date(savedRide.getDate()).getTime();
             long endTime = startTime + 3600000;
-            ContentResolver contentResolver = getContentResolver();
-            ContentValues values = new ContentValues();
-            values.put(CalendarContract.Events.TITLE, getString(R.string.app_name));
-            values.put(CalendarContract.Events.DESCRIPTION, savedRide.getNote());
-            values.put(CalendarContract.Events.EVENT_LOCATION, savedRide.getAddress().getLocation());
-            values.put(CalendarContract.Events.CALENDAR_ID, 3);
-            values.put(CalendarContract.Events.DTSTART, startTime);
-            values.put(CalendarContract.Events.DTEND, endTime);
-            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
-            contentResolver.insert(CalendarContract.Events.CONTENT_URI, values);
+            Intent intent = new Intent(Intent.ACTION_EDIT);
+            intent.setType("vnd.android.cursor.item/event");
+            intent.putExtra("beginTime", startTime);
+            intent.putExtra("endTime", endTime);
+            intent.putExtra("title", getString(R.string.app_name));
+            intent.putExtra("description", savedRide.getNote());
+            intent.putExtra("eventLocation", savedRide.getAddress().getLocation());
+            intent.putExtra("eventTimezone", TimeZone.getDefault().getID());
+            startActivity(intent);
         }
     }
 

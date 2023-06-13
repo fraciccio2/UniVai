@@ -120,6 +120,8 @@ public class LiveChatActivity extends AppCompatActivity {
                         } else {
                             alert.dismiss();
                         }
+                    } else {
+                        alert.dismiss();
                     }
                 }
 
