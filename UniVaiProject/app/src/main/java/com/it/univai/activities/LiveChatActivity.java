@@ -68,15 +68,18 @@ public class LiveChatActivity extends AppCompatActivity {
         FirebaseUser user = mAuth.getCurrentUser();
         if (user != null) {
             mUsers = new ArrayList<>();
-            mDatabaseRequests.orderByChild("requesterUser").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            mDatabaseRequests.orderByChild("status").equalTo(StatusEnum.ACCEPT.toString()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.exists()) {
                         Set<String> idUsers = new HashSet<>();
                         for (DataSnapshot data : snapshot.getChildren()) {
-                            StatusEnum status = data.child("status").getValue(StatusEnum.class);
-                            if (status == StatusEnum.ACCEPT) {
-                                idUsers.add(data.child("creatorUser").getValue(String.class));
+                            String creatorUser = data.child("creatorUser").getValue(String.class);
+                            String requesterUser = data.child("requesterUser").getValue(String.class);
+                            if (creatorUser != null && creatorUser.equals(user.getUid())) {
+                                idUsers.add(requesterUser);
+                            } else if (requesterUser != null && requesterUser.equals(user.getUid())) {
+                                idUsers.add(creatorUser);
                             }
                         }
                         if (idUsers.size() > 0) {
@@ -117,12 +120,9 @@ public class LiveChatActivity extends AppCompatActivity {
                                     }
                                 });
                             }
-                        } else {
-                            alert.dismiss();
                         }
-                    } else {
-                        alert.dismiss();
                     }
+                    alert.dismiss();
                 }
 
                 @Override

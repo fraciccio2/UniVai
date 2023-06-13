@@ -1,7 +1,6 @@
 package com.it.univai.activities;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,15 +11,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.bumptech.glide.Glide;
+import com.firebase.ui.common.ChangeEventType;
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.firebase.ui.database.FirebaseRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.it.univai.R;
 import com.it.univai.databinding.ActivityMessageBinding;
 import com.it.univai.holders.MessageViewHold;
@@ -28,8 +26,6 @@ import com.it.univai.models.ChatModel;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import taimoor.sultani.sweetalert2.Sweetalert;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -41,7 +37,6 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference mDatabaseChats;
     FirebaseRecyclerAdapter<ChatModel, MessageViewHold> adapter;
     List<ChatModel> chats;
-    Sweetalert alert;
     public static final int MSG_LEFT = 0;
     public static final int MSG_RIGHT = 1;
 
@@ -59,19 +54,12 @@ public class MessageActivity extends AppCompatActivity {
 
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
-            alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
-            alert.setTitleText(getString(R.string.loading_text));
-            alert.setCancelable(false);
-            alert.show();
-
             userId = extras.getString(getString(R.string.user_id_text));
             userName = extras.getString(getString(R.string.user_name_text));
             userImage = extras.getString(getString(R.string.image_id_text));
             Glide.with(MessageActivity.this).load(userImage).into(binding.profileImage);
             binding.username.setText(userName);
             sendMessage();
-            readMessage();
 
             binding.messageChatRecycler.setHasFixedSize(true);
             LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext());
@@ -89,7 +77,7 @@ public class MessageActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
                     ChatModel message = new ChatModel(user.getUid(), userId, messageTxt);
-                    chats.add(message);
+                    //chats.add(message);
                     mDatabaseChats.push().setValue(message);
                     binding.textSend.setText("");
                 }
@@ -97,32 +85,6 @@ public class MessageActivity extends AppCompatActivity {
                 Toast.makeText(this, getString(R.string.empty_message_text), Toast.LENGTH_SHORT).show();
             }
         });
-    }
-
-    private void readMessage() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            mDatabaseChats.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        for (DataSnapshot data : snapshot.getChildren()) {
-                            ChatModel chat = data.getValue(ChatModel.class);
-                            if (chat != null && (chat.getReceiver().equals(user.getUid()) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(user.getUid()))) {
-                                chats.add(chat);
-                            }
-                        }
-                    }
-                    alert.dismiss();
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-                    Log.e("Error", "exception", error.toException());
-                    alert.dismiss();
-                }
-            });
-        }
     }
 
     private FirebaseRecyclerAdapter<ChatModel, MessageViewHold> setFirebaseAdapter() {
@@ -153,11 +115,20 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public int getItemViewType(int position) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                if(user != null && chats.get(position).getSender().equals(user.getUid())) {
+                if (user != null && chats.get(position).getSender().equals(user.getUid())) {
                     return MSG_RIGHT;
                 } else {
                     return MSG_LEFT;
                 }
+            }
+
+            @Override
+            public void onChildChanged(@NonNull ChangeEventType type, @NonNull DataSnapshot snapshot, int newIndex, int oldIndex) {
+                ChatModel chat = snapshot.getValue(ChatModel.class);
+                if (chat != null) {
+                    chats.add(chat);
+                }
+                super.onChildChanged(type, snapshot, newIndex, oldIndex);
             }
         };
     }
