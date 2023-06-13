@@ -1,8 +1,14 @@
 package com.it.univai.activities;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -11,14 +17,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.deeplabstudio.fcmsend.FCMSend;
-import com.it.univai.R;
-import com.it.univai.databinding.ActivityBookRideBinding;
-import com.it.univai.enums.StatusEnum;
-import com.it.univai.models.AddressModel;
-import com.it.univai.models.RequestRideModel;
-import com.it.univai.models.UserModel;
 import com.google.android.gms.common.api.Status;
 import com.google.android.libraries.places.api.Places;
 import com.google.android.libraries.places.api.model.Place;
@@ -31,10 +33,18 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.it.univai.R;
+import com.it.univai.databinding.ActivityBookRideBinding;
+import com.it.univai.enums.StatusEnum;
+import com.it.univai.models.AddressModel;
+import com.it.univai.models.RequestRideModel;
+import com.it.univai.models.RideModel;
+import com.it.univai.models.UserModel;
 
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.TimeZone;
 
 import taimoor.sultani.sweetalert2.Sweetalert;
 
@@ -51,6 +61,8 @@ public class BookRideActivity extends AppCompatActivity {
     String formattedDate;
     AddressModel address;
     UserModel logUser;
+    RideModel savedRide;
+    private static final int CALENDAR_REQUEST_CODE = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +139,7 @@ public class BookRideActivity extends AppCompatActivity {
                         formattedDate = formatter.format(new Date(date));
                         binding.rideDeparture.setText(formattedDate);
                         binding.rideNote.setText(note);
+                        savedRide = new RideModel(address, date, note);
                     }
                     alert.dismiss();
                 }
@@ -161,27 +174,7 @@ public class BookRideActivity extends AppCompatActivity {
                             RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, false);
                             FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                                 if (task.isSuccessful()) {
-                                    mDatabaseTokens.orderByValue().equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
-                                        @Override
-                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            if (snapshot.exists()) {
-                                                for (DataSnapshot data : snapshot.getChildren()) {
-                                                    FCMSend.Builder builder = new FCMSend.Builder(data.getKey())
-                                                            .setTitle(getString(R.string.app_name))
-                                                            .setBody(getString(R.string.interested_message_text));
-                                                    builder.send();
-                                                }
-                                            }
-                                        }
-
-                                        @Override
-                                        public void onCancelled(@NonNull DatabaseError error) {
-                                            Log.e("Error", "exception", error.toException());
-                                        }
-                                    });
-                                    Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
-                                    Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
-                                    startActivity(intent);
+                                    saveEventOnCalendarAndSendNotification();
                                 } else {
                                     Toast.makeText(getApplicationContext(), getString(R.string.error_retry_text), Toast.LENGTH_SHORT).show();
                                 }
@@ -207,9 +200,7 @@ public class BookRideActivity extends AppCompatActivity {
                         RequestRideModel requestRide = new RequestRideModel(StatusEnum.PENDING, userId, user.getUid(), rideId, location, true);
                         FirebaseDatabase.getInstance().getReference("requests").push().setValue(requestRide).addOnCompleteListener(task -> {
                             if (task.isSuccessful()) {
-                                Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
-                                Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
-                                startActivity(intent);
+                                saveEventOnCalendarAndSendNotification();
                             } else {
                                 Toast.makeText(getApplicationContext(), getString(R.string.error_retry_text), Toast.LENGTH_SHORT).show();
                             }
@@ -254,11 +245,64 @@ public class BookRideActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void createEventOnCalendar() {
+        if (savedRide != null) {
+            long startTime = new Date(savedRide.getDate()).getTime();
+            long endTime = startTime + 3600000;
+            ContentResolver contentResolver = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.TITLE, getString(R.string.app_name));
+            values.put(CalendarContract.Events.DESCRIPTION, savedRide.getNote());
+            values.put(CalendarContract.Events.EVENT_LOCATION, address.getLocation());
+            values.put(CalendarContract.Events.CALENDAR_ID, 3);
+            values.put(CalendarContract.Events.DTSTART, startTime);
+            values.put(CalendarContract.Events.DTEND, endTime);
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+            contentResolver.insert(CalendarContract.Events.CONTENT_URI, values);
+        }
+    }
+
+    private void checkPermission(String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+        if (!permissions) {
+            ActivityCompat.requestPermissions(this, permissionsId, CALENDAR_REQUEST_CODE);
+        } else {
+            createEventOnCalendar();
+        }
+    }
+
+    private void saveEventOnCalendarAndSendNotification() {
+        checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+        mDatabaseTokens.orderByValue().equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        FCMSend.Builder builder = new FCMSend.Builder(data.getKey())
+                                .setTitle(getString(R.string.app_name))
+                                .setBody(getString(R.string.interested_message_text));
+                        builder.send();
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Error", "exception", error.toException());
+            }
+        });
+        Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
+        Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+        startActivity(intent);
     }
 }

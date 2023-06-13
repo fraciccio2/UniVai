@@ -16,6 +16,12 @@ public class RideModel {
         this.active = active;
     }
 
+    public RideModel(AddressModel address, String date, String note) {
+        this.address = address;
+        this.date = date;
+        this.note = note;
+    }
+
     public RideModel(){}
 
     public String getUserId() {

@@ -1,10 +1,16 @@
 package com.it.univai.activities;
 
+import static android.content.pm.PackageManager.PERMISSION_GRANTED;
+
+import android.Manifest;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.Bundle;
+import android.provider.CalendarContract;
 import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -13,6 +19,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.it.univai.R;
 import com.it.univai.databinding.ActivityNewRideBinding;
@@ -37,7 +45,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 public class NewRideActivity extends AppCompatActivity {
 
@@ -48,7 +58,9 @@ public class NewRideActivity extends AppCompatActivity {
     FirebaseAuth mAuth;
     DatabaseReference mDatabase;
     UserModel logUser;
+    RideModel savedRide;
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
+    private static final int CALENDAR_REQUEST_CODE = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,7 +113,12 @@ public class NewRideActivity extends AppCompatActivity {
                 builder.show();
             } else {
                 RideModel ride = new RideModel(user.getUid(), address, date, note, true);
-                mDatabase.child("rides").push().setValue(ride);
+                mDatabase.child("rides").push().setValue(ride).addOnCompleteListener(task -> {
+                    if(task.isSuccessful()) {
+                        savedRide = ride;
+                        checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+                    }
+                });
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
             }
@@ -186,6 +203,40 @@ public class NewRideActivity extends AppCompatActivity {
             }
             return;
         }
+        if(requestCode == CALENDAR_REQUEST_CODE) {
+            if(resultCode == RESULT_OK) {
+                createEventOnCalendar();
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    private void createEventOnCalendar() {
+        if(savedRide != null) {
+            long startTime = new Date(savedRide.getDate()).getTime();
+            long endTime = startTime + 3600000;
+            ContentResolver contentResolver = getContentResolver();
+            ContentValues values = new ContentValues();
+            values.put(CalendarContract.Events.TITLE, getString(R.string.app_name));
+            values.put(CalendarContract.Events.DESCRIPTION, savedRide.getNote());
+            values.put(CalendarContract.Events.EVENT_LOCATION, savedRide.getAddress().getLocation());
+            values.put(CalendarContract.Events.CALENDAR_ID, 3);
+            values.put(CalendarContract.Events.DTSTART, startTime);
+            values.put(CalendarContract.Events.DTEND, endTime);
+            values.put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().getID());
+            contentResolver.insert(CalendarContract.Events.CONTENT_URI, values);
+        }
+    }
+
+    private void checkPermission(String... permissionsId) {
+        boolean permissions = true;
+        for (String p : permissionsId) {
+            permissions = permissions && ContextCompat.checkSelfPermission(this, p) == PERMISSION_GRANTED;
+        }
+        if (!permissions) {
+            ActivityCompat.requestPermissions(this, permissionsId, CALENDAR_REQUEST_CODE);
+        } else {
+            createEventOnCalendar();
+        }
     }
 }
