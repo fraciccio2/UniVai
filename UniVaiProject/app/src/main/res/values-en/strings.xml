@@ -92,4 +92,6 @@
     <string name="no_ride_text">No Rides around</string>
     <string name="phone_number_val_text">Phone number:</string>
     <string name="your_rides_text">Your Rides</string>
+    <string name="empty_message_text">You can\'t send empty message</string>
+    <string name="type_message_text">Type a message…</string>
 </resources>

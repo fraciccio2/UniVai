@@ -11,11 +11,13 @@
     <string name="ride_id_text" translatable="false">rideId</string>
     <string name="user_id_text" translatable="false">userId</string>
     <string name="user_name_text" translatable="false">userName</string>
+    <string name="image_id_text" translatable="false">imageId</string>
     <string name="rides_text" translatable="false">Rides</string>
     <string name="token_text" translatable="false">Token:</string>
     <string name="reset_text" translatable="false">Reset</string>
     <string name="rides_out_text" translatable="false">RIDES OUT</string>
     <string name="rides_in_text" translatable="false">RIDES IN</string>
+    <string name="chat_text" translatable="false">Chat</string>
     <string name="name_text">Nome</string>
     <string name="surname_text">Cognome</string>
     <string name="phone_number_text">Numero di telefono</string>
@@ -108,4 +110,6 @@
     <string name="no_ride_text">Nessuna Ride nei dintorni</string>
     <string name="phone_number_val_text">Numero di telefono:</string>
     <string name="your_rides_text">Le tue Rides</string>
+    <string name="empty_message_text">Non puoi mandare messaggi vuoti</string>
+    <string name="type_message_text">Scrivi un messaggio…</string>
 </resources>

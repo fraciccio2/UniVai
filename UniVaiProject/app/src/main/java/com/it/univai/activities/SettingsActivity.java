@@ -4,8 +4,11 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -79,7 +82,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void logOutAction () {
+    private void logOutAction() {
         binding.logoutAction.setOnClickListener(view -> {
             mAuth.signOut();
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
@@ -88,7 +91,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void populateLanguageSpinner () {
+    private void populateLanguageSpinner() {
         List<String> languages = new ArrayList<>();
         languages.add(getString(R.string.italian_text));
         languages.add(getString(R.string.english_text));
@@ -96,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
         adapter.setDropDownViewResource(R.layout.language_dropdown_item);
         binding.spinnerLanguage.setAdapter(adapter);
         String language = Locale.getDefault().getLanguage();
-        if(language.equals("en")) {
+        if (language.equals("en")) {
             binding.spinnerLanguage.setSelection(1);
         }
         changeLanguage();
@@ -107,12 +110,12 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 Locale locale;
-                if(i == 0) {
+                if (i == 0) {
                     locale = new Locale("it");
                 } else {
                     locale = new Locale("en");
                 }
-                if(!(Locale.getDefault().getLanguage().equals(locale.getLanguage()))){
+                if (!(Locale.getDefault().getLanguage().equals(locale.getLanguage()))) {
                     Locale.setDefault(locale);
                     Configuration config = getApplicationContext().getResources().getConfiguration();
                     config.setLocale(locale);
@@ -142,5 +145,20 @@ public class SettingsActivity extends AppCompatActivity {
             intent.putExtra(getString(R.string.edit_mode_text), true);
             startActivity(intent);
         });
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.chat) {
+            Intent intent = new Intent(getApplicationContext(), LiveChatActivity.class);
+            startActivity(intent);
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
