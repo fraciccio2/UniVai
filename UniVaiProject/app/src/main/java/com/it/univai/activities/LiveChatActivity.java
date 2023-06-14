@@ -3,6 +3,7 @@ package com.it.univai.activities;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -120,6 +121,8 @@ public class LiveChatActivity extends AppCompatActivity {
                                     }
                                 });
                             }
+                        } else {
+                            binding.noChatCard.setVisibility(View.VISIBLE);
                         }
                     }
                     alert.dismiss();

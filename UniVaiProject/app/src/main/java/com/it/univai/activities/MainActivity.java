@@ -114,6 +114,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         Places.initialize(getApplicationContext(), getString(R.string.api_key));
         openFilterBottomSheets();
+        openChatActivity();
 
         navigationHelper.navigate(binding.bottomNavigationView, getApplicationContext());
         navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
@@ -314,6 +315,13 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             initializeSeekBar(bottomSheetView);
             bottomSheetDialog.setContentView(bottomSheetView);
             bottomSheetDialog.show();
+        });
+    }
+
+    private void openChatActivity() {
+        binding.chat.setOnClickListener(view -> {
+            Intent intent = new Intent(getApplicationContext(), LiveChatActivity.class);
+            startActivity(intent);
         });
     }
 

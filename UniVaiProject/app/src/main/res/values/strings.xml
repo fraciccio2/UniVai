@@ -112,4 +112,5 @@
     <string name="your_rides_text">Le tue Rides</string>
     <string name="empty_message_text">Non puoi mandare messaggi vuoti</string>
     <string name="type_message_text">Scrivi un messaggio…</string>
+    <string name="no_chat_text">Non puoi mandare dei messaggi perché non hai condiviso nessuna Rides con qualcuno</string>
 </resources>
