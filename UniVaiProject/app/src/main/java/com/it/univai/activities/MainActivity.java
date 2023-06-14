@@ -71,6 +71,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     FusedLocationProviderClient providerClient;
     FirebaseAuth mAuth;
     DatabaseReference mDatabaseUsers;
+    DatabaseReference mDatabaseChats;
     LatLng userLatLng;
     double radius = 10;
     List<RideWithUserModel> rideUserList = new ArrayList<>();
@@ -90,6 +91,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseUsers = FirebaseDatabase.getInstance().getReference("users");
+        mDatabaseChats = FirebaseDatabase.getInstance().getReference("chats");
 
         alert = new Sweetalert(this, Sweetalert.PROGRESS_TYPE);
         alert.getProgressHelper().setBarColor(getResources().getColor(R.color.main_color));
@@ -118,6 +120,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
         navigationHelper.navigate(binding.bottomNavigationView, getApplicationContext());
         navigationHelper.floatButtonOnClick(binding.floatingButton, getApplicationContext());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if(user != null) {
+            unreadMessage(user);
+        }
     }
 
     @Override
@@ -455,6 +466,34 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 intent.putExtra(getString(R.string.user_name_text), rideUser.getName()+" "+rideUser.getSurname());
                 intent.putExtra(getString(R.string.user_id_text), rideUser.getUserId());
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void unreadMessage(FirebaseUser user) {
+        mDatabaseChats.orderByChild("receiver").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @SuppressLint("UseCompatLoadingForDrawables")
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.exists()) {
+                    boolean unread = false;
+                    for (DataSnapshot data: snapshot.getChildren()) {
+                        boolean seen = Boolean.TRUE.equals(data.child("seen").getValue(boolean.class));
+                        if(!seen) {
+                            unread = true;
+                        }
+                    }
+                    if(unread) {
+                        binding.chat.setBackground(getDrawable(R.drawable.ic_baseline_mark_unread_chat_alt_24));
+                    } else {
+                        binding.chat.setBackground(getDrawable(R.drawable.ic_baseline_message_24));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("Error", "exception", error.toException());
             }
         });
     }

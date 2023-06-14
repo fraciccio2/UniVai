@@ -25,7 +25,10 @@ import com.it.univai.holders.MessageViewHold;
 import com.it.univai.models.ChatModel;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class MessageActivity extends AppCompatActivity {
 
@@ -37,6 +40,8 @@ public class MessageActivity extends AppCompatActivity {
     DatabaseReference mDatabaseChats;
     FirebaseRecyclerAdapter<ChatModel, MessageViewHold> adapter;
     List<ChatModel> chats;
+    Set<String> idMessages;
+    FirebaseUser user;
     public static final int MSG_LEFT = 0;
     public static final int MSG_RIGHT = 1;
 
@@ -48,7 +53,9 @@ public class MessageActivity extends AppCompatActivity {
 
         mAuth = FirebaseAuth.getInstance();
         mDatabaseChats = FirebaseDatabase.getInstance().getReference("chats");
+        user = mAuth.getCurrentUser();
         chats = new ArrayList<>();
+        idMessages = new HashSet<>();
 
         binding.arrowBack.setOnClickListener(view -> finish());
 
@@ -76,7 +83,7 @@ public class MessageActivity extends AppCompatActivity {
             if (!messageTxt.equals("")) {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
-                    ChatModel message = new ChatModel(user.getUid(), userId, messageTxt);
+                    ChatModel message = new ChatModel(user.getUid(), userId, messageTxt, false);
                     FirebaseDatabase.getInstance().getReference("chats").push().setValue(message);
                     binding.textSend.setText("");
                 }
@@ -124,10 +131,18 @@ public class MessageActivity extends AppCompatActivity {
             @Override
             public void onChildChanged(@NonNull ChangeEventType type, @NonNull DataSnapshot snapshot, int newIndex, int oldIndex) {
                 ChatModel chat = snapshot.getValue(ChatModel.class);
-                if (chat != null) {
-                    chats.add(chat);
-                    int lastIndex = adapter.getItemCount() - 1;
-                    binding.messageChatRecycler.scrollToPosition(lastIndex);
+                if (chat != null && (chat.getReceiver().equals(user.getUid()) && chat.getSender().equals(userId) || chat.getReceiver().equals(userId) && chat.getSender().equals(user.getUid()))) {
+                    if(!idMessages.contains(snapshot.getKey())) {
+                        chats.add(chat);
+                        int lastIndex = adapter.getItemCount() - 1;
+                        binding.messageChatRecycler.scrollToPosition(lastIndex);
+                        if(!chat.isSeen() && chat.getReceiver().equals(user.getUid()) && chat.getSender().equals(userId)) {
+                            HashMap<String, Object> hashMap = new HashMap<>();
+                            hashMap.put("seen", true);
+                            snapshot.getRef().updateChildren(hashMap);
+                        }
+                    }
+                    idMessages.add(snapshot.getKey());
                 }
                 super.onChildChanged(type, snapshot, newIndex, oldIndex);
             }

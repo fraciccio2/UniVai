@@ -74,6 +74,8 @@ public class RidesSummaryActivity extends AppCompatActivity {
                 binding.tabLayout.getTabAt(position).select();
             }
         });
+
+        binding.viewPager.setUserInputEnabled(false);
     }
 
     private void getLoggedUser(FirebaseUser user) {

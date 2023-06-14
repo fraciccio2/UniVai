@@ -1,5 +1,6 @@
 package com.it.univai.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ public class LanguageSpinnerAdapter extends ArrayAdapter<String> {
         return getCustomView(position, convertView, parent);
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     public View getCustomView(int position, View convertView, ViewGroup parent) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View row = inflater.inflate(R.layout.language_dropdown_item, parent, false);
