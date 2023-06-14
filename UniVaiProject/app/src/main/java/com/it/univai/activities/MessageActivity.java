@@ -77,8 +77,7 @@ public class MessageActivity extends AppCompatActivity {
                 FirebaseUser user = mAuth.getCurrentUser();
                 if (user != null) {
                     ChatModel message = new ChatModel(user.getUid(), userId, messageTxt);
-                    //chats.add(message);
-                    mDatabaseChats.push().setValue(message);
+                    FirebaseDatabase.getInstance().getReference("chats").push().setValue(message);
                     binding.textSend.setText("");
                 }
             } else {
@@ -127,8 +126,15 @@ public class MessageActivity extends AppCompatActivity {
                 ChatModel chat = snapshot.getValue(ChatModel.class);
                 if (chat != null) {
                     chats.add(chat);
+                    int lastIndex = adapter.getItemCount() - 1;
+                    binding.messageChatRecycler.scrollToPosition(lastIndex);
                 }
                 super.onChildChanged(type, snapshot, newIndex, oldIndex);
+            }
+
+            @Override
+            public int getItemCount() {
+                return chats.size();
             }
         };
     }
