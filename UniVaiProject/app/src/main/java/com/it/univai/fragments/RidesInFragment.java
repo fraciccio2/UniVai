@@ -162,17 +162,18 @@ public class RidesInFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String text) {
                 List<RequestWithUserModel> filteredRequestsRideList = new ArrayList<>();
+                String textLower = text.toLowerCase();
                 for (RequestWithUserModel requestRide : requestsRideList) {
                     if (
-                            requestRide.getTokenRequest().toLowerCase().contains(text.toLowerCase()) ||
-                                    requestRide.getUserName().toLowerCase().contains(text.toLowerCase()) ||
-                                    (requestRide.getLocation() != null && requestRide.getLocation().toLowerCase().contains(text.toLowerCase()))
+                            requestRide.getTokenRequest().toLowerCase().contains(textLower) ||
+                                    requestRide.getUserName().toLowerCase().contains(textLower) ||
+                                    (requestRide.getLocation() != null && requestRide.getLocation().toLowerCase().contains(textLower))
                     ) {
                         filteredRequestsRideList.add(requestRide);
                     }
                 }
                 if (filteredRequestsRideList.size() > 0) {
-                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesInFragment.this, requestsRideList));
+                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesInFragment.this, filteredRequestsRideList));
                 } else {
                     warningRidesAlert(getString(R.string.warning_request_filter_text));
                 }

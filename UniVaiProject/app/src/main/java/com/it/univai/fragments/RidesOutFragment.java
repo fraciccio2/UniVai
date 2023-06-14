@@ -46,7 +46,8 @@ public class RidesOutFragment extends Fragment {
     int i = 0, l = 0;
     List<RequestWithUserModel> requestsRideList = new ArrayList<>();
 
-    public RidesOutFragment(){}
+    public RidesOutFragment() {
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -98,8 +99,8 @@ public class RidesOutFragment extends Fragment {
                             mDatabaseUsers.orderByKey().equalTo(requestRide.getCreatorUser()).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if(snapshot.exists()) {
-                                        for (DataSnapshot datas: snapshot.getChildren()) {
+                                    if (snapshot.exists()) {
+                                        for (DataSnapshot datas : snapshot.getChildren()) {
                                             String userName = datas.child("name").getValue(String.class) + " " + datas.child("surname").getValue(String.class);
                                             String userAvatar = datas.child("userImage").getValue(String.class);
                                             String phoneNumber = datas.child("phoneNumber").getValue(Long.class).toString();
@@ -170,13 +171,14 @@ public class RidesOutFragment extends Fragment {
             @Override
             public boolean onQueryTextChange(String text) {
                 List<RequestWithUserModel> filteredRequestsRideList = new ArrayList<>();
+                String textLower = text.toLowerCase();
                 for (RequestWithUserModel requestRide : requestsRideList) {
-                    if (requestRide.getTokenRequest().contains(text) || requestRide.getUserName().contains(text) || requestRide.getLocation().contains(text)) {
+                    if (requestRide.getTokenRequest().toLowerCase().contains(textLower) || requestRide.getUserName().toLowerCase().contains(textLower) || requestRide.getLocation().toLowerCase().contains(text)) {
                         filteredRequestsRideList.add(requestRide);
                     }
                 }
                 if (filteredRequestsRideList.size() > 0) {
-                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesOutFragment.this, requestsRideList));
+                    recyclerView.setAdapter(new RequestRideAdapter(getContext(), RidesOutFragment.this, filteredRequestsRideList));
                 } else {
                     warningRidesAlert(getString(R.string.warning_ride_filter_text));
                 }
