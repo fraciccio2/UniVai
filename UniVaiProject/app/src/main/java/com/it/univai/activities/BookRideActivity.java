@@ -279,7 +279,6 @@ public class BookRideActivity extends AppCompatActivity {
     }
 
     private void saveEventOnCalendarAndSendNotification() {
-        checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         mDatabaseTokens.orderByValue().equalTo(userId).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -299,8 +298,20 @@ public class BookRideActivity extends AppCompatActivity {
             }
         });
         Toast.makeText(this, getString(R.string.request_success_text), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
-        startActivity(intent);
+        AlertDialog.Builder builder = new AlertDialog.Builder(BookRideActivity.this);
+        builder.setTitle(getString(R.string.attention_title_text));
+        builder.setMessage(getString(R.string.add_on_calendar_text));
+        builder.setNegativeButton(getString(R.string.dont_insert_text), (dialog, which) -> {
+            dialog.dismiss();
+            Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+            startActivity(intent);
+        });
+        builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
+            checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+            Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
+            startActivity(intent);
+        });
+        builder.show();
     }
 
     @Override

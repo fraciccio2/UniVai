@@ -113,4 +113,5 @@
     <string name="empty_message_text">Non puoi mandare messaggi vuoti</string>
     <string name="type_message_text">Scrivi un messaggio…</string>
     <string name="no_chat_text">Non puoi mandare dei messaggi perché non hai condiviso nessuna Rides con qualcuno</string>
+    <string name="add_on_calendar_text">Vuoi inserire l\'evento al tuo calendario?</string>
 </resources>

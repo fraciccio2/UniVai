@@ -113,11 +113,22 @@ public class NewRideActivity extends AppCompatActivity {
                 mDatabase.child("rides").push().setValue(ride).addOnCompleteListener(task -> {
                     if(task.isSuccessful()) {
                         savedRide = ride;
-                        checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(NewRideActivity.this);
+                        builder.setTitle(getString(R.string.attention_title_text));
+                        builder.setMessage(getString(R.string.add_on_calendar_text));
+                        builder.setNegativeButton(getString(R.string.dont_insert_text), (dialog, which) -> {
+                            dialog.dismiss();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        });
+                        builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
+                            checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        });
+                        builder.show();
                     }
                 });
-                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                startActivity(intent);
             }
         } else {
             Toast.makeText(this, getString(R.string.all_field_required_text), Toast.LENGTH_SHORT).show();

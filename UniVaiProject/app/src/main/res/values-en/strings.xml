@@ -95,4 +95,5 @@
     <string name="empty_message_text">You can\'t send empty message</string>
     <string name="type_message_text">Type a message…</string>
     <string name="no_chat_text">You can\'t send messages because you haven\'t shared any Rides with anyone</string>
+    <string name="add_on_calendar_text">Do you want to add the event to your calendar?</string>
 </resources>
