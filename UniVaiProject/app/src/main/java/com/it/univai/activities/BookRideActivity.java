@@ -307,9 +307,9 @@ public class BookRideActivity extends AppCompatActivity {
             startActivity(intent);
         });
         builder.setPositiveButton(getString(R.string.insert_text), (dialog, which) -> {
-            checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
             Intent intent = new Intent(getApplicationContext(), RidesListActivity.class);
             startActivity(intent);
+            checkPermission(Manifest.permission.READ_CALENDAR, Manifest.permission.WRITE_CALENDAR);
         });
         builder.show();
     }
